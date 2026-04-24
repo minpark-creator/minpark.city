@@ -15,9 +15,25 @@ export default function ProjectEntry({ project, onOpen }: Props) {
 
   return (
     <article className="grid grid-cols-12 gap-x-6 gap-y-6 py-10 sm:py-14 border-t border-neutral-200 first:border-t-0">
-      <div className="col-span-12 md:col-span-3 space-y-[2px] text-[14px]">
-        {project.location && <div>{project.location}</div>}
-        {project.role && <div className="text-muted">{project.role}</div>}
+      <div className="col-span-12 md:col-span-3 space-y-3">
+        <h3 className="text-[17px] sm:text-[16px] font-medium leading-snug">
+          {project.title}
+          {project.year && (
+            <>
+              <br />
+              <span className="text-muted font-normal">{project.year}</span>
+            </>
+          )}
+        </h3>
+        <div className="text-[14px] text-muted space-y-[2px]">
+          {project.location && <div>{project.location}</div>}
+          {project.role && <div>{project.role}</div>}
+        </div>
+        {project.summary && (
+          <p className="text-[14px] leading-[1.55] max-w-[38ch] pt-2">
+            {project.summary}
+          </p>
+        )}
       </div>
 
       <div className="col-span-12 md:col-span-9">

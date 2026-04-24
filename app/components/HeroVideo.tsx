@@ -26,6 +26,7 @@ export default function HeroVideo({ url, fileUrl }: Props) {
         {embed ? (
           <iframe
             src={embed}
+            loading="lazy"
             className="absolute inset-0 w-full h-full pointer-events-none"
             allow="autoplay; fullscreen; picture-in-picture"
             allowFullScreen
@@ -38,6 +39,7 @@ export default function HeroVideo({ url, fileUrl }: Props) {
             loop
             muted
             playsInline
+            preload="metadata"
             className="absolute inset-0 w-full h-full object-cover"
           />
         ) : (

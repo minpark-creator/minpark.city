@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import type { ProjectImage } from "../../sanity/queries";
 
@@ -92,12 +93,19 @@ export default function ProjectLightbox({
         onClick={(e) => e.stopPropagation()}
       >
         {img?.url ? (
-          /* eslint-disable-next-line @next/next/no-img-element */
-          <img
-            src={img.url}
-            alt={img.alt || title}
-            className="max-w-[92vw] max-h-[82vh] object-contain"
-          />
+          <div className="relative max-w-[92vw] max-h-[82vh]">
+            <Image
+              src={img.url}
+              alt={img.alt || title}
+              width={img.width ?? 1600}
+              height={img.height ?? 1200}
+              sizes="92vw"
+              priority
+              placeholder={img.lqip ? "blur" : "empty"}
+              blurDataURL={img.lqip ?? undefined}
+              className="max-w-[92vw] max-h-[82vh] w-auto h-auto object-contain"
+            />
+          </div>
         ) : (
           <div
             className="w-[60vw] h-[70vh]"

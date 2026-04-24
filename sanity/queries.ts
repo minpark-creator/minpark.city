@@ -13,6 +13,9 @@ export type ProjectImage = {
   url: string | null;
   alt?: string;
   asset?: unknown;
+  lqip?: string | null;
+  width?: number | null;
+  height?: number | null;
 };
 
 export type Project = {
@@ -84,14 +87,20 @@ export type Film = {
   caption?: string;
   videoUrl?: string;
   videoFileUrl?: string | null;
-  poster?: { url: string | null };
+  poster?: { url: string | null; lqip?: string | null };
 };
 
 const PROJECTS_QUERY = /* groq */ `
   *[_type == "project"] | order(order asc, date desc) {
     _id, title, "slug": slug.current, year, date,
     client, location, role, summary, body, isSelected,
-    "images": images[]{ _key, alt, asset, "url": asset->url }
+    "images": images[]{
+      _key, alt, asset,
+      "url": asset->url,
+      "lqip": asset->metadata.lqip,
+      "width": asset->metadata.dimensions.width,
+      "height": asset->metadata.dimensions.height
+    }
   }`;
 
 const SETTINGS_QUERY = /* groq */ `
@@ -116,7 +125,10 @@ const FILMS_QUERY = /* groq */ `
   *[_type == "film"] | order(date desc) {
     _id, title, date, location, caption, videoUrl,
     "videoFileUrl": videoFile.asset->url,
-    "poster": { "url": poster.asset->url }
+    "poster": {
+      "url": poster.asset->url,
+      "lqip": poster.asset->metadata.lqip
+    }
   }`;
 
 export async function getProjects(): Promise<Project[]> {

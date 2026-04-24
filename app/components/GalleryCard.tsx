@@ -18,8 +18,12 @@ export default function GalleryCard({ project, onClick }: Props) {
         clickable ? "cursor-zoom-in" : "cursor-default"
       }`}
     >
-      <div className="aspect-[3/4] overflow-hidden">
-        <ProjectThumb image={cover} alt={project.title} />
+      <div className="relative aspect-[3/4] overflow-hidden">
+        <ProjectThumb
+          image={cover}
+          alt={project.title}
+          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 280px"
+        />
       </div>
       <div className="flex items-baseline justify-between gap-2 text-[14px]">
         <span className="font-medium truncate">{project.title}</span>

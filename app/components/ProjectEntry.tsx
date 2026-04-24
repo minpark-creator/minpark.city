@@ -47,7 +47,7 @@ export default function ProjectEntry({ project, onImageClick }: Props) {
                 key={i}
                 disabled={!clickable}
                 onClick={() => clickable && onImageClick!(i)}
-                className={`aspect-[4/5] overflow-hidden block w-full p-0 ${
+                className={`relative aspect-[4/5] overflow-hidden block w-full p-0 ${
                   clickable ? "cursor-zoom-in" : "cursor-default"
                 }`}
               >

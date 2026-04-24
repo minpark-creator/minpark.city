@@ -31,6 +31,7 @@ function FilmPlayer({ film }: { film: Film }) {
       <div className="relative w-full aspect-video overflow-hidden bg-black">
         <iframe
           src={embed}
+          loading="lazy"
           className="absolute inset-0 w-full h-full"
           allow="autoplay; fullscreen; picture-in-picture"
           allowFullScreen
@@ -47,6 +48,7 @@ function FilmPlayer({ film }: { film: Film }) {
         poster={film.poster?.url ?? undefined}
         controls
         playsInline
+        preload="metadata"
         className="w-full aspect-video object-cover bg-black"
       />
     );

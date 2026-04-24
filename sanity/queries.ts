@@ -1,4 +1,4 @@
-import { client } from "./client";
+import { client, urlFor } from "./client";
 import {
   fallbackProjects,
   fallbackSettings,
@@ -12,7 +12,6 @@ export type ProjectImage = {
   _key?: string;
   url: string | null;
   alt?: string;
-  asset?: unknown;
   lqip?: string | null;
   width?: number | null;
   height?: number | null;
@@ -32,6 +31,7 @@ export type Project = {
   body?: string;
   isSelected?: boolean;
   images: ProjectImage[];
+  links?: { label: string; url: string; _key?: string }[];
 };
 
 export type LogoItem = {
@@ -104,29 +104,83 @@ export type Film = {
   };
 };
 
+type RawImage = {
+  _key?: string;
+  alt?: string;
+  asset?: unknown;
+  hotspot?: unknown;
+  crop?: unknown;
+  lqip?: string | null;
+  width?: number | null;
+  height?: number | null;
+};
+
+type RawPoster = {
+  asset?: unknown;
+  hotspot?: unknown;
+  crop?: unknown;
+  lqip?: string | null;
+  width?: number | null;
+  height?: number | null;
+};
+
+type RawProject = Omit<Project, "images"> & { images?: RawImage[] };
+type RawFilm = Omit<Film, "poster"> & { poster?: RawPoster | null };
+type RawSettings = Omit<SiteSettings, "heroPoster"> & {
+  heroPoster?: RawPoster | null;
+};
+
+function toImage(raw: RawImage | undefined): ProjectImage | null {
+  if (!raw || !raw.asset) return null;
+  const built = urlFor(raw)?.auto("format").url() ?? null;
+  return {
+    _key: raw._key,
+    alt: raw.alt,
+    url: built,
+    lqip: raw.lqip ?? null,
+    width: raw.width ?? null,
+    height: raw.height ?? null,
+  };
+}
+
+function toPoster(raw: RawPoster | null | undefined) {
+  if (!raw || !raw.asset) return null;
+  const built = urlFor(raw)?.auto("format").url() ?? null;
+  return {
+    url: built,
+    lqip: raw.lqip ?? null,
+    width: raw.width ?? null,
+    height: raw.height ?? null,
+  };
+}
+
+const IMAGE_PROJECTION = /* groq */ `{
+  _key, alt, asset, hotspot, crop,
+  "lqip": asset->metadata.lqip,
+  "width": asset->metadata.dimensions.width,
+  "height": asset->metadata.dimensions.height
+}`;
+
+const POSTER_PROJECTION = /* groq */ `{
+  asset, hotspot, crop,
+  "lqip": asset->metadata.lqip,
+  "width": asset->metadata.dimensions.width,
+  "height": asset->metadata.dimensions.height
+}`;
+
 const PROJECTS_QUERY = /* groq */ `
   *[_type == "project"] | order(order asc, date desc) {
     _id, title, "slug": slug.current, year, date,
     client, partners, location, role, summary, body, isSelected,
-    "images": images[]{
-      _key, alt, asset,
-      "url": asset->url,
-      "lqip": asset->metadata.lqip,
-      "width": asset->metadata.dimensions.width,
-      "height": asset->metadata.dimensions.height
-    }
+    links[]{ _key, label, url },
+    "images": images[]${IMAGE_PROJECTION}
   }`;
 
 const SETTINGS_QUERY = /* groq */ `
   *[_type == "siteSettings"][0]{
     title, words, intro, heroVideoUrl,
     "heroVideoFileUrl": heroVideoFile.asset->url,
-    "heroPoster": {
-      "url": heroPoster.asset->url,
-      "lqip": heroPoster.asset->metadata.lqip,
-      "width": heroPoster.asset->metadata.dimensions.width,
-      "height": heroPoster.asset->metadata.dimensions.height
-    },
+    "heroPoster": heroPoster${POSTER_PROJECTION},
     "logos": logos[]{ _key, name, url, height, "image": { "url": image.asset->url } }
   }`;
 
@@ -145,19 +199,30 @@ const FILMS_QUERY = /* groq */ `
   *[_type == "film"] | order(date desc) {
     _id, title, date, location, caption, videoUrl,
     "videoFileUrl": videoFile.asset->url,
-    "poster": {
-      "url": poster.asset->url,
-      "lqip": poster.asset->metadata.lqip,
-      "width": poster.asset->metadata.dimensions.width,
-      "height": poster.asset->metadata.dimensions.height
-    }
+    "poster": poster${POSTER_PROJECTION}
   }`;
+
+function hydrateProjects(raws: RawProject[]): Project[] {
+  return raws.map((p) => ({
+    ...p,
+    images: (p.images ?? [])
+      .map(toImage)
+      .filter((img): img is ProjectImage => img !== null),
+  }));
+}
+
+function hydrateFilms(raws: RawFilm[]): Film[] {
+  return raws.map((f) => ({
+    ...f,
+    poster: toPoster(f.poster) ?? undefined,
+  }));
+}
 
 export async function getProjects(): Promise<Project[]> {
   if (!client) return fallbackProjects;
   try {
-    const r = await client.fetch<Project[]>(PROJECTS_QUERY);
-    return r.length ? r : fallbackProjects;
+    const r = await client.fetch<RawProject[]>(PROJECTS_QUERY);
+    return r.length ? hydrateProjects(r) : fallbackProjects;
   } catch {
     return fallbackProjects;
   }
@@ -166,7 +231,7 @@ export async function getProjects(): Promise<Project[]> {
 export async function getSiteSettings(): Promise<SiteSettings> {
   if (!client) return fallbackSettings;
   try {
-    const s = await client.fetch<SiteSettings | null>(SETTINGS_QUERY);
+    const s = await client.fetch<RawSettings | null>(SETTINGS_QUERY);
     if (!s) return fallbackSettings;
     return {
       title: s.title || fallbackSettings.title,
@@ -177,7 +242,8 @@ export async function getSiteSettings(): Promise<SiteSettings> {
       heroVideoUrl: s.heroVideoUrl || fallbackSettings.heroVideoUrl,
       heroVideoFileUrl:
         s.heroVideoFileUrl ?? fallbackSettings.heroVideoFileUrl ?? null,
-      heroPoster: s.heroPoster ?? fallbackSettings.heroPoster ?? null,
+      heroPoster:
+        toPoster(s.heroPoster) ?? fallbackSettings.heroPoster ?? null,
     };
   } catch {
     return fallbackSettings;
@@ -217,8 +283,8 @@ export async function getJournalEntries(): Promise<JournalEntry[]> {
 export async function getFilms(): Promise<Film[]> {
   if (!client) return fallbackFilms;
   try {
-    const f = await client.fetch<Film[]>(FILMS_QUERY);
-    return f.length ? f : fallbackFilms;
+    const f = await client.fetch<RawFilm[]>(FILMS_QUERY);
+    return f.length ? hydrateFilms(f) : fallbackFilms;
   } catch {
     return fallbackFilms;
   }

@@ -15,9 +15,12 @@ type Open = { project: Project; startIndex: number } | null;
 
 export default function ProjectsClient({ selected, allByDate }: Props) {
   const [open, setOpen] = useState<Open>(null);
-
   const [hoverIdx, setHoverIdx] = useState<number | null>(null);
-  const [hasHovered, setHasHovered] = useState(false);
+
+  const openInfo = (project: Project) =>
+    setOpen({ project, startIndex: 0 });
+  const openImage = (project: Project, imageIndex: number) =>
+    setOpen({ project, startIndex: imageIndex + 1 });
 
   return (
     <>
@@ -43,7 +46,8 @@ export default function ProjectsClient({ selected, allByDate }: Props) {
             <ProjectEntry
               key={p._id}
               project={p}
-              onOpen={() => setOpen({ project: p, startIndex: 0 })}
+              onOpenInfo={() => openInfo(p)}
+              onOpenImage={(idx) => openImage(p, idx)}
             />
           ))
         )}
@@ -58,21 +62,18 @@ export default function ProjectsClient({ selected, allByDate }: Props) {
         </div>
         <div
           className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-5 gap-y-10 pt-6"
-          onMouseLeave={() => {
-            setHoverIdx(null);
-            setHasHovered(true);
-          }}
+          onMouseLeave={() => setHoverIdx(null)}
         >
           {allByDate.map((p, idx) => {
-            const activeIdx = hoverIdx ?? (hasHovered ? null : 0);
-            const dimmed = activeIdx !== null && activeIdx !== idx;
+            const dimmed = hoverIdx !== null && hoverIdx !== idx;
             return (
               <GalleryCard
                 key={p._id}
                 project={p}
                 dimmed={dimmed}
                 onHover={() => setHoverIdx(idx)}
-                onClick={() => setOpen({ project: p, startIndex: 0 })}
+                onOpenImage={() => openImage(p, 0)}
+                onOpenInfo={() => openInfo(p)}
               />
             );
           })}

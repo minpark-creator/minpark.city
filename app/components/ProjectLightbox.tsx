@@ -58,15 +58,21 @@ export default function ProjectLightbox({
 
   return (
     <div
-      className="fixed inset-0 z-50 bg-black/95 overflow-y-auto"
+      className="fixed inset-0 z-50 bg-black/95 overflow-hidden"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
     >
-      <div className="min-h-screen flex items-center justify-center px-12 sm:px-20 py-20">
+      <div className="absolute inset-0 flex items-center justify-center px-16 sm:px-20 py-16">
         <div
           onClick={(e) => e.stopPropagation()}
-          className="w-full flex items-center justify-center"
+          className="flex items-center justify-center"
+          style={{
+            maxWidth: "calc(100vw - 8rem)",
+            maxHeight: "calc(100vh - 8rem)",
+            width: current.kind === "info" ? "100%" : "auto",
+            height: current.kind === "info" ? "100%" : "auto",
+          }}
         >
           {current.kind === "info" ? (
             <InfoSlide project={project} />
@@ -80,8 +86,13 @@ export default function ProjectLightbox({
               priority
               placeholder={current.image.lqip ? "blur" : "empty"}
               blurDataURL={current.image.lqip ?? undefined}
-              className="w-auto h-auto object-contain max-w-full"
-              style={{ maxHeight: "calc(100vh - 10rem)" }}
+              className="object-contain"
+              style={{
+                width: "auto",
+                height: "auto",
+                maxWidth: "calc(100vw - 8rem)",
+                maxHeight: "calc(100vh - 8rem)",
+              }}
             />
           )}
         </div>
@@ -93,7 +104,7 @@ export default function ProjectLightbox({
           e.stopPropagation();
           onClose();
         }}
-        className="fixed top-5 right-6 z-10 text-white text-[14px] hover:underline"
+        className="absolute top-5 right-6 z-10 text-white text-[14px] hover:underline"
         aria-label="Close"
       >
         Close
@@ -107,7 +118,7 @@ export default function ProjectLightbox({
               e.stopPropagation();
               prev();
             }}
-            className="fixed left-4 top-1/2 -translate-y-1/2 z-10 text-white text-[28px] px-3 py-2 hover:opacity-70"
+            className="absolute left-4 top-1/2 -translate-y-1/2 z-10 text-white text-[28px] px-3 py-2 hover:opacity-70"
             aria-label="Previous"
           >
             ‹
@@ -118,7 +129,7 @@ export default function ProjectLightbox({
               e.stopPropagation();
               next();
             }}
-            className="fixed right-4 top-1/2 -translate-y-1/2 z-10 text-white text-[28px] px-3 py-2 hover:opacity-70"
+            className="absolute right-4 top-1/2 -translate-y-1/2 z-10 text-white text-[28px] px-3 py-2 hover:opacity-70"
             aria-label="Next"
           >
             ›
@@ -126,7 +137,7 @@ export default function ProjectLightbox({
         </>
       )}
 
-      <div className="fixed bottom-5 left-6 right-6 flex items-baseline justify-between gap-6 text-white/80 text-[13px] pointer-events-none">
+      <div className="absolute bottom-5 left-6 right-6 flex items-baseline justify-between gap-6 text-white/80 text-[13px] pointer-events-none">
         <span>{project.title}</span>
         <span>{counter}</span>
       </div>
@@ -144,42 +155,47 @@ function InfoSlide({ project }: { project: Project }) {
     : [];
 
   return (
-    <div className="text-white max-w-[720px] w-full text-center">
-      <h2 className="text-[26px] sm:text-[32px] leading-[1.2]">
-        {project.title}
-      </h2>
-      {meta && <div className="mt-2 text-white/70 text-[14px]">{meta}</div>}
+    <div
+      className="text-white w-full h-full overflow-y-auto flex flex-col items-center justify-start py-2"
+      style={{ maxWidth: "720px" }}
+    >
+      <div className="w-full text-center">
+        <h2 className="text-[26px] sm:text-[32px] leading-[1.2]">
+          {project.title}
+        </h2>
+        {meta && <div className="mt-2 text-white/70 text-[14px]">{meta}</div>}
 
-      {(project.client || project.partners) && (
-        <dl className="mt-5 space-y-1 text-[14px] inline-block text-left">
-          {project.client && (
-            <div className="flex gap-2">
-              <dt className="text-white/60 shrink-0">As part of:</dt>
-              <dd>{project.client}</dd>
-            </div>
-          )}
-          {project.partners && (
-            <div className="flex gap-2">
-              <dt className="text-white/60 shrink-0">In partnership with:</dt>
-              <dd>{project.partners}</dd>
-            </div>
-          )}
-        </dl>
-      )}
+        {(project.client || project.partners) && (
+          <dl className="mt-5 space-y-1 text-[14px] inline-block text-left">
+            {project.client && (
+              <div className="flex gap-2">
+                <dt className="text-white/60 shrink-0">As part of:</dt>
+                <dd>{project.client}</dd>
+              </div>
+            )}
+            {project.partners && (
+              <div className="flex gap-2">
+                <dt className="text-white/60 shrink-0">In partnership with:</dt>
+                <dd>{project.partners}</dd>
+              </div>
+            )}
+          </dl>
+        )}
 
-      {project.summary && (
-        <p className="mt-6 text-[16px] leading-[1.55] text-white/90">
-          {project.summary}
-        </p>
-      )}
+        {project.summary && (
+          <p className="mt-6 text-[16px] leading-[1.55] text-white/90">
+            {project.summary}
+          </p>
+        )}
 
-      {paragraphs.length > 0 && (
-        <div className="mt-6 space-y-4 text-[14px] leading-[1.75] text-white/85 text-left">
-          {paragraphs.map((p, idx) => (
-            <p key={idx}>{p}</p>
-          ))}
-        </div>
-      )}
+        {paragraphs.length > 0 && (
+          <div className="mt-6 space-y-4 text-[14px] leading-[1.75] text-white/85 text-left">
+            {paragraphs.map((p, idx) => (
+              <p key={idx}>{p}</p>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

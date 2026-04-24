@@ -75,6 +75,37 @@ export const projectSchema = defineType({
       description: "Long-form project description. Paragraphs separated by blank lines.",
     }),
     defineField({
+      name: "links",
+      title: "External Links",
+      type: "array",
+      description:
+        "Optional links shown on the main page under the summary as 'Click to see <label>'.",
+      of: [
+        {
+          type: "object",
+          fields: [
+            {
+              name: "label",
+              title: "Label",
+              type: "string",
+              description:
+                "Link name shown in 'Click to see <label>'. e.g. 'the report', 'press coverage'.",
+              validation: (r) => r.required(),
+            },
+            {
+              name: "url",
+              title: "URL",
+              type: "url",
+              validation: (r) => r.required(),
+            },
+          ],
+          preview: {
+            select: { title: "label", subtitle: "url" },
+          },
+        },
+      ],
+    }),
+    defineField({
       name: "images",
       title: "Images",
       type: "array",

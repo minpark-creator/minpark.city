@@ -64,7 +64,7 @@ export default function ProjectEntry({
                   rel="noopener noreferrer"
                   className="text-muted underline-offset-2 hover:underline"
                 >
-                  Click to see &lsquo;{link.label}&rsquo;
+                  Click to see {link.label}
                 </a>
               </li>
             ))}

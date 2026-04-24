@@ -270,11 +270,31 @@ export async function getContactPage(): Promise<ContactPage> {
   }
 }
 
+function portableTextToPlain(body: unknown): string {
+  if (!Array.isArray(body)) return "";
+  return body
+    .map((block) => {
+      if (!block || typeof block !== "object") return "";
+      const b = block as { _type?: string; children?: unknown };
+      if (b._type !== "block" || !Array.isArray(b.children)) return "";
+      return b.children
+        .map((c) => {
+          if (!c || typeof c !== "object") return "";
+          const span = c as { text?: string };
+          return span.text ?? "";
+        })
+        .join("");
+    })
+    .filter(Boolean)
+    .join("\n\n");
+}
+
 export async function getJournalEntries(): Promise<JournalEntry[]> {
   if (!client) return fallbackJournal;
   try {
     const j = await client.fetch<JournalEntry[]>(JOURNAL_QUERY);
-    return j.length ? j : fallbackJournal;
+    if (!j.length) return fallbackJournal;
+    return j.map((e) => ({ ...e, bodyText: portableTextToPlain(e.body) }));
   } catch {
     return fallbackJournal;
   }

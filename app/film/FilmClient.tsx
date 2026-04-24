@@ -79,7 +79,7 @@ export default function FilmClient({ films }: { films: Film[] }) {
       )}
 
       <div className="pt-8 border-t border-neutral-200">
-        <ul className="space-y-[2px] pt-4">
+        <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-1 pt-4">
           {films.map((film) => {
             const isActive = film._id === active?._id;
             return (
@@ -91,16 +91,20 @@ export default function FilmClient({ films }: { films: Film[] }) {
                     isActive ? "opacity-100" : "opacity-70 hover:opacity-100"
                   }`}
                 >
-                  <div className="flex items-baseline justify-between gap-4">
-                    <span className={`text-[15px] ${isActive ? "font-medium" : ""}`}>
+                  <div className="flex items-baseline justify-between gap-3">
+                    <span
+                      className={`text-[15px] truncate ${
+                        isActive ? "font-medium" : ""
+                      }`}
+                    >
                       {film.title}
                     </span>
-                    <span className="text-[12px] text-muted shrink-0">
+                    <span className="font-ui text-[12px] text-muted shrink-0">
                       {formatDate(film.date)}
                     </span>
                   </div>
                   {film.location && (
-                    <div className="text-[13px] text-muted mt-1">
+                    <div className="font-ui text-[13px] text-muted mt-1">
                       {film.location}
                     </div>
                   )}

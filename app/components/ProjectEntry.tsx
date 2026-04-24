@@ -14,9 +14,9 @@ export default function ProjectEntry({ project, onImageClick }: Props) {
   ];
 
   return (
-    <article className="grid grid-cols-12 gap-x-6 gap-y-6 py-14 border-t border-neutral-200 first:border-t-0">
+    <article className="grid grid-cols-12 gap-x-6 gap-y-6 py-10 sm:py-14 border-t border-neutral-200 first:border-t-0">
       <div className="col-span-12 md:col-span-3 space-y-3">
-        <h3 className="text-[16px] font-medium leading-snug">
+        <h3 className="text-[17px] sm:text-[16px] font-medium leading-snug">
           {project.title}
           {project.year && (
             <>
@@ -38,7 +38,7 @@ export default function ProjectEntry({ project, onImageClick }: Props) {
       </div>
 
       <div className="col-span-12 md:col-span-9">
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
           {slots.map((img, i) => {
             const clickable = !!img && !!onImageClick;
             return (

@@ -28,8 +28,7 @@ export default function CyclingTitle({
 
   return (
     <h1
-      className="flex items-baseline tracking-[-0.01em]"
-      style={{ fontSize: "60px", lineHeight: 1.1 }}
+      className="flex items-baseline tracking-[-0.01em] text-[34px] sm:text-[44px] md:text-[52px] lg:text-[60px] leading-[1.1]"
     >
       <span className="whitespace-pre">{prefix}</span>
       <span

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { EB_Garamond } from "next/font/google";
+import { EB_Garamond, Inter } from "next/font/google";
 import "./globals.css";
 
 const ebGaramond = EB_Garamond({
@@ -7,6 +7,13 @@ const ebGaramond = EB_Garamond({
   weight: ["400", "500", "600"],
   style: ["normal"],
   variable: "--font-eb-garamond",
+  display: "swap",
+});
+
+const inter = Inter({
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  variable: "--font-inter",
   display: "swap",
 });
 
@@ -22,7 +29,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`h-full antialiased ${ebGaramond.variable}`}>
+    <html lang="en" className={`h-full antialiased ${ebGaramond.variable} ${inter.variable}`}>
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );

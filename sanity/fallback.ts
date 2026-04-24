@@ -13,10 +13,10 @@ export const fallbackSettings: SiteSettings = {
   intro:
     "I'm Min Park, an urban strategist and planner working at the intersection of planning, research, and spatial vision. My practice translates urban challenges into clear spatial visions, policy insights, and long-term planning frameworks.",
   logos: [
-    { _key: "l1", name: "C40 Cities", height: 48, image: { url: null } },
-    { _key: "l2", name: "Holcim Foundation", height: 48, image: { url: null } },
-    { _key: "l3", name: "MPlan Mag", height: 48, image: { url: null } },
-    { _key: "l4", name: "Europe-Korea Conference", height: 48, image: { url: null } },
+    { _key: "l1", name: "C40 Cities", height: 46, image: { url: null } },
+    { _key: "l2", name: "Holcim Foundation", height: 54, image: { url: null } },
+    { _key: "l3", name: "MPlan Mag", height: 40, image: { url: null } },
+    { _key: "l4", name: "Europe-Korea Conference", height: 50, image: { url: null } },
   ],
   heroVideoUrl: undefined,
   heroVideoFileUrl: null,

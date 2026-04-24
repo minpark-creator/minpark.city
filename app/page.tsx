@@ -30,13 +30,13 @@ export default async function Home() {
       <Header />
 
       <main className="pb-16">
-        <section className="pt-16 pb-12">
+        <section className="pt-10 sm:pt-14 lg:pt-16 pb-10 sm:pb-12">
           <div className="max-w-[720px] text-left">
             <CyclingTitle
               prefix={prefix}
               words={settings.words ?? []}
             />
-            <p className="mt-8 text-[21px] leading-[1.5]">
+            <p className="mt-6 sm:mt-8 text-[17px] sm:text-[19px] lg:text-[21px] leading-[1.5]">
               {settings.intro}
             </p>
           </div>

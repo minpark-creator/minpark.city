@@ -33,7 +33,7 @@ export default function JournalClient({
   const active = entries.find((e) => e._id === activeId) ?? entries[0];
 
   return (
-    <div className="grid grid-cols-12 gap-x-8 gap-y-10">
+    <div className="grid grid-cols-12 gap-x-6 sm:gap-x-8 gap-y-8 sm:gap-y-10 pt-4">
       <aside className="col-span-12 md:col-span-4 md:sticky md:top-6 md:self-start">
         <ul className="space-y-[2px]">
           {entries.map((entry) => {
@@ -55,7 +55,7 @@ export default function JournalClient({
                     >
                       {entry.title}
                     </span>
-                    <span className="text-[12px] text-muted shrink-0">
+                    <span className="font-ui text-[12px] text-muted shrink-0">
                       {formatDate(entry.date)}
                     </span>
                   </div>
@@ -75,10 +75,10 @@ export default function JournalClient({
         {active && (
           <>
             <header className="mb-8 pb-6 border-b border-neutral-200">
-              <div className="text-[13px] text-muted">
+              <div className="font-ui text-[13px] text-muted">
                 {formatDate(active.date)}
               </div>
-              <h2 className="mt-2 text-[28px] font-medium leading-tight">
+              <h2 className="mt-2 text-[22px] sm:text-[26px] lg:text-[28px] font-medium leading-tight">
                 {active.title}
               </h2>
             </header>

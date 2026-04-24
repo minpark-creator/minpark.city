@@ -11,10 +11,13 @@ type Props = {
   allByDate: Project[];
 };
 
-type Open = { project: Project; index: number } | null;
+type Open = { project: Project; startIndex: number } | null;
 
 export default function ProjectsClient({ selected, allByDate }: Props) {
   const [open, setOpen] = useState<Open>(null);
+
+  const [hoverIdx, setHoverIdx] = useState<number | null>(null);
+  const [hasHovered, setHasHovered] = useState(false);
 
   return (
     <>
@@ -40,7 +43,7 @@ export default function ProjectsClient({ selected, allByDate }: Props) {
             <ProjectEntry
               key={p._id}
               project={p}
-              onImageClick={(idx) => setOpen({ project: p, index: idx })}
+              onOpen={() => setOpen({ project: p, startIndex: 0 })}
             />
           ))
         )}
@@ -53,22 +56,33 @@ export default function ProjectsClient({ selected, allByDate }: Props) {
             {allByDate.length} projects
           </span>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-5 gap-y-10 pt-6">
-          {allByDate.map((p) => (
-            <GalleryCard
-              key={p._id}
-              project={p}
-              onClick={() => setOpen({ project: p, index: 0 })}
-            />
-          ))}
+        <div
+          className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-5 gap-y-10 pt-6"
+          onMouseLeave={() => {
+            setHoverIdx(null);
+            setHasHovered(true);
+          }}
+        >
+          {allByDate.map((p, idx) => {
+            const activeIdx = hoverIdx ?? (hasHovered ? null : 0);
+            const dimmed = activeIdx !== null && activeIdx !== idx;
+            return (
+              <GalleryCard
+                key={p._id}
+                project={p}
+                dimmed={dimmed}
+                onHover={() => setHoverIdx(idx)}
+                onClick={() => setOpen({ project: p, startIndex: 0 })}
+              />
+            );
+          })}
         </div>
       </section>
 
-      {open && open.project.images.length > 0 && (
+      {open && (
         <ProjectLightbox
-          images={open.project.images}
-          startIndex={open.index}
-          title={open.project.title}
+          project={open.project}
+          startIndex={open.startIndex}
           onClose={() => setOpen(null)}
         />
       )}

@@ -93,23 +93,21 @@ export default function FilmClient({ films }: { films: Film[] }) {
                     isActive ? "opacity-100" : "opacity-70 hover:opacity-100"
                   }`}
                 >
-                  <div className="flex items-baseline justify-between gap-3">
-                    <span
-                      className={`text-[15px] truncate ${
-                        isActive ? "font-medium" : ""
-                      }`}
-                    >
-                      {film.title}
-                    </span>
-                    <span className="text-[12px] text-muted shrink-0">
-                      {formatDate(film.date)}
-                    </span>
+                  <div
+                    className={`text-[15px] truncate ${
+                      isActive ? "font-medium" : ""
+                    }`}
+                  >
+                    {film.title}
                   </div>
                   {film.location && (
                     <div className="text-[13px] text-muted mt-1">
                       {film.location}
                     </div>
                   )}
+                  <div className="text-[12px] text-muted mt-2">
+                    {formatDate(film.date)}
+                  </div>
                 </button>
               </li>
             );

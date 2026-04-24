@@ -3,10 +3,10 @@ import ProjectThumb from "./ProjectThumb";
 
 type Props = {
   project: Project;
-  onImageClick?: (index: number) => void;
+  onOpen?: (index: number) => void;
 };
 
-export default function ProjectEntry({ project, onImageClick }: Props) {
+export default function ProjectEntry({ project, onOpen }: Props) {
   const placeholderCount = Math.max(0, 3 - project.images.length);
   const slots = [
     ...project.images,
@@ -15,41 +15,22 @@ export default function ProjectEntry({ project, onImageClick }: Props) {
 
   return (
     <article className="grid grid-cols-12 gap-x-6 gap-y-6 py-10 sm:py-14 border-t border-neutral-200 first:border-t-0">
-      <div className="col-span-12 md:col-span-3 space-y-3">
-        <h3 className="text-[17px] sm:text-[16px] font-medium leading-snug">
-          {project.title}
-          {project.year && (
-            <>
-              <br />
-              <span className="text-muted font-normal">{project.year}</span>
-            </>
-          )}
-        </h3>
-        <div className="text-[14px] text-muted space-y-[2px]">
-          {project.client && <div>{project.client}</div>}
-          {project.location && <div>{project.location}</div>}
-          {project.role && <div>{project.role}</div>}
-        </div>
-        {project.summary && (
-          <p className="text-[14px] leading-[1.55] max-w-[38ch] pt-2">
-            {project.summary}
-          </p>
-        )}
+      <div className="col-span-12 md:col-span-3 space-y-[2px] text-[14px]">
+        {project.location && <div>{project.location}</div>}
+        {project.role && <div className="text-muted">{project.role}</div>}
       </div>
 
       <div className="col-span-12 md:col-span-9">
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
           {slots.map((img, i) => {
-            const clickable = !!img && !!onImageClick;
+            const clickable = !!img && !!onOpen;
             return (
               <button
                 type="button"
                 key={i}
                 disabled={!clickable}
-                onClick={() => clickable && onImageClick!(i)}
-                className={`relative aspect-[4/5] overflow-hidden block w-full p-0 ${
-                  clickable ? "cursor-zoom-in" : "cursor-default"
-                }`}
+                onClick={() => clickable && onOpen!(i)}
+                className="relative aspect-[4/5] overflow-hidden block w-full p-0"
               >
                 <ProjectThumb
                   image={img}

@@ -38,9 +38,15 @@ export const projectSchema = defineType({
     }),
     defineField({
       name: "client",
-      title: "Client",
+      title: "As part of",
       type: "string",
-      description: "e.g. C40 Cities, Academic work, Holcim Foundation.",
+      description: "Affiliation or commissioning body. e.g. C40 Cities, Academic work, Holcim Foundation.",
+    }),
+    defineField({
+      name: "partners",
+      title: "In partnership with",
+      type: "string",
+      description: "Collaborators or partner organisations.",
     }),
     defineField({
       name: "location",

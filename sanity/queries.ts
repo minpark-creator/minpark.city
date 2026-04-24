@@ -25,6 +25,7 @@ export type Project = {
   year?: string;
   date?: string;
   client?: string;
+  partners?: string;
   location?: string;
   role?: string;
   summary?: string;
@@ -93,7 +94,7 @@ export type Film = {
 const PROJECTS_QUERY = /* groq */ `
   *[_type == "project"] | order(order asc, date desc) {
     _id, title, "slug": slug.current, year, date,
-    client, location, role, summary, body, isSelected,
+    client, partners, location, role, summary, body, isSelected,
     "images": images[]{
       _key, alt, asset,
       "url": asset->url,

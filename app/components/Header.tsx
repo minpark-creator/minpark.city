@@ -41,7 +41,7 @@ export default function Header() {
                 key={item.href}
                 href={item.href}
                 className={`hover:underline ${
-                  active ? "text-neutral-400" : ""
+                  active ? "text-muted" : ""
                 }`}
                 aria-current={active ? "page" : undefined}
               >

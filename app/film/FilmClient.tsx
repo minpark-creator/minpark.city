@@ -17,9 +17,9 @@ function formatDate(iso?: string) {
 function toEmbed(url?: string) {
   if (!url) return null;
   const vimeo = url.match(/vimeo\.com\/(?:video\/)?(\d+)/);
-  if (vimeo) return `https://player.vimeo.com/video/${vimeo[1]}?autoplay=0&muted=0&title=0&byline=0&portrait=0`;
+  if (vimeo) return `https://player.vimeo.com/video/${vimeo[1]}?autoplay=0&muted=1&title=0&byline=0&portrait=0`;
   const yt = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([\w-]{11})/);
-  if (yt) return `https://www.youtube.com/embed/${yt[1]}`;
+  if (yt) return `https://www.youtube.com/embed/${yt[1]}?mute=1`;
   return null;
 }
 
@@ -74,6 +74,7 @@ function FilmPlayer({ film }: { film: Film }) {
           src={directUrl}
           poster={film.poster?.url ?? undefined}
           controls
+          muted
           playsInline
           preload="metadata"
           className="absolute inset-0 w-full h-full object-cover"

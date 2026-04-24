@@ -185,14 +185,8 @@ function InfoSlide({ project }: { project: Project }) {
           </dl>
         )}
 
-        {project.summary && (
-          <p className="mt-6 text-[16px] leading-[1.55] text-white/90">
-            {project.summary}
-          </p>
-        )}
-
         {paragraphs.length > 0 && (
-          <div className="mt-12 space-y-4 text-[14px] leading-[1.75] text-white/85 text-left">
+          <div className="mt-12 space-y-4 text-[16px] leading-[1.55] text-white/90 text-left">
             {paragraphs.map((p, idx) => (
               <p key={idx}>{p}</p>
             ))}

@@ -48,7 +48,7 @@ export default function ProjectsClient({ selected, allByDate }: Props) {
 
       <section id="all" className="scroll-mt-24 pt-24">
         <div className="flex items-baseline justify-between py-4 border-t border-neutral-200">
-          <h2 className="text-[16px] font-medium">All projects — by date</h2>
+          <h2 className="text-[16px]">All projects by date</h2>
           <span className="text-muted text-[14px]">
             {allByDate.length} projects
           </span>

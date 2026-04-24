@@ -20,6 +20,7 @@ export const fallbackSettings: SiteSettings = {
   ],
   heroVideoUrl: undefined,
   heroVideoFileUrl: null,
+  heroPoster: null,
 };
 
 export const fallbackAbout: AboutPage = {

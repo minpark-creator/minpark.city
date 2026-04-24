@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 import type { Film } from "../../sanity/queries";
 
@@ -22,13 +23,34 @@ function toEmbed(url?: string) {
   return null;
 }
 
+function PosterLayer({ film }: { film: Film }) {
+  const posterUrl = film.poster?.url ?? null;
+  if (!posterUrl) return null;
+  return (
+    <Image
+      src={posterUrl}
+      alt=""
+      fill
+      sizes="(max-width: 1024px) 100vw, 1200px"
+      placeholder={film.poster?.lqip ? "blur" : "empty"}
+      blurDataURL={film.poster?.lqip ?? undefined}
+      className="object-cover"
+    />
+  );
+}
+
 function FilmPlayer({ film }: { film: Film }) {
   const embed = toEmbed(film.videoUrl);
   const directUrl = film.videoFileUrl || (film.videoUrl && !embed ? film.videoUrl : null);
+  const bgColor = film.poster?.url ? undefined : "#efeae2";
 
   if (embed) {
     return (
-      <div className="relative w-full aspect-video overflow-hidden bg-black">
+      <div
+        className="relative w-full aspect-video overflow-hidden"
+        style={{ backgroundColor: bgColor }}
+      >
+        <PosterLayer film={film} />
         <iframe
           src={embed}
           loading="lazy"
@@ -43,19 +65,27 @@ function FilmPlayer({ film }: { film: Film }) {
 
   if (directUrl) {
     return (
-      <video
-        src={directUrl}
-        poster={film.poster?.url ?? undefined}
-        controls
-        playsInline
-        preload="metadata"
-        className="w-full aspect-video object-cover bg-black"
-      />
+      <div
+        className="relative w-full aspect-video overflow-hidden"
+        style={{ backgroundColor: bgColor }}
+      >
+        <PosterLayer film={film} />
+        <video
+          src={directUrl}
+          poster={film.poster?.url ?? undefined}
+          controls
+          playsInline
+          preload="metadata"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+      </div>
     );
   }
 
   return (
-    <div className="w-full aspect-video" style={{ backgroundColor: "#efeae2" }} />
+    <div className="relative w-full aspect-video overflow-hidden" style={{ backgroundColor: bgColor }}>
+      <PosterLayer film={film} />
+    </div>
   );
 }
 

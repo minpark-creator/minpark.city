@@ -76,6 +76,14 @@ export const siteSettingsSchema = defineType({
       description:
         "Alternative to Hero Video URL. Direct upload (smaller files only — use Vimeo link above for high quality long videos).",
     }),
+    defineField({
+      name: "heroPoster",
+      title: "Hero Poster Image",
+      type: "image",
+      options: { hotspot: true },
+      description:
+        "Still frame shown (with a blur-up) while the hero video loads. Use a 16:9 frame from the video.",
+    }),
   ],
   preview: {
     select: { title: "title" },

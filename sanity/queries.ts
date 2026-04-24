@@ -42,6 +42,13 @@ export type LogoItem = {
   image?: { url: string | null };
 };
 
+export type HeroPoster = {
+  url: string | null;
+  lqip?: string | null;
+  width?: number | null;
+  height?: number | null;
+};
+
 export type SiteSettings = {
   title: string;
   words: string[];
@@ -49,6 +56,7 @@ export type SiteSettings = {
   logos: LogoItem[];
   heroVideoUrl?: string;
   heroVideoFileUrl?: string | null;
+  heroPoster?: HeroPoster | null;
 };
 
 export type AboutSection = {
@@ -88,7 +96,12 @@ export type Film = {
   caption?: string;
   videoUrl?: string;
   videoFileUrl?: string | null;
-  poster?: { url: string | null; lqip?: string | null };
+  poster?: {
+    url: string | null;
+    lqip?: string | null;
+    width?: number | null;
+    height?: number | null;
+  };
 };
 
 const PROJECTS_QUERY = /* groq */ `
@@ -108,6 +121,12 @@ const SETTINGS_QUERY = /* groq */ `
   *[_type == "siteSettings"][0]{
     title, words, intro, heroVideoUrl,
     "heroVideoFileUrl": heroVideoFile.asset->url,
+    "heroPoster": {
+      "url": heroPoster.asset->url,
+      "lqip": heroPoster.asset->metadata.lqip,
+      "width": heroPoster.asset->metadata.dimensions.width,
+      "height": heroPoster.asset->metadata.dimensions.height
+    },
     "logos": logos[]{ _key, name, url, height, "image": { "url": image.asset->url } }
   }`;
 
@@ -128,7 +147,9 @@ const FILMS_QUERY = /* groq */ `
     "videoFileUrl": videoFile.asset->url,
     "poster": {
       "url": poster.asset->url,
-      "lqip": poster.asset->metadata.lqip
+      "lqip": poster.asset->metadata.lqip,
+      "width": poster.asset->metadata.dimensions.width,
+      "height": poster.asset->metadata.dimensions.height
     }
   }`;
 
@@ -156,6 +177,7 @@ export async function getSiteSettings(): Promise<SiteSettings> {
       heroVideoUrl: s.heroVideoUrl || fallbackSettings.heroVideoUrl,
       heroVideoFileUrl:
         s.heroVideoFileUrl ?? fallbackSettings.heroVideoFileUrl ?? null,
+      heroPoster: s.heroPoster ?? fallbackSettings.heroPoster ?? null,
     };
   } catch {
     return fallbackSettings;

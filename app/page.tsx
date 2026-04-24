@@ -45,6 +45,7 @@ export default async function Home() {
         <HeroVideo
           url={settings.heroVideoUrl}
           fileUrl={settings.heroVideoFileUrl}
+          poster={settings.heroPoster}
         />
 
         <LogoMarquee logos={settings.logos} />

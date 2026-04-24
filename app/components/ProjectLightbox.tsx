@@ -54,13 +54,11 @@ export default function ProjectLightbox({
   const current = slides[i];
   const imageCount = project.images.length;
   const counter =
-    current.kind === "info"
-      ? "Info"
-      : `${current.index + 1} / ${imageCount}`;
+    current.kind === "info" ? "Info" : `${current.index + 1} / ${imageCount}`;
 
   return (
     <div
-      className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center"
+      className="fixed inset-0 z-50 bg-black/95 overflow-hidden"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
@@ -71,7 +69,7 @@ export default function ProjectLightbox({
           e.stopPropagation();
           onClose();
         }}
-        className="absolute top-5 right-6 text-white text-[14px] hover:underline"
+        className="absolute top-5 right-6 z-10 text-white text-[14px] hover:underline"
         aria-label="Close"
       >
         Close
@@ -85,7 +83,7 @@ export default function ProjectLightbox({
               e.stopPropagation();
               prev();
             }}
-            className="absolute left-4 top-1/2 -translate-y-1/2 text-white text-[28px] px-3 py-2 hover:opacity-70"
+            className="absolute left-4 top-1/2 -translate-y-1/2 z-10 text-white text-[28px] px-3 py-2 hover:opacity-70"
             aria-label="Previous"
           >
             ‹
@@ -96,7 +94,7 @@ export default function ProjectLightbox({
               e.stopPropagation();
               next();
             }}
-            className="absolute right-4 top-1/2 -translate-y-1/2 text-white text-[28px] px-3 py-2 hover:opacity-70"
+            className="absolute right-4 top-1/2 -translate-y-1/2 z-10 text-white text-[28px] px-3 py-2 hover:opacity-70"
             aria-label="Next"
           >
             ›
@@ -105,27 +103,25 @@ export default function ProjectLightbox({
       )}
 
       <div
-        className="w-full h-full flex items-center justify-center px-12 sm:px-20 py-16"
+        className="absolute inset-0 grid place-items-center px-12 sm:px-20 py-14"
         onClick={(e) => e.stopPropagation()}
       >
         {current.kind === "info" ? (
           <InfoSlide project={project} />
         ) : (
-          <figure className="max-w-[92vw] max-h-[82vh] flex flex-col items-center">
-            <div className="relative max-w-[92vw] max-h-[78vh]">
-              <Image
-                src={current.image.url ?? ""}
-                alt={current.image.alt || project.title}
-                width={current.image.width ?? 1600}
-                height={current.image.height ?? 1200}
-                sizes="92vw"
-                priority
-                placeholder={current.image.lqip ? "blur" : "empty"}
-                blurDataURL={current.image.lqip ?? undefined}
-                className="max-w-[92vw] max-h-[78vh] w-auto h-auto object-contain"
-              />
-            </div>
-          </figure>
+          <div className="relative w-full h-full flex items-center justify-center">
+            <Image
+              src={current.image.url ?? ""}
+              alt={current.image.alt || project.title}
+              width={current.image.width ?? 1600}
+              height={current.image.height ?? 1200}
+              sizes="90vw"
+              priority
+              placeholder={current.image.lqip ? "blur" : "empty"}
+              blurDataURL={current.image.lqip ?? undefined}
+              className="max-w-full max-h-full w-auto h-auto object-contain"
+            />
+          </div>
         )}
       </div>
 
@@ -138,7 +134,7 @@ export default function ProjectLightbox({
 }
 
 function InfoSlide({ project }: { project: Project }) {
-  const meta = [project.year, project.location, project.role]
+  const meta = [project.year, project.role, project.location]
     .filter(Boolean)
     .join(" · ");
 
@@ -147,15 +143,13 @@ function InfoSlide({ project }: { project: Project }) {
     : [];
 
   return (
-    <div className="text-white max-w-[760px] w-full max-h-[80vh] overflow-y-auto pr-2">
+    <div className="text-white max-w-[720px] w-full max-h-full overflow-y-auto text-center">
       <h2 className="text-[26px] sm:text-[32px] leading-[1.2]">
         {project.title}
       </h2>
-      {meta && (
-        <div className="mt-2 text-white/70 text-[14px]">{meta}</div>
-      )}
+      {meta && <div className="mt-2 text-white/70 text-[14px]">{meta}</div>}
 
-      <dl className="mt-5 space-y-1 text-[14px]">
+      <dl className="mt-5 space-y-1 text-[14px] inline-block text-left">
         {project.client && (
           <div className="flex gap-2">
             <dt className="text-white/60 shrink-0">As part of:</dt>
@@ -177,7 +171,7 @@ function InfoSlide({ project }: { project: Project }) {
       )}
 
       {paragraphs.length > 0 && (
-        <div className="mt-6 space-y-4 text-[14px] leading-[1.7] text-white/85">
+        <div className="mt-6 space-y-4 text-[14px] leading-[1.75] text-white/85 text-left">
           {paragraphs.map((p, idx) => (
             <p key={idx}>{p}</p>
           ))}

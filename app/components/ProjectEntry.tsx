@@ -26,8 +26,8 @@ export default function ProjectEntry({ project, onOpen }: Props) {
           )}
         </h3>
         <div className="text-[14px] text-muted space-y-[2px]">
-          {project.location && <div>{project.location}</div>}
           {project.role && <div>{project.role}</div>}
+          {project.location && <div>{project.location}</div>}
         </div>
         {project.summary && (
           <p className="text-[14px] leading-[1.55] max-w-[38ch] pt-2">

@@ -1,6 +1,10 @@
+import Image from "next/image";
+import type { HeroPoster } from "../../sanity/queries";
+
 type Props = {
   url?: string;
   fileUrl?: string | null;
+  poster?: HeroPoster | null;
 };
 
 function toEmbed(url?: string) {
@@ -16,13 +20,30 @@ function toEmbed(url?: string) {
   return null;
 }
 
-export default function HeroVideo({ url, fileUrl }: Props) {
+export default function HeroVideo({ url, fileUrl, poster }: Props) {
   const embed = toEmbed(url);
   const direct = fileUrl || (url && !embed ? url : null);
+  const posterUrl = poster?.url ?? null;
+  const bgColor = poster?.lqip ? undefined : "#efeae2";
 
   return (
     <section className="pb-12">
-      <div className="relative w-full aspect-video overflow-hidden bg-black">
+      <div
+        className="relative w-full aspect-video overflow-hidden"
+        style={{ backgroundColor: bgColor }}
+      >
+        {posterUrl && (
+          <Image
+            src={posterUrl}
+            alt=""
+            fill
+            sizes="100vw"
+            priority
+            placeholder={poster?.lqip ? "blur" : "empty"}
+            blurDataURL={poster?.lqip ?? undefined}
+            className="object-cover"
+          />
+        )}
         {embed ? (
           <iframe
             src={embed}
@@ -40,18 +61,16 @@ export default function HeroVideo({ url, fileUrl }: Props) {
             muted
             playsInline
             preload="metadata"
+            poster={posterUrl ?? undefined}
             className="absolute inset-0 w-full h-full object-cover"
           />
-        ) : (
-          <div
-            className="absolute inset-0 flex items-center justify-center"
-            style={{ backgroundColor: "#efeae2" }}
-          >
+        ) : !posterUrl ? (
+          <div className="absolute inset-0 flex items-center justify-center">
             <span className="text-[13px] text-muted">
               Add a hero video in Studio → Site Settings
             </span>
           </div>
-        )}
+        ) : null}
       </div>
     </section>
   );

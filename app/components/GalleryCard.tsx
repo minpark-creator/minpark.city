@@ -33,14 +33,14 @@ export default function GalleryCard({
         />
         <div
           aria-hidden
-          className="absolute inset-0 bg-white pointer-events-none transition-opacity duration-200"
+          className="absolute inset-0 bg-white pointer-events-none transition-opacity duration-500 ease-out"
           style={{ opacity: dimmed ? 0.72 : 0 }}
         />
       </button>
       <button
         type="button"
         onClick={onOpenInfo}
-        className="flex items-baseline justify-between gap-2 text-[14px] w-full text-left hover:opacity-70 transition-opacity"
+        className="flex items-baseline justify-between gap-2 text-[14px] w-full text-left hover:opacity-70 transition-opacity duration-500 ease-out"
       >
         <span className="font-medium truncate">{project.title}</span>
         {(project.year || project.date) && (

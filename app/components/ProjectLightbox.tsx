@@ -14,6 +14,9 @@ type Slide =
   | { kind: "info" }
   | { kind: "image"; image: ProjectImage; index: number };
 
+const BOX_WIDTH =
+  "min(calc(100vw - 8rem), calc((100vh - 8rem) * 4 / 3))";
+
 export default function ProjectLightbox({
   project,
   startIndex,
@@ -63,37 +66,29 @@ export default function ProjectLightbox({
       role="dialog"
       aria-modal="true"
     >
-      <div className="absolute inset-0 flex items-center justify-center px-16 sm:px-20 py-16">
-        <div
-          onClick={(e) => e.stopPropagation()}
-          className="flex items-center justify-center"
-          style={{
-            maxWidth: "calc(100vw - 8rem)",
-            maxHeight: "calc(100vh - 8rem)",
-            width: current.kind === "info" ? "100%" : "auto",
-            height: current.kind === "info" ? "100%" : "auto",
-          }}
-        >
+      <div className="absolute inset-0 flex items-center justify-center">
+        <div onClick={(e) => e.stopPropagation()}>
           {current.kind === "info" ? (
             <InfoSlide project={project} />
           ) : (
-            <Image
-              src={current.image.url ?? ""}
-              alt={current.image.alt || project.title}
-              width={current.image.width ?? 1600}
-              height={current.image.height ?? 1200}
-              sizes="90vw"
-              priority
-              placeholder={current.image.lqip ? "blur" : "empty"}
-              blurDataURL={current.image.lqip ?? undefined}
-              className="object-contain"
+            <div
+              className="relative"
               style={{
-                width: "auto",
-                height: "auto",
-                maxWidth: "calc(100vw - 8rem)",
-                maxHeight: "calc(100vh - 8rem)",
+                width: BOX_WIDTH,
+                aspectRatio: "4 / 3",
               }}
-            />
+            >
+              <Image
+                src={current.image.url ?? ""}
+                alt={current.image.alt || project.title}
+                fill
+                sizes="90vw"
+                priority
+                placeholder={current.image.lqip ? "blur" : "empty"}
+                blurDataURL={current.image.lqip ?? undefined}
+                style={{ objectFit: "contain" }}
+              />
+            </div>
           )}
         </div>
       </div>
@@ -156,8 +151,11 @@ function InfoSlide({ project }: { project: Project }) {
 
   return (
     <div
-      className="text-white w-full h-full overflow-y-auto flex flex-col items-center justify-start py-2"
-      style={{ maxWidth: "720px" }}
+      className="text-white overflow-y-auto"
+      style={{
+        width: "min(720px, calc(100vw - 8rem))",
+        maxHeight: "calc(100vh - 8rem)",
+      }}
     >
       <div className="w-full text-center">
         <h2 className="text-[26px] sm:text-[32px] leading-[1.2]">

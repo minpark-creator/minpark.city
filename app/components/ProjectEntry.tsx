@@ -15,13 +15,19 @@ export default function ProjectEntry({
   onOpenInfo,
   onOpenImage,
 }: Props) {
-  const placeholderCount = Math.max(0, 3 - project.images.length);
+  const [expanded, setExpanded] = useState(false);
+  const [hovered, setHovered] = useState<number | null>(null);
+
+  const hiddenCount = Math.max(0, project.images.length - 3);
+  const visibleImages = expanded
+    ? project.images
+    : project.images.slice(0, 3);
+
+  const placeholderCount = Math.max(0, 3 - visibleImages.length);
   const slots = [
-    ...project.images,
+    ...visibleImages,
     ...Array.from({ length: placeholderCount }).map(() => undefined),
   ];
-
-  const [hovered, setHovered] = useState<number | null>(null);
 
   return (
     <article className="grid grid-cols-12 gap-x-6 gap-y-6 py-10 sm:py-14 border-t border-neutral-200 first:border-t-0">
@@ -29,7 +35,7 @@ export default function ProjectEntry({
         <button
           type="button"
           onClick={onOpenInfo}
-          className="text-left w-full p-0 hover:opacity-70 transition-opacity"
+          className="text-left w-full p-0 hover:opacity-70 transition-opacity duration-500 ease-out"
           aria-label={`Open ${project.title} details`}
         >
           <h3 className="text-[17px] sm:text-[16px] font-medium leading-snug">
@@ -74,7 +80,7 @@ export default function ProjectEntry({
         className="col-span-12 md:col-span-9"
         onMouseLeave={() => setHovered(null)}
       >
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
+        <div className="grid grid-cols-3 gap-3 sm:gap-4">
           {slots.map((img, i) => {
             const clickable = !!img;
             const dimmed = hovered !== null && hovered !== i;
@@ -93,13 +99,27 @@ export default function ProjectEntry({
                 />
                 <div
                   aria-hidden
-                  className="absolute inset-0 bg-white pointer-events-none transition-opacity duration-200"
+                  className="absolute inset-0 bg-white pointer-events-none transition-opacity duration-500 ease-out"
                   style={{ opacity: dimmed ? 0.72 : 0 }}
                 />
               </button>
             );
           })}
         </div>
+
+        {hiddenCount > 0 && (
+          <div className="pt-4 text-[14px]">
+            <button
+              type="button"
+              onClick={() => setExpanded((x) => !x)}
+              className="text-muted underline-offset-2 hover:underline"
+            >
+              {expanded
+                ? "Show fewer"
+                : `Show all ${project.images.length} images`}
+            </button>
+          </div>
+        )}
       </div>
     </article>
   );

@@ -55,7 +55,7 @@ export default function JournalClient({
                     >
                       {entry.title}
                     </span>
-                    <span className="font-ui text-[12px] text-muted shrink-0">
+                    <span className="text-[12px] text-muted shrink-0">
                       {formatDate(entry.date)}
                     </span>
                   </div>
@@ -75,7 +75,7 @@ export default function JournalClient({
         {active && (
           <>
             <header className="mb-8 pb-6 border-b border-neutral-200">
-              <div className="font-ui text-[13px] text-muted">
+              <div className="text-[13px] text-muted">
                 {formatDate(active.date)}
               </div>
               <h2 className="mt-2 text-[22px] sm:text-[26px] lg:text-[28px] font-medium leading-tight">

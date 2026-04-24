@@ -20,7 +20,7 @@ export default async function ContactPage() {
         <dl className="col-span-12 md:col-span-10 md:col-start-2 text-[15px]">
           {contact.email && (
             <div className="flex gap-x-4 sm:gap-x-6 py-4 border-t border-neutral-200">
-              <dt className="w-[100px] sm:w-[140px] shrink-0 text-muted font-ui text-[13px] sm:text-[14px]">Email</dt>
+              <dt className="w-[100px] sm:w-[140px] shrink-0 text-muted text-[13px] sm:text-[14px]">Email</dt>
               <dd>
                 <a
                   href={`mailto:${contact.email}`}
@@ -33,7 +33,7 @@ export default async function ContactPage() {
           )}
           {contact.location && (
             <div className="flex gap-x-4 sm:gap-x-6 py-4 border-t border-neutral-200">
-              <dt className="w-[100px] sm:w-[140px] shrink-0 text-muted font-ui text-[13px] sm:text-[14px]">Location</dt>
+              <dt className="w-[100px] sm:w-[140px] shrink-0 text-muted text-[13px] sm:text-[14px]">Location</dt>
               <dd>{contact.location}</dd>
             </div>
           )}
@@ -42,7 +42,7 @@ export default async function ContactPage() {
               key={link.label + i}
               className="flex gap-x-6 py-4 border-t border-neutral-200"
             >
-              <dt className="w-[100px] sm:w-[140px] shrink-0 text-muted font-ui text-[13px] sm:text-[14px]">{link.label}</dt>
+              <dt className="w-[100px] sm:w-[140px] shrink-0 text-muted text-[13px] sm:text-[14px]">{link.label}</dt>
               <dd>
                 <a
                   href={link.url}

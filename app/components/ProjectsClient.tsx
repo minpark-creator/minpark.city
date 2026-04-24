@@ -20,7 +20,7 @@ export default function ProjectsClient({ selected, allByDate }: Props) {
     <>
       <nav
         aria-label="Section navigation"
-        className="font-ui flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2 py-5 border-t border-neutral-200 text-[16px] mt-8"
+        className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2 py-5 border-t border-neutral-200 text-[16px] mt-16 sm:mt-24"
       >
         <a href="#selected" className="hover:underline">
           Selected
@@ -47,7 +47,7 @@ export default function ProjectsClient({ selected, allByDate }: Props) {
       </section>
 
       <section id="all" className="scroll-mt-24 pt-24">
-        <div className="font-ui flex items-baseline justify-between py-4 border-t border-neutral-200">
+        <div className="flex items-baseline justify-between py-4 border-t border-neutral-200">
           <h2 className="text-[16px] font-medium">All projects — by date</h2>
           <span className="text-muted text-[14px]">
             {allByDate.length} projects

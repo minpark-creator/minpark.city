@@ -24,7 +24,7 @@ export default async function AboutPage() {
               className="grid grid-cols-12 gap-x-6 sm:gap-x-8 gap-y-4 pt-8 sm:pt-10 border-t border-neutral-200"
             >
               <div className="col-span-12 md:col-span-3">
-                <h2 className="font-ui text-[16px] font-medium">
+                <h2 className="text-[16px] font-medium">
                   {section.title}
                 </h2>
               </div>
@@ -34,7 +34,7 @@ export default async function AboutPage() {
                     key={j}
                     className="flex gap-x-4 sm:gap-x-6 py-2 border-b border-neutral-100 last:border-b-0"
                   >
-                    <dt className="w-[90px] sm:w-[120px] shrink-0 text-muted font-ui text-[13px] sm:text-[14px]">
+                    <dt className="w-[90px] sm:w-[120px] shrink-0 text-muted text-[13px] sm:text-[14px]">
                       {item.year}
                     </dt>
                     <dd>{item.text}</dd>

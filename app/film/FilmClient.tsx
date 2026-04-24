@@ -99,12 +99,12 @@ export default function FilmClient({ films }: { films: Film[] }) {
                     >
                       {film.title}
                     </span>
-                    <span className="font-ui text-[12px] text-muted shrink-0">
+                    <span className="text-[12px] text-muted shrink-0">
                       {formatDate(film.date)}
                     </span>
                   </div>
                   {film.location && (
-                    <div className="font-ui text-[13px] text-muted mt-1">
+                    <div className="text-[13px] text-muted mt-1">
                       {film.location}
                     </div>
                   )}

@@ -44,7 +44,7 @@ export default function LogoMarquee({ logos }: Props) {
   if (!logos || logos.length === 0) return null;
   const doubled = [...logos, ...logos];
   return (
-    <div className="relative overflow-hidden py-6 select-none">
+    <div className="relative overflow-hidden py-10 sm:py-12 select-none">
       <div
         className="flex items-center marquee-track"
         style={{ width: "max-content" }}

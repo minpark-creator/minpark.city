@@ -13,11 +13,11 @@ export default function Header() {
       <div className="flex items-center justify-between gap-4">
         <Link
           href="/"
-          className="font-ui text-[16px] font-medium hover:underline"
+          className="text-[16px] font-medium hover:underline"
         >
           minpark.city
         </Link>
-        <nav className="font-ui flex items-center gap-x-4 sm:gap-x-6 text-[15px]">
+        <nav className="flex items-center gap-x-4 sm:gap-x-6 text-[15px]">
           {nav.map((item) => (
             <Link key={item.href} href={item.href} className="hover:underline">
               {item.label}

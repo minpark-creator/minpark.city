@@ -58,18 +58,42 @@ export default function ProjectLightbox({
 
   return (
     <div
-      className="fixed inset-0 z-50 bg-black/95 overflow-hidden"
+      className="fixed inset-0 z-50 bg-black/95 overflow-y-auto"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
     >
+      <div className="min-h-screen flex items-center justify-center px-12 sm:px-20 py-20">
+        <div
+          onClick={(e) => e.stopPropagation()}
+          className="w-full flex items-center justify-center"
+        >
+          {current.kind === "info" ? (
+            <InfoSlide project={project} />
+          ) : (
+            <Image
+              src={current.image.url ?? ""}
+              alt={current.image.alt || project.title}
+              width={current.image.width ?? 1600}
+              height={current.image.height ?? 1200}
+              sizes="90vw"
+              priority
+              placeholder={current.image.lqip ? "blur" : "empty"}
+              blurDataURL={current.image.lqip ?? undefined}
+              className="w-auto h-auto object-contain max-w-full"
+              style={{ maxHeight: "calc(100vh - 10rem)" }}
+            />
+          )}
+        </div>
+      </div>
+
       <button
         type="button"
         onClick={(e) => {
           e.stopPropagation();
           onClose();
         }}
-        className="absolute top-5 right-6 z-10 text-white text-[14px] hover:underline"
+        className="fixed top-5 right-6 z-10 text-white text-[14px] hover:underline"
         aria-label="Close"
       >
         Close
@@ -83,7 +107,7 @@ export default function ProjectLightbox({
               e.stopPropagation();
               prev();
             }}
-            className="absolute left-4 top-1/2 -translate-y-1/2 z-10 text-white text-[28px] px-3 py-2 hover:opacity-70"
+            className="fixed left-4 top-1/2 -translate-y-1/2 z-10 text-white text-[28px] px-3 py-2 hover:opacity-70"
             aria-label="Previous"
           >
             ‹
@@ -94,7 +118,7 @@ export default function ProjectLightbox({
               e.stopPropagation();
               next();
             }}
-            className="absolute right-4 top-1/2 -translate-y-1/2 z-10 text-white text-[28px] px-3 py-2 hover:opacity-70"
+            className="fixed right-4 top-1/2 -translate-y-1/2 z-10 text-white text-[28px] px-3 py-2 hover:opacity-70"
             aria-label="Next"
           >
             ›
@@ -102,30 +126,7 @@ export default function ProjectLightbox({
         </>
       )}
 
-      <div
-        className="absolute inset-0 grid place-items-center px-12 sm:px-20 py-14"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {current.kind === "info" ? (
-          <InfoSlide project={project} />
-        ) : (
-          <div className="relative w-full h-full flex items-center justify-center">
-            <Image
-              src={current.image.url ?? ""}
-              alt={current.image.alt || project.title}
-              width={current.image.width ?? 1600}
-              height={current.image.height ?? 1200}
-              sizes="90vw"
-              priority
-              placeholder={current.image.lqip ? "blur" : "empty"}
-              blurDataURL={current.image.lqip ?? undefined}
-              className="max-w-full max-h-full w-auto h-auto object-contain"
-            />
-          </div>
-        )}
-      </div>
-
-      <div className="absolute bottom-5 left-6 right-6 flex items-baseline justify-between gap-6 text-white/80 text-[13px] pointer-events-none">
+      <div className="fixed bottom-5 left-6 right-6 flex items-baseline justify-between gap-6 text-white/80 text-[13px] pointer-events-none">
         <span>{project.title}</span>
         <span>{counter}</span>
       </div>
@@ -143,26 +144,28 @@ function InfoSlide({ project }: { project: Project }) {
     : [];
 
   return (
-    <div className="text-white max-w-[720px] w-full max-h-full overflow-y-auto text-center">
+    <div className="text-white max-w-[720px] w-full text-center">
       <h2 className="text-[26px] sm:text-[32px] leading-[1.2]">
         {project.title}
       </h2>
       {meta && <div className="mt-2 text-white/70 text-[14px]">{meta}</div>}
 
-      <dl className="mt-5 space-y-1 text-[14px] inline-block text-left">
-        {project.client && (
-          <div className="flex gap-2">
-            <dt className="text-white/60 shrink-0">As part of:</dt>
-            <dd>{project.client}</dd>
-          </div>
-        )}
-        {project.partners && (
-          <div className="flex gap-2">
-            <dt className="text-white/60 shrink-0">In partnership with:</dt>
-            <dd>{project.partners}</dd>
-          </div>
-        )}
-      </dl>
+      {(project.client || project.partners) && (
+        <dl className="mt-5 space-y-1 text-[14px] inline-block text-left">
+          {project.client && (
+            <div className="flex gap-2">
+              <dt className="text-white/60 shrink-0">As part of:</dt>
+              <dd>{project.client}</dd>
+            </div>
+          )}
+          {project.partners && (
+            <div className="flex gap-2">
+              <dt className="text-white/60 shrink-0">In partnership with:</dt>
+              <dd>{project.partners}</dd>
+            </div>
+          )}
+        </dl>
+      )}
 
       {project.summary && (
         <p className="mt-6 text-[16px] leading-[1.55] text-white/90">

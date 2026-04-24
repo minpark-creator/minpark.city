@@ -157,7 +157,7 @@ function InfoSlide({ project }: { project: Project }) {
         maxHeight: "calc(100vh - 8rem)",
       }}
     >
-      <div className="w-full text-center">
+      <div className="w-full text-left">
         <h2 className="text-[26px] sm:text-[32px] leading-[1.2]">
           {project.title}
         </h2>

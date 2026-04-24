@@ -23,11 +23,7 @@ export default function ProjectEntry({
     ? project.images
     : project.images.slice(0, 3);
 
-  const placeholderCount = Math.max(0, 3 - visibleImages.length);
-  const slots = [
-    ...visibleImages,
-    ...Array.from({ length: placeholderCount }).map(() => undefined),
-  ];
+  const slots = visibleImages;
 
   return (
     <article className="grid grid-cols-12 gap-x-6 gap-y-6 py-10 sm:py-14 border-t border-neutral-200 first:border-t-0">
@@ -48,8 +44,8 @@ export default function ProjectEntry({
             )}
           </h3>
           <div className="text-[14px] text-muted space-y-[2px] mt-3">
-            {project.role && <div>{project.role}</div>}
             {project.location && <div>{project.location}</div>}
+            {project.role && <div>{project.role}</div>}
           </div>
           {project.summary && (
             <p className="text-[14px] leading-[1.55] max-w-[38ch] pt-2 text-foreground">
@@ -82,15 +78,13 @@ export default function ProjectEntry({
       >
         <div className="grid grid-cols-3 gap-3 sm:gap-4">
           {slots.map((img, i) => {
-            const clickable = !!img;
             const dimmed = hovered !== null && hovered !== i;
             return (
               <button
                 type="button"
                 key={i}
-                disabled={!clickable}
-                onMouseEnter={() => clickable && setHovered(i)}
-                onClick={() => clickable && onOpenImage(i)}
+                onMouseEnter={() => setHovered(i)}
+                onClick={() => onOpenImage(i)}
                 className="relative aspect-[4/5] overflow-hidden block w-full p-0"
               >
                 <ProjectThumb

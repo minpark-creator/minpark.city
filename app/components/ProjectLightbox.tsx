@@ -14,9 +14,6 @@ type Slide =
   | { kind: "info" }
   | { kind: "image"; image: ProjectImage; index: number };
 
-const BOX_WIDTH =
-  "min(calc(100vw - 8rem), calc((100vh - 8rem) * 4 / 3))";
-
 export default function ProjectLightbox({
   project,
   startIndex,
@@ -71,24 +68,32 @@ export default function ProjectLightbox({
           {current.kind === "info" ? (
             <InfoSlide project={project} />
           ) : (
-            <div
-              className="relative"
-              style={{
-                width: BOX_WIDTH,
-                aspectRatio: "4 / 3",
-              }}
-            >
-              <Image
-                src={current.image.url ?? ""}
-                alt={current.image.alt || project.title}
-                fill
-                sizes="90vw"
-                priority
-                placeholder={current.image.lqip ? "blur" : "empty"}
-                blurDataURL={current.image.lqip ?? undefined}
-                style={{ objectFit: "contain" }}
-              />
-            </div>
+            (() => {
+              const w = current.image.width ?? 4;
+              const h = current.image.height ?? 3;
+              const aspect = w / h;
+              return (
+                <div
+                  className="relative"
+                  style={{
+                    height: "72vh",
+                    aspectRatio: `${aspect}`,
+                    maxWidth: "calc(100vw - 8rem)",
+                  }}
+                >
+                  <Image
+                    src={current.image.url ?? ""}
+                    alt={current.image.alt || project.title}
+                    fill
+                    sizes="90vw"
+                    priority
+                    placeholder={current.image.lqip ? "blur" : "empty"}
+                    blurDataURL={current.image.lqip ?? undefined}
+                    style={{ objectFit: "contain" }}
+                  />
+                </div>
+              );
+            })()
           )}
         </div>
       </div>
@@ -187,7 +192,7 @@ function InfoSlide({ project }: { project: Project }) {
         )}
 
         {paragraphs.length > 0 && (
-          <div className="mt-6 space-y-4 text-[14px] leading-[1.75] text-white/85 text-left">
+          <div className="mt-12 space-y-4 text-[14px] leading-[1.75] text-white/85 text-left">
             {paragraphs.map((p, idx) => (
               <p key={idx}>{p}</p>
             ))}

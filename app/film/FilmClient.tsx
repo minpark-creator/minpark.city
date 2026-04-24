@@ -45,6 +45,10 @@ function FilmPlayer({ film }: { film: Film }) {
   const embed = toEmbed(film.videoUrl);
   const directUrl = film.videoFileUrl || (film.videoUrl && !embed ? film.videoUrl : null);
   const bgColor = film.poster?.url ? undefined : "#efeae2";
+  const [ready, setReady] = useState(false);
+
+  // Reset readiness when the active film changes
+  const filmKey = film._id;
 
   if (embed) {
     return (
@@ -54,9 +58,12 @@ function FilmPlayer({ film }: { film: Film }) {
       >
         <PosterLayer film={film} />
         <iframe
+          key={filmKey}
           src={embed}
           loading="lazy"
-          className="absolute inset-0 w-full h-full pointer-events-none"
+          onLoad={() => setReady(true)}
+          className="absolute inset-0 w-full h-full pointer-events-none transition-opacity duration-700 ease-out"
+          style={{ opacity: ready ? 1 : 0 }}
           allow="autoplay; fullscreen; picture-in-picture"
           allowFullScreen
           title={film.title}
@@ -73,6 +80,7 @@ function FilmPlayer({ film }: { film: Film }) {
       >
         <PosterLayer film={film} />
         <video
+          key={filmKey}
           src={directUrl}
           poster={film.poster?.url ?? undefined}
           autoPlay
@@ -80,7 +88,10 @@ function FilmPlayer({ film }: { film: Film }) {
           muted
           playsInline
           preload="metadata"
-          className="absolute inset-0 w-full h-full object-cover"
+          onLoadedData={() => setReady(true)}
+          onCanPlay={() => setReady(true)}
+          className="absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ease-out"
+          style={{ opacity: ready ? 1 : 0 }}
         />
       </div>
     );
@@ -101,7 +112,7 @@ export default function FilmClient({ films }: { films: Film[] }) {
     <>
       {active && (
         <section className="pt-6 pb-12">
-          <FilmPlayer film={active} />
+          <FilmPlayer key={active._id} film={active} />
           <div className="pt-4 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 text-[14px]">
             <span className="font-medium">{active.title}</span>
             <span className="text-muted">{formatDate(active.date)}</span>

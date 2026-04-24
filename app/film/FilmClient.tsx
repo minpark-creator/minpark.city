@@ -17,9 +17,11 @@ function formatDate(iso?: string) {
 function toEmbed(url?: string) {
   if (!url) return null;
   const vimeo = url.match(/vimeo\.com\/(?:video\/)?(\d+)/);
-  if (vimeo) return `https://player.vimeo.com/video/${vimeo[1]}?autoplay=0&muted=1&title=0&byline=0&portrait=0`;
+  if (vimeo)
+    return `https://player.vimeo.com/video/${vimeo[1]}?autoplay=1&loop=1&muted=1&background=1&title=0&byline=0&portrait=0`;
   const yt = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([\w-]{11})/);
-  if (yt) return `https://www.youtube.com/embed/${yt[1]}?mute=1`;
+  if (yt)
+    return `https://www.youtube.com/embed/${yt[1]}?autoplay=1&mute=1&loop=1&playlist=${yt[1]}&controls=0&modestbranding=1&playsinline=1`;
   return null;
 }
 
@@ -54,7 +56,7 @@ function FilmPlayer({ film }: { film: Film }) {
         <iframe
           src={embed}
           loading="lazy"
-          className="absolute inset-0 w-full h-full"
+          className="absolute inset-0 w-full h-full pointer-events-none"
           allow="autoplay; fullscreen; picture-in-picture"
           allowFullScreen
           title={film.title}
@@ -73,7 +75,8 @@ function FilmPlayer({ film }: { film: Film }) {
         <video
           src={directUrl}
           poster={film.poster?.url ?? undefined}
-          controls
+          autoPlay
+          loop
           muted
           playsInline
           preload="metadata"

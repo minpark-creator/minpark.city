@@ -26,6 +26,7 @@ export const fallbackSettings: SiteSettings = {
 export const fallbackAbout: AboutPage = {
   headline: "Info",
   bio: [],
+  portrait: null,
   bioText:
     "Min Park is an urban strategist and planner working at the intersection of planning, research, and spatial vision. His practice translates urban challenges into clear spatial visions, policy insights, and long-term planning frameworks. He is always interested in new partnerships, challenging projects, and conversations about the future of urban development.",
   sections: [

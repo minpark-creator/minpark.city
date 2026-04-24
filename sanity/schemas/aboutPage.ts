@@ -19,6 +19,14 @@ export const aboutPageSchema = defineType({
       description: "Main biography text.",
     }),
     defineField({
+      name: "portrait",
+      title: "Portrait",
+      type: "image",
+      options: { hotspot: true },
+      fields: [{ name: "alt", type: "string", title: "Alt text" }],
+      description: "Photo of you, shown alongside the bio.",
+    }),
+    defineField({
       name: "sections",
       title: "Sections",
       type: "array",

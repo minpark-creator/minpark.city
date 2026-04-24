@@ -1,3 +1,4 @@
+import Image from "next/image";
 import PageShell from "../components/PageShell";
 import { getAboutPage } from "../../sanity/queries";
 
@@ -7,14 +8,46 @@ export const metadata = { title: "About — minpark" };
 
 export default async function AboutPage() {
   const about = await getAboutPage();
+  const portrait = about.portrait;
+
+  const paragraphs = about.bioText
+    ? about.bioText.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean)
+    : [];
 
   return (
     <PageShell>
       <div className="grid grid-cols-12 gap-x-6 sm:gap-x-8 gap-y-10 sm:gap-y-12 pt-8 sm:pt-14">
-        <div className="col-span-12 md:col-span-8 md:col-start-2">
-          <p className="text-[16px] sm:text-[17px] leading-[1.7] max-w-[58ch]">
-            {about.bioText}
-          </p>
+        {portrait?.url && (
+          <div className="col-span-12 md:col-span-4 md:col-start-2">
+            <div className="relative w-full aspect-[3/4] overflow-hidden">
+              <Image
+                src={portrait.url}
+                alt={portrait.alt || "Portrait of Min Park"}
+                fill
+                sizes="(max-width: 768px) 100vw, 320px"
+                placeholder={portrait.lqip ? "blur" : "empty"}
+                blurDataURL={portrait.lqip ?? undefined}
+                className="object-cover"
+                priority
+              />
+            </div>
+          </div>
+        )}
+
+        <div
+          className={`col-span-12 ${
+            portrait?.url
+              ? "md:col-span-6"
+              : "md:col-span-8 md:col-start-2"
+          }`}
+        >
+          <div className="space-y-5 text-[16px] sm:text-[17px] leading-[1.7] max-w-[58ch]">
+            {paragraphs.length > 0 ? (
+              paragraphs.map((p, i) => <p key={i}>{p}</p>)
+            ) : (
+              <p>{about.bioText}</p>
+            )}
+          </div>
         </div>
 
         <div className="col-span-12 md:col-span-10 md:col-start-2 space-y-10 sm:space-y-14">

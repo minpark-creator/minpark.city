@@ -68,6 +68,13 @@ export type AboutPage = {
   headline: string;
   bio: unknown[];
   bioText?: string;
+  portrait?: {
+    url: string | null;
+    alt?: string;
+    lqip?: string | null;
+    width?: number | null;
+    height?: number | null;
+  } | null;
   sections: AboutSection[];
 };
 
@@ -185,7 +192,15 @@ const SETTINGS_QUERY = /* groq */ `
   }`;
 
 const ABOUT_QUERY = /* groq */ `
-  *[_type == "aboutPage"][0]{ headline, bio, sections }`;
+  *[_type == "aboutPage"][0]{
+    headline, bio, sections,
+    "portrait": portrait{
+      alt, asset, hotspot, crop,
+      "lqip": asset->metadata.lqip,
+      "width": asset->metadata.dimensions.width,
+      "height": asset->metadata.dimensions.height
+    }
+  }`;
 
 const CONTACT_QUERY = /* groq */ `
   *[_type == "contactPage"][0]{ headline, intro, email, location, links }`;
@@ -250,11 +265,25 @@ export async function getSiteSettings(): Promise<SiteSettings> {
   }
 }
 
+type RawAbout = Omit<AboutPage, "portrait"> & {
+  portrait?: (RawPoster & { alt?: string }) | null;
+};
+
 export async function getAboutPage(): Promise<AboutPage> {
   if (!client) return fallbackAbout;
   try {
-    const a = await client.fetch<AboutPage | null>(ABOUT_QUERY);
-    return a ?? fallbackAbout;
+    const a = await client.fetch<RawAbout | null>(ABOUT_QUERY);
+    if (!a) return fallbackAbout;
+    const bioText = a.bioText ?? portableTextToPlain(a.bio);
+    const portraitBuilt = toPoster(a.portrait);
+    const portrait = portraitBuilt
+      ? { ...portraitBuilt, alt: a.portrait?.alt }
+      : fallbackAbout.portrait ?? null;
+    return {
+      ...a,
+      bioText: bioText || fallbackAbout.bioText,
+      portrait,
+    };
   } catch {
     return fallbackAbout;
   }

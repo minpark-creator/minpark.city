@@ -36,7 +36,7 @@ export default async function Home() {
               prefix={prefix}
               words={settings.words ?? []}
             />
-            <p className="mt-6 sm:mt-8 text-[17px] sm:text-[19px] lg:text-[21px] leading-[1.5]">
+            <p className="mt-6 sm:mt-8 text-[17px] sm:text-[19px] lg:text-[21px] leading-[1.5] whitespace-pre-line">
               {settings.intro}
             </p>
           </div>

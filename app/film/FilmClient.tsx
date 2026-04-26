@@ -45,10 +45,10 @@ function LoadingIndicator({ visible }: { visible: boolean }) {
   return (
     <div
       aria-hidden
-      className="absolute inset-0 flex items-center justify-center pointer-events-none transition-opacity duration-500 ease-out"
+      className="absolute inset-0 flex items-center justify-center pointer-events-none transition-opacity duration-500 ease-out bg-white"
       style={{ opacity: visible ? 1 : 0 }}
     >
-      <span className="block w-7 h-7 rounded-full border-2 border-white/40 border-t-white/90 animate-spin" />
+      <span className="block w-7 h-7 rounded-full border-2 border-neutral-300 border-t-neutral-500 animate-spin" />
     </div>
   );
 }
@@ -61,7 +61,7 @@ function FilmPlayer({ film }: { film: Film }) {
 
   if (embed) {
     return (
-      <div className="relative w-full aspect-video overflow-hidden bg-black">
+      <div className="relative w-full aspect-video overflow-hidden bg-white">
         <PosterLayer film={film} />
         <LoadingIndicator visible={!ready} />
         <iframe
@@ -81,7 +81,7 @@ function FilmPlayer({ film }: { film: Film }) {
 
   if (directUrl) {
     return (
-      <div className="relative w-full aspect-video overflow-hidden bg-black">
+      <div className="relative w-full aspect-video overflow-hidden bg-white">
         <PosterLayer film={film} />
         <LoadingIndicator visible={!ready} />
         <video
@@ -103,7 +103,7 @@ function FilmPlayer({ film }: { film: Film }) {
   }
 
   return (
-    <div className="relative w-full aspect-video overflow-hidden bg-black">
+    <div className="relative w-full aspect-video overflow-hidden bg-white">
       <PosterLayer film={film} />
     </div>
   );

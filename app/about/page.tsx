@@ -20,14 +20,38 @@ export default async function AboutPage() {
   return (
     <PageShell>
       {/*
-        Desktop: two columns — left holds bio + sections + contact (eye flows down),
-                 right holds the portrait pinned to the top of row 1.
-        Mobile: single column in source order — bio → portrait → contact,
-                so the photo lands just before contact.
+        Desktop: portrait pinned to the LEFT column, bio + sections + contact
+                 in the RIGHT column directly next to the photo (less separated).
+        Mobile: portrait first, then bio + sections, then contact.
       */}
       <div className="grid grid-cols-12 gap-x-6 sm:gap-x-10 gap-y-10 pt-8 sm:pt-14">
-        {/* Bio + sections (left column on desktop, first on mobile) */}
-        <div className="col-span-12 md:col-span-7 md:col-start-1 md:row-start-1">
+        {/* Portrait (left column on desktop, first on mobile) */}
+        {portrait?.url && (
+          <div className="col-span-12 md:col-span-4 md:col-start-1 md:row-start-1">
+            <div className="relative w-full aspect-[3/4] overflow-hidden">
+              <Image
+                src={portrait.url}
+                alt={portrait.alt || "Portrait of Min Park"}
+                fill
+                sizes="(max-width: 768px) 100vw, 360px"
+                quality={92}
+                placeholder={portrait.lqip ? "blur" : "empty"}
+                blurDataURL={portrait.lqip ?? undefined}
+                className="object-cover"
+                priority
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Bio + sections (right column on desktop, between portrait and contact on mobile) */}
+        <div
+          className={`col-span-12 ${
+            portrait?.url
+              ? "md:col-span-7 md:col-start-6 md:row-start-1"
+              : "md:col-span-9 md:col-start-1"
+          }`}
+        >
           <div className="space-y-5 text-[16px] sm:text-[17px] leading-[1.7] max-w-[58ch]">
             {paragraphs.length > 0 ? (
               paragraphs.map((p, i) => <p key={i}>{p}</p>)
@@ -62,29 +86,15 @@ export default async function AboutPage() {
           )}
         </div>
 
-        {/* Portrait (right column on desktop, between bio and contact on mobile) */}
-        {portrait?.url && (
-          <div className="col-span-12 md:col-span-4 md:col-start-9 md:row-start-1">
-            <div className="relative w-full aspect-[3/4] overflow-hidden">
-              <Image
-                src={portrait.url}
-                alt={portrait.alt || "Portrait of Min Park"}
-                fill
-                sizes="(max-width: 768px) 100vw, 360px"
-                placeholder={portrait.lqip ? "blur" : "empty"}
-                blurDataURL={portrait.lqip ?? undefined}
-                className="object-cover"
-                priority
-              />
-            </div>
-          </div>
-        )}
-
-        {/* Contact (under bio on desktop, after portrait on mobile) */}
+        {/* Contact (right column under bio on desktop, last on mobile) */}
         {hasContact && (
           <section
             id="contact"
-            className="col-span-12 md:col-span-7 md:col-start-1 md:row-start-2 pt-10 sm:pt-16"
+            className={`col-span-12 ${
+              portrait?.url
+                ? "md:col-span-7 md:col-start-6 md:row-start-2"
+                : "md:col-span-9 md:col-start-1 md:row-start-2"
+            } pt-10 sm:pt-16`}
           >
             <h2 className="text-[16px] font-medium mb-6">Contact</h2>
             {about.contactIntro && (

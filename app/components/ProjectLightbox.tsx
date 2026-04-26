@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Project, ProjectImage } from "../../sanity/queries";
 
 type Props = {
@@ -68,32 +68,11 @@ export default function ProjectLightbox({
           {current.kind === "info" ? (
             <InfoSlide project={project} />
           ) : (
-            (() => {
-              const w = current.image.width ?? 4;
-              const h = current.image.height ?? 3;
-              const aspect = w / h;
-              return (
-                <div
-                  className="relative"
-                  style={{
-                    height: "72vh",
-                    aspectRatio: `${aspect}`,
-                    maxWidth: "calc(100vw - 8rem)",
-                  }}
-                >
-                  <Image
-                    src={current.image.url ?? ""}
-                    alt={current.image.alt || project.title}
-                    fill
-                    sizes="90vw"
-                    priority
-                    placeholder={current.image.lqip ? "blur" : "empty"}
-                    blurDataURL={current.image.lqip ?? undefined}
-                    style={{ objectFit: "contain" }}
-                  />
-                </div>
-              );
-            })()
+            <SlideImage
+              key={current.image.url ?? current.index}
+              image={current.image}
+              alt={current.image.alt || project.title}
+            />
           )}
         </div>
       </div>
@@ -141,6 +120,63 @@ export default function ProjectLightbox({
         <span>{project.title}</span>
         <span>{counter}</span>
       </div>
+    </div>
+  );
+}
+
+function SlideImage({
+  image,
+  alt,
+}: {
+  image: ProjectImage;
+  alt: string;
+}) {
+  const w = image.width ?? 4;
+  const h = image.height ?? 3;
+  const aspect = w / h;
+  // `loaded` flips on the Image's onLoad event. We start at 0 opacity and
+  // ease to 1 — this is a fade-in (sometimes called a cross-dissolve when
+  // the previous slide stays under the new one). React's `key` on this
+  // component remounts SlideImage per slide, so each navigation triggers
+  // a fresh fade.
+  const [loaded, setLoaded] = useState(false);
+  // First paint guard so the transition actually animates from 0 → 1
+  // instead of the browser skipping the initial frame.
+  const mounted = useRef(false);
+  useEffect(() => {
+    mounted.current = true;
+  }, []);
+
+  return (
+    <div
+      className="relative"
+      style={{
+        height: "72vh",
+        aspectRatio: `${aspect}`,
+        maxWidth: "calc(100vw - 8rem)",
+      }}
+    >
+      {/* Spinner shown while the image is loading */}
+      <div
+        aria-hidden
+        className="absolute inset-0 flex items-center justify-center pointer-events-none transition-opacity duration-300 ease-out"
+        style={{ opacity: loaded ? 0 : 1 }}
+      >
+        <span className="block w-7 h-7 rounded-full border-2 border-white/30 border-t-white/90 animate-spin" />
+      </div>
+      <Image
+        src={image.url ?? ""}
+        alt={alt}
+        fill
+        sizes="90vw"
+        quality={95}
+        priority
+        placeholder={image.lqip ? "blur" : "empty"}
+        blurDataURL={image.lqip ?? undefined}
+        onLoad={() => setLoaded(true)}
+        className="transition-opacity duration-700 ease-out"
+        style={{ objectFit: "contain", opacity: loaded ? 1 : 0 }}
+      />
     </div>
   );
 }

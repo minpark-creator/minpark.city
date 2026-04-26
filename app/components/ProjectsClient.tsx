@@ -25,7 +25,13 @@ export default function ProjectsClient({ selected, more }: Props) {
 
   return (
     <>
-      <section className="pt-12 sm:pt-20">
+      <section className="pt-12 sm:pt-16">
+        <div className="flex items-baseline justify-between py-4">
+          <h2 className="text-[16px] font-medium">Selected projects</h2>
+          <span className="text-muted text-[14px]">
+            {selected.length} projects
+          </span>
+        </div>
         {selected.length === 0 ? (
           <p className="py-10 text-center text-muted text-[14px]">
             No selected projects yet.

@@ -1,4 +1,7 @@
+"use client";
+
 import Image from "next/image";
+import { useState } from "react";
 import type { HeroPoster } from "../../sanity/queries";
 
 type Props = {
@@ -20,18 +23,27 @@ function toEmbed(url?: string) {
   return null;
 }
 
+function LoadingFrame({ visible }: { visible: boolean }) {
+  return (
+    <div
+      aria-hidden
+      className="absolute inset-0 flex items-center justify-center pointer-events-none transition-opacity duration-500 ease-out bg-white"
+      style={{ opacity: visible ? 1 : 0 }}
+    >
+      <span className="block w-7 h-7 rounded-full border-2 border-neutral-300 border-t-neutral-500 animate-spin" />
+    </div>
+  );
+}
+
 export default function HeroVideo({ url, fileUrl, poster }: Props) {
   const embed = toEmbed(url);
   const direct = fileUrl || (url && !embed ? url : null);
   const posterUrl = poster?.url ?? null;
-  const bgColor = poster?.lqip ? undefined : "#efeae2";
+  const [ready, setReady] = useState(false);
 
   return (
     <section className="pb-12">
-      <div
-        className="relative w-full aspect-video overflow-hidden"
-        style={{ backgroundColor: bgColor }}
-      >
+      <div className="relative w-full aspect-video overflow-hidden bg-white">
         {posterUrl && (
           <Image
             src={posterUrl}
@@ -44,11 +56,14 @@ export default function HeroVideo({ url, fileUrl, poster }: Props) {
             className="object-cover"
           />
         )}
+        <LoadingFrame visible={!ready && !!(embed || direct)} />
         {embed ? (
           <iframe
             src={embed}
             loading="lazy"
-            className="absolute inset-0 w-full h-full pointer-events-none"
+            onLoad={() => setReady(true)}
+            className="absolute inset-0 w-full h-full pointer-events-none transition-opacity duration-700 ease-out"
+            style={{ opacity: ready ? 1 : 0 }}
             allow="autoplay; fullscreen; picture-in-picture"
             allowFullScreen
             title="Hero video"
@@ -62,7 +77,10 @@ export default function HeroVideo({ url, fileUrl, poster }: Props) {
             playsInline
             preload="metadata"
             poster={posterUrl ?? undefined}
-            className="absolute inset-0 w-full h-full object-cover"
+            onLoadedData={() => setReady(true)}
+            onCanPlay={() => setReady(true)}
+            className="absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ease-out"
+            style={{ opacity: ready ? 1 : 0 }}
           />
         ) : !posterUrl ? (
           <div className="absolute inset-0 flex items-center justify-center">

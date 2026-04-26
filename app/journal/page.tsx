@@ -4,7 +4,7 @@ import JournalClient from "./JournalClient";
 
 export const revalidate = 60;
 
-export const metadata = { title: "Journal — minpark" };
+export const metadata = { title: "Essays — minpark" };
 
 export default async function JournalPage() {
   const entries = await getJournalEntries();

@@ -6,8 +6,8 @@ import { usePathname } from "next/navigation";
 const nav = [
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
-  { label: "Journal", href: "/journal" },
-  { label: "Film", href: "/film" },
+  { label: "Essays", href: "/journal" },
+  { label: "Public Life Observations", href: "/film" },
 ];
 
 export default function Header() {

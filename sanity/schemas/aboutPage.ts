@@ -27,6 +27,37 @@ export const aboutPageSchema = defineType({
       description: "Photo of you, shown alongside the bio.",
     }),
     defineField({
+      name: "contactIntro",
+      title: "Contact intro",
+      type: "text",
+      rows: 3,
+      description: "Short paragraph above the contact email.",
+    }),
+    defineField({
+      name: "email",
+      title: "Contact email",
+      type: "string",
+    }),
+    defineField({
+      name: "location",
+      title: "Location",
+      type: "string",
+    }),
+    defineField({
+      name: "links",
+      title: "Contact links",
+      type: "array",
+      of: [
+        {
+          type: "object",
+          fields: [
+            { name: "label", type: "string", title: "Label" },
+            { name: "url", type: "url", title: "URL" },
+          ],
+        },
+      ],
+    }),
+    defineField({
       name: "sections",
       title: "Sections",
       type: "array",

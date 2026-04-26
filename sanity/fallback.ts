@@ -1,6 +1,5 @@
 import type {
   AboutPage,
-  ContactPage,
   JournalEntry,
   Film,
   Project,
@@ -29,6 +28,15 @@ export const fallbackAbout: AboutPage = {
   portrait: null,
   bioText:
     "Min Park is an urban strategist and planner working at the intersection of planning, research, and spatial vision. His practice translates urban challenges into clear spatial visions, policy insights, and long-term planning frameworks. He is always interested in new partnerships, challenging projects, and conversations about the future of urban development.",
+  contactIntro:
+    "I am always interested in new partnerships, challenging projects, and conversations about the future of urban development. Please get in touch.",
+  email: "contact.minpark@gmail.com",
+  location: "",
+  links: [
+    { label: "Instagram", url: "https://www.instagram.com/iamminggoo/" },
+    { label: "LinkedIn", url: "https://www.linkedin.com/in/minpark-urban-strategy" },
+    { label: "Threads", url: "https://www.threads.com/@iamminggoo" },
+  ],
   sections: [
     {
       title: "Expertise",
@@ -50,25 +58,6 @@ export const fallbackAbout: AboutPage = {
         { year: "2025", text: "Europe-Korea Conference" },
       ],
     },
-    {
-      title: "Contact",
-      items: [
-        { year: "—", text: "For commissions and inquiries: contact.minpark@gmail.com" },
-      ],
-    },
-  ],
-};
-
-export const fallbackContact: ContactPage = {
-  headline: "Contact",
-  intro:
-    "I am always interested in new partnerships, challenging projects, and conversations about the future of urban development. Please get in touch.",
-  email: "contact.minpark@gmail.com",
-  location: "",
-  links: [
-    { label: "Instagram", url: "https://www.instagram.com/iamminggoo/" },
-    { label: "LinkedIn", url: "https://www.linkedin.com/in/minpark-urban-strategy" },
-    { label: "Threads", url: "https://www.threads.com/@iamminggoo" },
   ],
 };
 

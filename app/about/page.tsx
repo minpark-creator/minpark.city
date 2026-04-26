@@ -77,6 +77,44 @@ export default async function AboutPage() {
             </div>
           ))}
         </div>
+
+        {(about.contactIntro || about.email || (about.links && about.links.length > 0)) && (
+          <section
+            id="contact"
+            className="col-span-12 md:col-span-10 md:col-start-2 pt-12 sm:pt-16 mt-4 border-t border-neutral-200"
+          >
+            <h2 className="text-[16px] font-medium mb-6">Contact</h2>
+            {about.contactIntro && (
+              <p className="text-[16px] sm:text-[17px] leading-[1.7] max-w-[56ch] whitespace-pre-line">
+                {about.contactIntro}
+              </p>
+            )}
+            {about.email && (
+              <a
+                href={`mailto:${about.email}`}
+                className="block mt-8 sm:mt-10 tracking-[-0.01em] text-[24px] sm:text-[30px] md:text-[36px] lg:text-[42px] leading-[1.1] hover:opacity-70 transition-opacity duration-500 ease-out no-underline hover:no-underline"
+              >
+                {about.email}
+              </a>
+            )}
+            {about.links && about.links.length > 0 && (
+              <ul className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-[14px]">
+                {about.links.map((link, i) => (
+                  <li key={link.label + i}>
+                    <a
+                      href={link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-muted underline-offset-2 hover:underline"
+                    >
+                      {link.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+        )}
       </div>
     </PageShell>
   );

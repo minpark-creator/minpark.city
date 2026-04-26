@@ -3,7 +3,6 @@ import {
   fallbackProjects,
   fallbackSettings,
   fallbackAbout,
-  fallbackContact,
   fallbackJournal,
   fallbackFilms,
 } from "./fallback";
@@ -75,15 +74,11 @@ export type AboutPage = {
     width?: number | null;
     height?: number | null;
   } | null;
-  sections: AboutSection[];
-};
-
-export type ContactPage = {
-  headline: string;
-  intro: string;
+  contactIntro?: string;
   email?: string;
   location?: string;
-  links: { label: string; url: string }[];
+  links?: { label: string; url: string }[];
+  sections: AboutSection[];
 };
 
 export type JournalEntry = {
@@ -194,6 +189,8 @@ const SETTINGS_QUERY = /* groq */ `
 const ABOUT_QUERY = /* groq */ `
   *[_type == "aboutPage"][0]{
     headline, bio, sections,
+    contactIntro, email, location,
+    links[]{ label, url },
     "portrait": portrait{
       alt, asset, hotspot, crop,
       "lqip": asset->metadata.lqip,
@@ -201,9 +198,6 @@ const ABOUT_QUERY = /* groq */ `
       "height": asset->metadata.dimensions.height
     }
   }`;
-
-const CONTACT_QUERY = /* groq */ `
-  *[_type == "contactPage"][0]{ headline, intro, email, location, links }`;
 
 const JOURNAL_QUERY = /* groq */ `
   *[_type == "journalEntry"] | order(date desc) {
@@ -289,15 +283,6 @@ export async function getAboutPage(): Promise<AboutPage> {
   }
 }
 
-export async function getContactPage(): Promise<ContactPage> {
-  if (!client) return fallbackContact;
-  try {
-    const c = await client.fetch<ContactPage | null>(CONTACT_QUERY);
-    return c ?? fallbackContact;
-  } catch {
-    return fallbackContact;
-  }
-}
 
 function portableTextToPlain(body: unknown): string {
   if (!Array.isArray(body)) return "";

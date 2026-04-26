@@ -10,7 +10,7 @@ export const fallbackSettings: SiteSettings = {
   title: "minpark.",
   words: ["city", "strategy", "research", "planning"],
   intro:
-    "I'm Min Park, an urban strategist and planner working at the intersection of planning, research, and spatial vision. My practice translates urban challenges into clear spatial visions, policy insights, and long-term planning frameworks.",
+    "Urban strategy for cities that take the long view.",
   logos: [
     { _key: "l1", name: "C40 Cities", height: 46, image: { url: null } },
     { _key: "l2", name: "Holcim Foundation", height: 54, image: { url: null } },
@@ -27,9 +27,9 @@ export const fallbackAbout: AboutPage = {
   bio: [],
   portrait: null,
   bioText:
-    "Min Park is an urban strategist and planner working at the intersection of planning, research, and spatial vision. His practice translates urban challenges into clear spatial visions, policy insights, and long-term planning frameworks. He is always interested in new partnerships, challenging projects, and conversations about the future of urban development.",
+    "Min Park is an urban strategist and planner working between planning, research, and spatial vision. His practice translates slow, complicated urban questions into frameworks that hold up over decades — policy reports, masterplans, and long-range strategies.\n\nRecent work includes Green Belts 2.0 with C40 Cities, the Riyadh Ring masterplan, the Holcim Foundation Fellowship, and the Stratford Islands masterplan. He is also the editor of MPlan Mag, an independent magazine on planning and strategy that began as a set of conversations he wanted to keep having.\n\nHe is drawn to projects where the brief is still being written, to clients who treat planning as more than approvals, and to cities that are willing to take the long view. Based between Seoul and London.",
   contactIntro:
-    "I am always interested in new partnerships, challenging projects, and conversations about the future of urban development. Please get in touch.",
+    "Write to me about projects you can't quite frame yet. About cities that need a longer horizon than the next election cycle. About the planning question you've been carrying around but haven't found a place to put down.\n\nI'm always open to new commissions, partnerships, lectures, and conversations — and especially to the briefs that are still being written. The fastest way through is email.",
   email: "contact.minpark@gmail.com",
   location: "",
   links: [

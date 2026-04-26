@@ -5,8 +5,9 @@ import { usePathname } from "next/navigation";
 
 const nav = [
   { label: "About", href: "/about" },
+  { label: "Work", href: "/work" },
   { label: "Essays", href: "/journal" },
-  { label: "Public Life Observations", href: "/film" },
+  { label: "Observations", href: "/film" },
 ];
 
 export default function Header() {
@@ -26,10 +27,11 @@ export default function Header() {
         ) : (
           <Link
             href="/"
-            aria-label="Back to home"
-            className="inline-flex items-center text-[18px] hover:opacity-70"
+            aria-label="Back to home — minpark.city"
+            className="inline-flex items-baseline gap-2 text-[16px] font-medium hover:opacity-70 transition-opacity duration-300"
           >
-            <span aria-hidden>←</span>
+            <span aria-hidden className="text-[18px] leading-none">←</span>
+            <span>minpark.city</span>
           </Link>
         )}
         <nav className="flex items-center gap-x-4 sm:gap-x-6 text-[15px]">

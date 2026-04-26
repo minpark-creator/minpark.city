@@ -41,22 +41,29 @@ function PosterLayer({ film }: { film: Film }) {
   );
 }
 
+function LoadingIndicator({ visible }: { visible: boolean }) {
+  return (
+    <div
+      aria-hidden
+      className="absolute inset-0 flex items-center justify-center pointer-events-none transition-opacity duration-500 ease-out"
+      style={{ opacity: visible ? 1 : 0 }}
+    >
+      <span className="block w-7 h-7 rounded-full border-2 border-white/40 border-t-white/90 animate-spin" />
+    </div>
+  );
+}
+
 function FilmPlayer({ film }: { film: Film }) {
   const embed = toEmbed(film.videoUrl);
   const directUrl = film.videoFileUrl || (film.videoUrl && !embed ? film.videoUrl : null);
-  const bgColor = film.poster?.url ? undefined : "#efeae2";
   const [ready, setReady] = useState(false);
-
-  // Reset readiness when the active film changes
   const filmKey = film._id;
 
   if (embed) {
     return (
-      <div
-        className="relative w-full aspect-video overflow-hidden"
-        style={{ backgroundColor: bgColor }}
-      >
+      <div className="relative w-full aspect-video overflow-hidden bg-black">
         <PosterLayer film={film} />
+        <LoadingIndicator visible={!ready} />
         <iframe
           key={filmKey}
           src={embed}
@@ -74,11 +81,9 @@ function FilmPlayer({ film }: { film: Film }) {
 
   if (directUrl) {
     return (
-      <div
-        className="relative w-full aspect-video overflow-hidden"
-        style={{ backgroundColor: bgColor }}
-      >
+      <div className="relative w-full aspect-video overflow-hidden bg-black">
         <PosterLayer film={film} />
+        <LoadingIndicator visible={!ready} />
         <video
           key={filmKey}
           src={directUrl}
@@ -98,7 +103,7 @@ function FilmPlayer({ film }: { film: Film }) {
   }
 
   return (
-    <div className="relative w-full aspect-video overflow-hidden" style={{ backgroundColor: bgColor }}>
+    <div className="relative w-full aspect-video overflow-hidden bg-black">
       <PosterLayer film={film} />
     </div>
   );

@@ -14,12 +14,13 @@ export default async function Home() {
     getSiteSettings(),
   ]);
 
-  const selected = projects.filter((p) => p.isSelected);
-  const allByDate = [...projects].sort((a, b) => {
+  const byDateDesc = (a: { date?: string }, b: { date?: string }) => {
     const ad = a.date ? new Date(a.date).getTime() : 0;
     const bd = b.date ? new Date(b.date).getTime() : 0;
     return bd - ad;
-  });
+  };
+  const selected = projects.filter((p) => p.isSelected);
+  const more = projects.filter((p) => !p.isSelected).sort(byDateDesc);
 
   const prefix = settings.title.endsWith(".")
     ? settings.title
@@ -50,7 +51,7 @@ export default async function Home() {
 
         <LogoMarquee logos={settings.logos} />
 
-        <ProjectsClient selected={selected} allByDate={allByDate} />
+        <ProjectsClient selected={selected} more={more} />
       </main>
 
       <Footer />

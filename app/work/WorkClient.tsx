@@ -23,7 +23,7 @@ export default function WorkClient({ projects }: Props) {
   return (
     <>
       <div
-        className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-5 gap-y-10 pt-6"
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 sm:gap-x-10 gap-y-14 sm:gap-y-16 pt-8 sm:pt-12"
         onMouseLeave={() => setHoverIdx(null)}
       >
         {projects.map((p, idx) => {
@@ -34,6 +34,7 @@ export default function WorkClient({ projects }: Props) {
               project={p}
               dimmed={dimmed}
               onHover={() => setHoverIdx(idx)}
+              onLeave={() => setHoverIdx(null)}
               onOpenImage={(originalIndex) => openImage(p, originalIndex)}
               onOpenInfo={() => openInfo(p)}
             />

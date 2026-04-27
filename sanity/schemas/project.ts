@@ -107,13 +107,25 @@ export const projectSchema = defineType({
     }),
     defineField({
       name: "images",
-      title: "Images",
+      title: "Images & Videos",
       type: "array",
+      description:
+        "Each item is an image, optionally with a video. The image acts as the thumbnail/poster; if a video is set, the lightbox plays it muted on loop.",
       of: [
         {
           type: "image",
           options: { hotspot: true },
-          fields: [{ name: "alt", type: "string", title: "Alt text" }],
+          fields: [
+            { name: "alt", type: "string", title: "Alt text" },
+            {
+              name: "video",
+              title: "Video (optional)",
+              type: "file",
+              options: { accept: "video/*" },
+              description:
+                "If set, the lightbox plays this video in place of the image. The image is used as the poster + thumbnail.",
+            },
+          ],
         },
       ],
       options: { layout: "grid" },

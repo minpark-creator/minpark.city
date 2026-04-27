@@ -14,6 +14,8 @@ export type ProjectImage = {
   lqip?: string | null;
   width?: number | null;
   height?: number | null;
+  /** Optional video file URL. If set, lightbox plays this in place of the image. */
+  videoUrl?: string | null;
 };
 
 export type Project = {
@@ -122,6 +124,7 @@ type RawImage = {
   lqip?: string | null;
   width?: number | null;
   height?: number | null;
+  videoUrl?: string | null;
 };
 
 type RawPoster = {
@@ -149,6 +152,7 @@ function toImage(raw: RawImage | undefined): ProjectImage | null {
     lqip: raw.lqip ?? null,
     width: raw.width ?? null,
     height: raw.height ?? null,
+    videoUrl: raw.videoUrl ?? null,
   };
 }
 
@@ -167,7 +171,8 @@ const IMAGE_PROJECTION = /* groq */ `{
   _key, alt, asset, hotspot, crop,
   "lqip": asset->metadata.lqip,
   "width": asset->metadata.dimensions.width,
-  "height": asset->metadata.dimensions.height
+  "height": asset->metadata.dimensions.height,
+  "videoUrl": video.asset->url
 }`;
 
 const POSTER_PROJECTION = /* groq */ `{

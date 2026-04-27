@@ -187,13 +187,14 @@ function SlideImage({
   const w = image.width ?? 4;
   const h = image.height ?? 3;
   const aspect = w / h;
-  // `loaded` flips on the Image's onLoad event. We start at 0 opacity +
-  // a small downward offset and ease to 1 / 0 — a fade-in with a tiny
-  // slide-up. (Pure opacity ramp is a "fade-in"; layered with the
-  // previous frame visible underneath it would be a "cross-dissolve" /
-  // "crossfade".) `key` on this component remounts SlideImage per slide
-  // so every navigation triggers a fresh animation.
+  // `loaded` flips on the Image's onLoad / video onCanPlay event. We start at
+  // 0 opacity + a small downward offset and ease to 1 / 0 — a fade-in with a
+  // tiny slide-up. (Pure opacity ramp is a "fade-in"; layered with the
+  // previous frame visible underneath would be a "cross-dissolve" / "crossfade".)
+  // `key` on this component remounts SlideImage per slide so every navigation
+  // triggers a fresh animation.
   const [loaded, setLoaded] = useState(false);
+  const isVideo = !!image.videoUrl;
 
   return (
     <div
@@ -211,23 +212,43 @@ function SlideImage({
       >
         <span className="block w-7 h-7 rounded-full border-2 border-white/30 border-t-white/90 animate-spin" />
       </div>
-      <Image
-        src={image.url ?? ""}
-        alt={alt}
-        fill
-        sizes="90vw"
-        quality={95}
-        priority
-        placeholder={image.lqip ? "blur" : "empty"}
-        blurDataURL={image.lqip ?? undefined}
-        onLoad={() => setLoaded(true)}
-        className="transition-all duration-700 ease-out"
-        style={{
-          objectFit: "contain",
-          opacity: loaded ? 1 : 0,
-          transform: loaded ? "translateY(0)" : "translateY(8px)",
-        }}
-      />
+      {isVideo ? (
+        <video
+          src={image.videoUrl ?? undefined}
+          poster={image.url ?? undefined}
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="metadata"
+          onLoadedData={() => setLoaded(true)}
+          onCanPlay={() => setLoaded(true)}
+          className="absolute inset-0 w-full h-full transition-all duration-700 ease-out"
+          style={{
+            objectFit: "contain",
+            opacity: loaded ? 1 : 0,
+            transform: loaded ? "translateY(0)" : "translateY(8px)",
+          }}
+        />
+      ) : (
+        <Image
+          src={image.url ?? ""}
+          alt={alt}
+          fill
+          sizes="90vw"
+          quality={95}
+          priority
+          placeholder={image.lqip ? "blur" : "empty"}
+          blurDataURL={image.lqip ?? undefined}
+          onLoad={() => setLoaded(true)}
+          className="transition-all duration-700 ease-out"
+          style={{
+            objectFit: "contain",
+            opacity: loaded ? 1 : 0,
+            transform: loaded ? "translateY(0)" : "translateY(8px)",
+          }}
+        />
+      )}
     </div>
   );
 }

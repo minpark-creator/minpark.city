@@ -7,6 +7,7 @@ type Props = {
   onOpenImage?: (originalIndex: number) => void;
   onOpenInfo?: () => void;
   onHover?: () => void;
+  onLeave?: () => void;
   dimmed?: boolean;
 };
 
@@ -15,13 +16,18 @@ export default function GalleryCard({
   onOpenImage,
   onOpenInfo,
   onHover,
+  onLeave,
   dimmed = false,
 }: Props) {
   const coverSlot = resolveCover(project);
   const cover = coverSlot?.image;
   const imageClickable = !!cover && !!onOpenImage;
   return (
-    <div className="w-full space-y-2" onMouseEnter={onHover}>
+    <div
+      className="w-full space-y-2"
+      onMouseEnter={onHover}
+      onMouseLeave={onLeave}
+    >
       <button
         type="button"
         disabled={!imageClickable}

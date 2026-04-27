@@ -21,10 +21,9 @@ export default async function Home() {
   };
   const selected = projects.filter((p) => p.isSelected);
   const moreLimit = settings.viewMoreCount ?? 4;
-  const more = projects
+  const morePool = projects
     .filter((p) => !p.isSelected)
-    .sort(byDateDesc)
-    .slice(0, moreLimit);
+    .sort(byDateDesc);
 
   const prefix = settings.title.endsWith(".")
     ? settings.title
@@ -55,7 +54,11 @@ export default async function Home() {
 
         <LogoMarquee logos={settings.logos} />
 
-        <ProjectsClient selected={selected} more={more} />
+        <ProjectsClient
+          selected={selected}
+          morePool={morePool}
+          moreCount={moreLimit}
+        />
       </main>
 
       <Footer />

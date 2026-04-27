@@ -44,16 +44,14 @@ export default function LogoMarquee({ logos }: Props) {
   if (!logos || logos.length === 0) return null;
   const doubled = [...logos, ...logos];
   return (
-    <div className="border-t border-b border-neutral-200 mt-12 sm:mt-16">
-      <div className="relative overflow-hidden py-8 sm:py-10 select-none">
-        <div
-          className="flex items-center marquee-track"
-          style={{ width: "max-content" }}
-        >
-          {doubled.map((logo, i) => (
-            <LogoTile key={`${logo._key ?? logo.name ?? ""}-${i}`} item={logo} />
-          ))}
-        </div>
+    <div className="relative overflow-hidden py-8 sm:py-10 select-none mt-8 sm:mt-12">
+      <div
+        className="flex items-center marquee-track"
+        style={{ width: "max-content" }}
+      >
+        {doubled.map((logo, i) => (
+          <LogoTile key={`${logo._key ?? logo.name ?? ""}-${i}`} item={logo} />
+        ))}
       </div>
     </div>
   );

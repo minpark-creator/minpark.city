@@ -1,4 +1,7 @@
+"use client";
+
 import Image from "next/image";
+import { useState } from "react";
 import type { ProjectImage } from "../../sanity/queries";
 
 type Props = {
@@ -10,6 +13,12 @@ type Props = {
   quality?: number;
 };
 
+/**
+ * Project thumbnail. Renders next/image with an LQIP blur placeholder
+ * underneath, then on `onLoad` eases the sharp image in with a small
+ * slide-up — a "fade + reveal" rather than a hard pop. The blur stays
+ * visible during the swap so there's no flash of empty box.
+ */
 export default function ProjectThumb({
   image,
   alt,
@@ -24,6 +33,7 @@ export default function ProjectThumb({
 }: Props) {
   const src = image?.url ?? null;
   const safeAlt = image?.alt || alt;
+  const [loaded, setLoaded] = useState(false);
 
   if (src) {
     return (
@@ -36,7 +46,12 @@ export default function ProjectThumb({
         priority={priority}
         placeholder={image?.lqip ? "blur" : "empty"}
         blurDataURL={image?.lqip ?? undefined}
-        className={`object-cover ${className}`}
+        onLoad={() => setLoaded(true)}
+        className={`object-cover transition-all duration-700 ease-out ${className}`}
+        style={{
+          opacity: loaded ? 1 : 0,
+          transform: loaded ? "translateY(0)" : "translateY(6px)",
+        }}
       />
     );
   }
@@ -44,7 +59,7 @@ export default function ProjectThumb({
   return (
     <div
       className={`w-full h-full ${className}`}
-      style={{ backgroundColor: "#efeae2" }}
+      style={{ backgroundColor: "transparent" }}
       aria-label={safeAlt}
     />
   );

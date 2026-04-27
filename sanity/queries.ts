@@ -30,6 +30,11 @@ export type Project = {
   body?: string;
   isSelected?: boolean;
   images: ProjectImage[];
+  /**
+   * 1-based indices into `images`, set in Studio. Used to choose the cover and
+   * the (up to) three Selected-row thumbnails. Order is preserved.
+   */
+  featured?: number[];
   links?: { label: string; url: string; _key?: string }[];
 };
 
@@ -56,6 +61,8 @@ export type SiteSettings = {
   heroVideoUrl?: string;
   heroVideoFileUrl?: string | null;
   heroPoster?: HeroPoster | null;
+  /** Number of non-Selected projects shown in the home "View more" grid. */
+  viewMoreCount?: number;
 };
 
 export type AboutSection = {
@@ -174,13 +181,14 @@ const PROJECTS_QUERY = /* groq */ `
   *[_type == "project"] | order(order asc, date desc) {
     _id, title, "slug": slug.current, year, date,
     client, partners, location, role, summary, body, isSelected,
+    featured,
     links[]{ _key, label, url },
     "images": images[]${IMAGE_PROJECTION}
   }`;
 
 const SETTINGS_QUERY = /* groq */ `
   *[_type == "siteSettings"][0]{
-    title, words, intro, heroVideoUrl,
+    title, words, intro, heroVideoUrl, viewMoreCount,
     "heroVideoFileUrl": heroVideoFile.asset->url,
     "heroPoster": heroPoster${POSTER_PROJECTION},
     "logos": logos[]{ _key, name, url, height, "image": { "url": image.asset->url } }
@@ -253,6 +261,10 @@ export async function getSiteSettings(): Promise<SiteSettings> {
         s.heroVideoFileUrl ?? fallbackSettings.heroVideoFileUrl ?? null,
       heroPoster:
         toPoster(s.heroPoster) ?? fallbackSettings.heroPoster ?? null,
+      viewMoreCount:
+        typeof s.viewMoreCount === "number"
+          ? s.viewMoreCount
+          : fallbackSettings.viewMoreCount ?? 4,
     };
   } catch {
     return fallbackSettings;

@@ -28,6 +28,15 @@ export const siteSettingsSchema = defineType({
       description: "Shown under the heading, centered.",
     }),
     defineField({
+      name: "viewMoreCount",
+      title: "View more projects — count",
+      type: "number",
+      description:
+        "How many non-Selected projects to show in the home 'View more projects' grid. Default 4.",
+      initialValue: 4,
+      validation: (r) => r.min(0).max(24),
+    }),
+    defineField({
       name: "logos",
       title: "Logos",
       type: "array",

@@ -1,36 +1,54 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import type { Project, ProjectImage } from "../../sanity/queries";
 
 type Props = {
   project: Project;
-  startIndex: number;
+  /**
+   * Original 0-based index of the image the user clicked, or `null` if they
+   * opened the project from a title (info-only). The lightbox always starts
+   * on the info slide; the image slides are then ordered so this image
+   * comes first when the user presses next.
+   */
+  imageStart: number | null;
   onClose: () => void;
 };
 
-type Slide =
-  | { kind: "info" }
-  | { kind: "image"; image: ProjectImage; index: number };
+type ImageSlide = { kind: "image"; image: ProjectImage; index: number };
+type Slide = { kind: "info" } | ImageSlide;
 
 export default function ProjectLightbox({
   project,
-  startIndex,
+  imageStart,
   onClose,
 }: Props) {
+  // Reorder image slides so the clicked image is first after info.
+  const ordered: ProjectImage[] = (() => {
+    const n = project.images.length;
+    if (n === 0) return [];
+    const start = imageStart != null && imageStart >= 0 && imageStart < n
+      ? imageStart
+      : 0;
+    return Array.from({ length: n }, (_, k) => project.images[(start + k) % n]);
+  })();
+
+  // For the counter we still want to show "5 / 10" using the original upload
+  // index, so keep both around.
   const slides: Slide[] = [
     { kind: "info" },
-    ...project.images.map((image, index) => ({
-      kind: "image" as const,
-      image,
-      index,
-    })),
+    ...ordered.map((image, k) => {
+      const originalIndex =
+        (imageStart != null && imageStart >= 0 ? imageStart : 0) + k;
+      const wrapped = originalIndex % project.images.length;
+      return { kind: "image" as const, image, index: wrapped };
+    }),
   ];
   const total = slides.length;
 
-  const initial = Math.min(Math.max(0, startIndex), total - 1);
-  const [i, setI] = useState(initial);
+  // Always land on info first.
+  const [i, setI] = useState(0);
 
   const prev = () => setI((x) => (x - 1 + total) % total);
   const next = () => setI((x) => (x + 1) % total);
@@ -75,6 +93,41 @@ export default function ProjectLightbox({
             />
           )}
         </div>
+      </div>
+
+      {/*
+        Off-screen preloader: while the user is on any slide we render every
+        other image at 1×1 with the same `sizes="90vw"` the visible <Image>
+        uses, so Next picks the same srcset entry. The browser fetches them
+        in the background and the cache is hot by the time the user navigates,
+        which is what makes "텍스트 페이지에 머무는 동안 다른 이미지 로딩"
+        actually fast.
+      */}
+      <div
+        aria-hidden
+        className="absolute pointer-events-none opacity-0"
+        style={{ left: -9999, top: -9999, width: 1, height: 1 }}
+      >
+        {project.images.map((img, idx) => {
+          if (!img.url) return null;
+          return (
+            <div
+              key={`preload-${idx}`}
+              className="relative"
+              style={{ width: 1, height: 1 }}
+            >
+              <Image
+                src={img.url}
+                alt=""
+                fill
+                sizes="90vw"
+                quality={95}
+                loading="eager"
+                placeholder="empty"
+              />
+            </div>
+          );
+        })}
       </div>
 
       <button
@@ -134,18 +187,13 @@ function SlideImage({
   const w = image.width ?? 4;
   const h = image.height ?? 3;
   const aspect = w / h;
-  // `loaded` flips on the Image's onLoad event. We start at 0 opacity and
-  // ease to 1 — this is a fade-in (sometimes called a cross-dissolve when
-  // the previous slide stays under the new one). React's `key` on this
-  // component remounts SlideImage per slide, so each navigation triggers
-  // a fresh fade.
+  // `loaded` flips on the Image's onLoad event. We start at 0 opacity +
+  // a small downward offset and ease to 1 / 0 — a fade-in with a tiny
+  // slide-up. (Pure opacity ramp is a "fade-in"; layered with the
+  // previous frame visible underneath it would be a "cross-dissolve" /
+  // "crossfade".) `key` on this component remounts SlideImage per slide
+  // so every navigation triggers a fresh animation.
   const [loaded, setLoaded] = useState(false);
-  // First paint guard so the transition actually animates from 0 → 1
-  // instead of the browser skipping the initial frame.
-  const mounted = useRef(false);
-  useEffect(() => {
-    mounted.current = true;
-  }, []);
 
   return (
     <div
@@ -156,7 +204,6 @@ function SlideImage({
         maxWidth: "calc(100vw - 8rem)",
       }}
     >
-      {/* Spinner shown while the image is loading */}
       <div
         aria-hidden
         className="absolute inset-0 flex items-center justify-center pointer-events-none transition-opacity duration-300 ease-out"
@@ -174,8 +221,12 @@ function SlideImage({
         placeholder={image.lqip ? "blur" : "empty"}
         blurDataURL={image.lqip ?? undefined}
         onLoad={() => setLoaded(true)}
-        className="transition-opacity duration-700 ease-out"
-        style={{ objectFit: "contain", opacity: loaded ? 1 : 0 }}
+        className="transition-all duration-700 ease-out"
+        style={{
+          objectFit: "contain",
+          opacity: loaded ? 1 : 0,
+          transform: loaded ? "translateY(0)" : "translateY(8px)",
+        }}
       />
     </div>
   );
@@ -192,13 +243,13 @@ function InfoSlide({ project }: { project: Project }) {
 
   return (
     <div
-      className="text-white overflow-y-auto"
+      className="text-white overflow-y-auto overscroll-contain"
       style={{
         width: "min(720px, calc(100vw - 8rem))",
         maxHeight: "calc(100vh - 8rem)",
       }}
     >
-      <div className="w-full text-left">
+      <div className="w-full text-left pr-2">
         <h2 className="text-[26px] sm:text-[32px] leading-[1.2]">
           {project.title}
         </h2>
@@ -222,7 +273,7 @@ function InfoSlide({ project }: { project: Project }) {
         )}
 
         {paragraphs.length > 0 && (
-          <div className="mt-12 space-y-4 text-[16px] leading-[1.55] text-white/90 text-left">
+          <div className="mt-12 space-y-4 text-[16px] leading-[1.55] text-white/90 text-left pb-2">
             {paragraphs.map((p, idx) => (
               <p key={idx}>{p}</p>
             ))}

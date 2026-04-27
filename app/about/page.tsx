@@ -27,13 +27,13 @@ export default async function AboutPage() {
       <div className="grid grid-cols-12 gap-x-6 sm:gap-x-10 gap-y-10 pt-8 sm:pt-14">
         {/* Portrait (left column on desktop, first on mobile) */}
         {portrait?.url && (
-          <div className="col-span-12 md:col-span-4 md:col-start-1 md:row-start-1">
+          <div className="col-span-12 md:col-span-5 md:col-start-1 md:row-start-1">
             <div className="relative w-full aspect-[3/4] overflow-hidden">
               <Image
                 src={portrait.url}
                 alt={portrait.alt || "Portrait of Min Park"}
                 fill
-                sizes="(max-width: 768px) 100vw, 360px"
+                sizes="(max-width: 768px) 100vw, 460px"
                 quality={92}
                 placeholder={portrait.lqip ? "blur" : "empty"}
                 blurDataURL={portrait.lqip ?? undefined}

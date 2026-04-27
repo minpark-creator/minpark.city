@@ -12,22 +12,25 @@ type Props = {
   more: Project[];
 };
 
-type Open = { project: Project; startIndex: number } | null;
+type Open = {
+  project: Project;
+  imageStart: number | null;
+} | null;
 
 export default function ProjectsClient({ selected, more }: Props) {
   const [open, setOpen] = useState<Open>(null);
   const [hoverIdx, setHoverIdx] = useState<number | null>(null);
 
   const openInfo = (project: Project) =>
-    setOpen({ project, startIndex: 0 });
-  const openImage = (project: Project, imageIndex: number) =>
-    setOpen({ project, startIndex: imageIndex + 1 });
+    setOpen({ project, imageStart: null });
+  const openImage = (project: Project, originalIndex: number) =>
+    setOpen({ project, imageStart: originalIndex });
 
   return (
     <>
       <section className="pt-12 sm:pt-16">
-        <div className="flex items-baseline justify-between py-4">
-          <h2 className="text-[16px] font-medium">Selected projects</h2>
+        <div className="flex items-baseline justify-between py-4 border-t border-neutral-200">
+          <h2 className="text-[16px]">Selected projects</h2>
           <span className="text-muted text-[14px]">
             {selected.length} projects
           </span>
@@ -42,15 +45,21 @@ export default function ProjectsClient({ selected, more }: Props) {
               key={p._id}
               project={p}
               onOpenInfo={() => openInfo(p)}
-              onOpenImage={(idx) => openImage(p, idx)}
+              onOpenImage={(originalIndex) => openImage(p, originalIndex)}
             />
           ))
         )}
       </section>
 
       <section className="pt-20 sm:pt-28">
-        <div className="flex items-baseline justify-between py-4 border-t border-neutral-200">
+        <div className="flex items-baseline justify-between gap-4 py-4 border-t border-neutral-200">
           <h2 className="text-[16px]">View more projects</h2>
+          <Link
+            href="/work"
+            className="text-[14px] text-muted underline-offset-2 hover:underline whitespace-nowrap"
+          >
+            Click to see all projects →
+          </Link>
         </div>
         {more.length > 0 && (
           <div
@@ -65,27 +74,19 @@ export default function ProjectsClient({ selected, more }: Props) {
                   project={p}
                   dimmed={dimmed}
                   onHover={() => setHoverIdx(idx)}
-                  onOpenImage={() => openImage(p, 0)}
+                  onOpenImage={(originalIndex) => openImage(p, originalIndex)}
                   onOpenInfo={() => openInfo(p)}
                 />
               );
             })}
           </div>
         )}
-        <div className="pt-10 sm:pt-14">
-          <Link
-            href="/work"
-            className="inline-block text-[15px] underline-offset-2 hover:underline"
-          >
-            Click to see all projects →
-          </Link>
-        </div>
       </section>
 
       {open && (
         <ProjectLightbox
           project={open.project}
-          startIndex={open.startIndex}
+          imageStart={open.imageStart}
           onClose={() => setOpen(null)}
         />
       )}

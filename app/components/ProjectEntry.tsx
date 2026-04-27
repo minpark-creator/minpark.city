@@ -3,11 +3,12 @@
 import { useState } from "react";
 import type { Project } from "../../sanity/queries";
 import ProjectThumb from "./ProjectThumb";
+import { resolveFeaturedSlots } from "../lib/featured";
 
 type Props = {
   project: Project;
   onOpenInfo: () => void;
-  onOpenImage: (index: number) => void;
+  onOpenImage: (originalIndex: number) => void;
 };
 
 export default function ProjectEntry({
@@ -18,12 +19,15 @@ export default function ProjectEntry({
   const [expanded, setExpanded] = useState(false);
   const [hovered, setHovered] = useState<number | null>(null);
 
-  const hiddenCount = Math.max(0, project.images.length - 3);
-  const visibleImages = expanded
-    ? project.images
-    : project.images.slice(0, 3);
-
-  const slots = visibleImages;
+  // Featured (Studio-picked) thumbnails come first; "Show all" expands to the
+  // full upload-order list.
+  const featured = resolveFeaturedSlots(project, 3);
+  const expandedSlots = project.images.map((image, originalIndex) => ({
+    image,
+    originalIndex,
+  }));
+  const slots = expanded ? expandedSlots : featured;
+  const hiddenCount = Math.max(0, project.images.length - featured.length);
 
   return (
     <article className="grid grid-cols-12 gap-x-6 gap-y-6 py-10 sm:py-14 border-t border-neutral-200 first:border-t-0">
@@ -77,19 +81,19 @@ export default function ProjectEntry({
         onMouseLeave={() => setHovered(null)}
       >
         <div className="grid grid-cols-3 gap-3 sm:gap-4">
-          {slots.map((img, i) => {
+          {slots.map((slot, i) => {
             const dimmed = hovered !== null && hovered !== i;
             return (
               <button
                 type="button"
-                key={i}
+                key={`${slot.originalIndex}-${i}`}
                 onMouseEnter={() => setHovered(i)}
-                onClick={() => onOpenImage(i)}
+                onClick={() => onOpenImage(slot.originalIndex)}
                 className="relative aspect-[4/5] overflow-hidden block w-full p-0"
               >
                 <ProjectThumb
-                  image={img}
-                  alt={`${project.title} image ${i + 1}`}
+                  image={slot.image}
+                  alt={`${project.title} image ${slot.originalIndex + 1}`}
                 />
                 <div
                   aria-hidden

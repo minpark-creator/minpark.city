@@ -1,9 +1,10 @@
 import type { Project } from "../../sanity/queries";
 import ProjectThumb from "./ProjectThumb";
+import { resolveCover } from "../lib/featured";
 
 type Props = {
   project: Project;
-  onOpenImage?: () => void;
+  onOpenImage?: (originalIndex: number) => void;
   onOpenInfo?: () => void;
   onHover?: () => void;
   dimmed?: boolean;
@@ -16,14 +17,17 @@ export default function GalleryCard({
   onHover,
   dimmed = false,
 }: Props) {
-  const cover = project.images[0];
+  const coverSlot = resolveCover(project);
+  const cover = coverSlot?.image;
   const imageClickable = !!cover && !!onOpenImage;
   return (
     <div className="w-full space-y-2" onMouseEnter={onHover}>
       <button
         type="button"
         disabled={!imageClickable}
-        onClick={() => imageClickable && onOpenImage!()}
+        onClick={() =>
+          imageClickable && onOpenImage!(coverSlot?.originalIndex ?? 0)
+        }
         className="relative aspect-[3/4] overflow-hidden block w-full p-0"
       >
         <ProjectThumb

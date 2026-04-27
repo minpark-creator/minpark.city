@@ -6,16 +6,19 @@ import GalleryCard from "../components/GalleryCard";
 import ProjectLightbox from "../components/ProjectLightbox";
 
 type Props = { projects: Project[] };
-type Open = { project: Project; startIndex: number } | null;
+type Open = {
+  project: Project;
+  imageStart: number | null;
+} | null;
 
 export default function WorkClient({ projects }: Props) {
   const [open, setOpen] = useState<Open>(null);
   const [hoverIdx, setHoverIdx] = useState<number | null>(null);
 
   const openInfo = (project: Project) =>
-    setOpen({ project, startIndex: 0 });
-  const openImage = (project: Project, imageIndex: number) =>
-    setOpen({ project, startIndex: imageIndex + 1 });
+    setOpen({ project, imageStart: null });
+  const openImage = (project: Project, originalIndex: number) =>
+    setOpen({ project, imageStart: originalIndex });
 
   return (
     <>
@@ -31,7 +34,7 @@ export default function WorkClient({ projects }: Props) {
               project={p}
               dimmed={dimmed}
               onHover={() => setHoverIdx(idx)}
-              onOpenImage={() => openImage(p, 0)}
+              onOpenImage={(originalIndex) => openImage(p, originalIndex)}
               onOpenInfo={() => openInfo(p)}
             />
           );
@@ -41,7 +44,7 @@ export default function WorkClient({ projects }: Props) {
       {open && (
         <ProjectLightbox
           project={open.project}
-          startIndex={open.startIndex}
+          imageStart={open.imageStart}
           onClose={() => setOpen(null)}
         />
       )}

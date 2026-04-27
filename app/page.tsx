@@ -20,7 +20,11 @@ export default async function Home() {
     return bd - ad;
   };
   const selected = projects.filter((p) => p.isSelected);
-  const more = projects.filter((p) => !p.isSelected).sort(byDateDesc);
+  const moreLimit = settings.viewMoreCount ?? 4;
+  const more = projects
+    .filter((p) => !p.isSelected)
+    .sort(byDateDesc)
+    .slice(0, moreLimit);
 
   const prefix = settings.title.endsWith(".")
     ? settings.title

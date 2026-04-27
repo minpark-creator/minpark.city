@@ -119,6 +119,15 @@ export const projectSchema = defineType({
       options: { layout: "grid" },
     }),
     defineField({
+      name: "featured",
+      title: "Featured image numbers",
+      type: "array",
+      of: [{ type: "number" }],
+      description:
+        "1-based image numbers used for thumbnails. e.g. [6, 3, 5] uses image 6 as the project cover, and Selected shows 6, 3, 5 in that order. Leave empty to fall back to images 1, 2, 3.",
+      validation: (r) => r.unique(),
+    }),
+    defineField({
       name: "isSelected",
       title: "Show in Selected",
       type: "boolean",

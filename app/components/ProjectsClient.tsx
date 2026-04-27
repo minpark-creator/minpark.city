@@ -58,7 +58,7 @@ export default function ProjectsClient({
   return (
     <>
       <section className="pt-12 sm:pt-16">
-        <div className="flex items-baseline justify-between py-4 border-t border-b border-neutral-200">
+        <div className="flex items-baseline justify-between py-4 border-b border-neutral-200">
           <h2 className="text-[16px]">Selected projects</h2>
           <span className="text-muted text-[14px]">
             {selected.length} projects
@@ -83,7 +83,7 @@ export default function ProjectsClient({
       </section>
 
       <section className="pt-20 sm:pt-28">
-        <div className="flex items-baseline justify-between gap-4 py-4 border-t border-b border-neutral-200">
+        <div className="flex items-baseline justify-between gap-4 py-4 border-b border-neutral-200">
           <h2 className="text-[16px]">View more projects</h2>
           <Link
             href="/work"

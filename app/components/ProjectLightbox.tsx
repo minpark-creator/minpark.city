@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Project, ProjectImage } from "../../sanity/queries";
 
 type Props = {
@@ -195,6 +195,33 @@ function SlideImage({
   // triggers a fresh animation.
   const [loaded, setLoaded] = useState(false);
   const isVideo = !!image.videoUrl;
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+
+  // Some browsers ignore the `autoPlay` attribute on a freshly mounted
+  // <video> if the element wasn't user-initiated. Calling .play() ourselves
+  // (after we've set muted + playsInline) is the standard workaround — the
+  // promise rejects on policy block, which we swallow. Without this, the
+  // poster image just sits there and the user thinks "the video isn't
+  // playing".
+  useEffect(() => {
+    if (!isVideo) return;
+    const el = videoRef.current;
+    if (!el) return;
+    const tryPlay = () => {
+      // Force the muted state on the element — React's `muted` prop doesn't
+      // always mirror to the DOM attribute in time for browser autoplay
+      // policy, which is the most common cause of `<video>` silently
+      // refusing to autoplay.
+      el.muted = true;
+      const p = el.play();
+      if (p && typeof p.catch === "function") p.catch(() => {});
+    };
+    tryPlay();
+    // Try again once metadata is loaded — covers the case where the element
+    // wasn't ready on mount.
+    el.addEventListener("loadedmetadata", tryPlay);
+    return () => el.removeEventListener("loadedmetadata", tryPlay);
+  }, [isVideo, image.videoUrl]);
 
   return (
     <div
@@ -214,13 +241,15 @@ function SlideImage({
       </div>
       {isVideo ? (
         <video
+          ref={videoRef}
           src={image.videoUrl ?? undefined}
           poster={image.url ?? undefined}
           autoPlay
           loop
           muted
           playsInline
-          preload="metadata"
+          preload="auto"
+          controls={false}
           onLoadedData={() => setLoaded(true)}
           onCanPlay={() => setLoaded(true)}
           className="absolute inset-0 w-full h-full transition-all duration-700 ease-out"

@@ -23,7 +23,7 @@ export default function WorkClient({ projects }: Props) {
   return (
     <>
       <div
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 sm:gap-x-10 gap-y-14 sm:gap-y-16 pt-8 sm:pt-12"
+        className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-8 sm:gap-x-10 lg:gap-x-12 gap-y-16 sm:gap-y-20 pt-8 sm:pt-12"
         onMouseLeave={() => setHoverIdx(null)}
       >
         {projects.map((p, idx) => {

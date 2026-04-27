@@ -43,8 +43,20 @@ function LogoTile({ item }: { item: LogoItem }) {
 export default function LogoMarquee({ logos }: Props) {
   if (!logos || logos.length === 0) return null;
   const doubled = [...logos, ...logos];
+  // Fade the marquee edges out via a CSS mask so logos don't pop in/out at
+  // the viewport boundaries — they dissolve into the background instead.
+  // The mask is symmetric: opaque from 8% to 92%, transparent at 0% and 100%.
+  const fadeMask =
+    "linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)";
+
   return (
-    <div className="relative overflow-hidden py-8 sm:py-10 select-none mt-8 sm:mt-12">
+    <div
+      className="relative overflow-hidden py-8 sm:py-10 select-none mt-8 sm:mt-12"
+      style={{
+        WebkitMaskImage: fadeMask,
+        maskImage: fadeMask,
+      }}
+    >
       <div
         className="flex items-center marquee-track"
         style={{ width: "max-content" }}

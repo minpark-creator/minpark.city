@@ -4,7 +4,7 @@ import FilmClient from "./FilmClient";
 
 export const revalidate = 60;
 
-export const metadata = { title: "Public Life Observations — minpark" };
+export const metadata = { title: "Observations — minpark" };
 
 export default async function FilmPage() {
   const films = await getFilms();

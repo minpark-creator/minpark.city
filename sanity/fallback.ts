@@ -10,7 +10,7 @@ export const fallbackSettings: SiteSettings = {
   title: "minpark.",
   words: ["city", "strategy", "research", "planning"],
   intro:
-    "Urban strategy for cities that take the long view.",
+    "Creating livable, lovable cities through urban research, strategy, design, and narrative!\n\n* across scales, from detail to system.\n* rooted in inclusivity and climate resilience.\n* output: masterplans, exhibitions, reports, workshops, talks.",
   logos: [
     { _key: "l1", name: "C40 Cities", height: 46, image: { url: null } },
     { _key: "l2", name: "Holcim Foundation", height: 54, image: { url: null } },

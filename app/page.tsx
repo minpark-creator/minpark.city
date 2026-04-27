@@ -29,6 +29,27 @@ export default async function Home() {
     ? settings.title
     : `${settings.title}.`;
 
+  // Render the intro as a lead paragraph + an optional bulleted list.
+  // Convention in the CMS: write the lead on the first line, then any number
+  // of `* item` lines for bullets. Anything not starting with `* ` is treated
+  // as additional lead-paragraph text (joined by line breaks).
+  const introLines = (settings.intro ?? "")
+    .split(/\r?\n/)
+    .map((l) => l.trimEnd());
+  const leadLines: string[] = [];
+  const bulletLines: string[] = [];
+  for (const line of introLines) {
+    const trimmed = line.trimStart();
+    if (/^[*•-]\s+/.test(trimmed)) {
+      bulletLines.push(trimmed.replace(/^[*•-]\s+/, ""));
+    } else if (trimmed.length > 0 || bulletLines.length === 0) {
+      // keep blank lines that appear before any bullet so the lead paragraph
+      // can still hold its own paragraph breaks
+      leadLines.push(line);
+    }
+  }
+  const lead = leadLines.join("\n").trim();
+
   return (
     <div className="mx-auto w-full max-w-[1200px] px-6 sm:px-10 lg:px-16">
       <Header />
@@ -40,9 +61,21 @@ export default async function Home() {
               prefix={prefix}
               words={settings.words ?? []}
             />
-            <p className="mt-6 sm:mt-8 text-[17px] sm:text-[19px] lg:text-[21px] leading-[1.5] whitespace-pre-line">
-              {settings.intro}
-            </p>
+            {lead && (
+              <p className="mt-6 sm:mt-8 text-[17px] sm:text-[19px] lg:text-[21px] leading-[1.5] whitespace-pre-line">
+                {lead}
+              </p>
+            )}
+            {bulletLines.length > 0 && (
+              <ul className="mt-5 sm:mt-6 space-y-1 text-[15px] sm:text-[16px] lg:text-[17px] leading-[1.55] text-muted">
+                {bulletLines.map((item, i) => (
+                  <li key={i} className="flex gap-3">
+                    <span aria-hidden className="select-none">•</span>
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
         </section>
 

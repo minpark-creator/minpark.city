@@ -81,7 +81,13 @@ export default function ProjectLightbox({
       role="dialog"
       aria-modal="true"
     >
-      <div className="absolute inset-0 flex items-center justify-center">
+      <div
+        className={`absolute inset-0 flex justify-center ${
+          current.kind === "info"
+            ? "items-start pt-[18vh] sm:pt-[15vh]"
+            : "items-center"
+        }`}
+      >
         <div onClick={(e) => e.stopPropagation()}>
           {current.kind === "info" ? (
             <InfoSlide project={project} />
@@ -295,8 +301,8 @@ function InfoSlide({ project }: { project: Project }) {
     <div
       className="text-white overflow-y-auto overscroll-contain"
       style={{
-        width: "min(720px, calc(100vw - 8rem))",
-        maxHeight: "calc(100vh - 8rem)",
+        width: "min(720px, calc(100vw - 3rem))",
+        maxHeight: "calc(100vh - 22vh)",
       }}
     >
       <div className="w-full text-left pr-2">

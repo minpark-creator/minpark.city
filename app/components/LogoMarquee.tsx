@@ -23,7 +23,7 @@ function LogoTile({ item }: { item: LogoItem }) {
   );
 
   const tileClass =
-    "shrink-0 inline-flex items-center justify-center h-20 sm:h-24 w-[160px] sm:w-[200px] lg:w-[220px]";
+    "shrink-0 inline-flex items-center justify-center h-20 sm:h-24";
 
   if (item.url) {
     return (
@@ -58,7 +58,7 @@ export default function LogoMarquee({ logos }: Props) {
       }}
     >
       <div
-        className="flex items-center marquee-track"
+        className="flex items-center gap-12 sm:gap-16 lg:gap-20 marquee-track"
         style={{ width: "max-content" }}
       >
         {doubled.map((logo, i) => (

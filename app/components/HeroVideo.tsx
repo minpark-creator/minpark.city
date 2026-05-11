@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { HeroPoster } from "../../sanity/queries";
 
 type Props = {
@@ -40,6 +40,21 @@ export default function HeroVideo({ url, fileUrl, poster }: Props) {
   const direct = fileUrl || (url && !embed ? url : null);
   const posterUrl = poster?.url ?? null;
   const [ready, setReady] = useState(false);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+
+  useEffect(() => {
+    if (!direct) return;
+    const el = videoRef.current;
+    if (!el) return;
+    const tryPlay = () => {
+      el.muted = true;
+      const p = el.play();
+      if (p && typeof p.catch === "function") p.catch(() => {});
+    };
+    tryPlay();
+    el.addEventListener("loadedmetadata", tryPlay);
+    return () => el.removeEventListener("loadedmetadata", tryPlay);
+  }, [direct]);
 
   return (
     <section className="pb-12">
@@ -70,12 +85,15 @@ export default function HeroVideo({ url, fileUrl, poster }: Props) {
           />
         ) : direct ? (
           <video
+            ref={videoRef}
             src={direct}
             autoPlay
             loop
             muted
             playsInline
-            preload="metadata"
+            controls={false}
+            disablePictureInPicture
+            preload="auto"
             poster={posterUrl ?? undefined}
             onLoadedData={() => setReady(true)}
             onCanPlay={() => setReady(true)}

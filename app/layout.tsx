@@ -11,9 +11,26 @@ const ebGaramond = EB_Garamond({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://minpark.city"),
   title: "minpark.city",
   description:
-    "Min Park — urban strategist and planner working at the intersection of planning, research, and spatial vision.",
+    "Min Park — urban designer and researcher working at the intersection of planning, research, and spatial vision.",
+  openGraph: {
+    title: "minpark.city",
+    description:
+      "Min Park — urban designer and researcher working at the intersection of planning, research, and spatial vision.",
+    url: "https://minpark.city",
+    siteName: "minpark.city",
+    images: [{ url: "/og.png", width: 1200, height: 630 }],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "minpark.city",
+    description:
+      "Min Park — urban designer and researcher working at the intersection of planning, research, and spatial vision.",
+    images: ["/og.png"],
+  },
 };
 
 export default function RootLayout({

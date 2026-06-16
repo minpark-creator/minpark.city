@@ -9,6 +9,7 @@ type Props = {
   onHover?: () => void;
   onLeave?: () => void;
   dimmed?: boolean;
+  primed?: boolean;
 };
 
 export default function GalleryCard({
@@ -18,6 +19,7 @@ export default function GalleryCard({
   onHover,
   onLeave,
   dimmed = false,
+  primed = false,
 }: Props) {
   const coverSlot = resolveCover(project);
   const cover = coverSlot?.image;
@@ -40,7 +42,9 @@ export default function GalleryCard({
           image={cover}
           alt={project.title}
           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 280px"
-          className="grayscale group-hover:grayscale-0 transition-[filter] duration-500 ease-out"
+          className={`${
+            primed ? "" : "grayscale"
+          } group-hover:grayscale-0 transition-[filter] duration-500 ease-out`}
         />
         <div
           aria-hidden

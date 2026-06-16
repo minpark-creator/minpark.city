@@ -14,11 +14,21 @@ type Open = {
 export default function WorkClient({ projects }: Props) {
   const [open, setOpen] = useState<Open>(null);
   const [hoverIdx, setHoverIdx] = useState<number | null>(null);
+  const [primedId, setPrimedId] = useState<string | null>(null);
 
   const openInfo = (project: Project) =>
     setOpen({ project, imageStart: null });
-  const openImage = (project: Project, originalIndex: number) =>
+
+  const openImage = (project: Project, originalIndex: number) => {
+    const isTouch =
+      typeof window !== "undefined" &&
+      window.matchMedia("(hover: none)").matches;
+    if (isTouch && primedId !== project._id) {
+      setPrimedId(project._id);
+      return;
+    }
     setOpen({ project, imageStart: originalIndex });
+  };
 
   return (
     <>
@@ -33,6 +43,7 @@ export default function WorkClient({ projects }: Props) {
               key={p._id}
               project={p}
               dimmed={dimmed}
+              primed={primedId === p._id}
               onHover={() => setHoverIdx(idx)}
               onLeave={() => setHoverIdx(null)}
               onOpenImage={(originalIndex) => openImage(p, originalIndex)}

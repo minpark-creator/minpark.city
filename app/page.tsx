@@ -54,7 +54,7 @@ export default async function Home() {
               </p>
             )}
             {bulletLines.length > 0 && (
-              <ul className="font-display mt-4 sm:mt-5 space-y-1 text-[11px] sm:text-[12px] lg:text-[13px] leading-[1.55] text-muted inline-block text-left max-w-full">
+              <ul className="font-display mt-4 sm:mt-5 space-y-1 text-[11px] sm:text-[12px] lg:text-[13px] leading-[1.55] text-muted inline-block text-left max-w-[42ch] sm:max-w-none w-full sm:w-auto">
                 {bulletLines.map((item, i) => (
                   <li key={i} className="flex gap-3">
                     <span aria-hidden className="select-none">•</span>

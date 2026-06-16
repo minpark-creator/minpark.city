@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { EB_Garamond } from "next/font/google";
 import "./globals.css";
 
@@ -31,6 +31,11 @@ export const metadata: Metadata = {
       "Min Park — urban designer and researcher working at the intersection of planning, research, and spatial vision.",
     images: ["/og.png"],
   },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#ffffff",
+  colorScheme: "light",
 };
 
 export default function RootLayout({

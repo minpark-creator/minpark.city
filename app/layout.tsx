@@ -21,7 +21,7 @@ export const metadata: Metadata = {
       "Min Park — urban designer and researcher working at the intersection of planning, research, and spatial vision.",
     url: "https://minpark.city",
     siteName: "minpark.city",
-    images: [{ url: "/og.png", width: 1200, height: 800 }],
+    images: [{ url: "/og.png", width: 1200, height: 630, alt: "minpark.city" }],
     type: "website",
   },
   twitter: {

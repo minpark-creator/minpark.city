@@ -64,7 +64,7 @@ export default function ProjectEntry({
         className="col-span-12 md:col-span-9"
         onMouseLeave={() => setHovered(null)}
       >
-        <div className="grid grid-cols-3 gap-3 sm:gap-4">
+        <div className="flex gap-3 overflow-x-auto -mx-6 px-6 snap-x snap-mandatory md:mx-0 md:px-0 md:grid md:grid-cols-3 md:gap-4 md:overflow-visible md:snap-none">
           {slots.map((slot, i) => {
             const dimmed = hovered !== null && hovered !== i;
             return (
@@ -73,7 +73,7 @@ export default function ProjectEntry({
                 key={`${slot.originalIndex}-${i}`}
                 onMouseEnter={() => setHovered(i)}
                 onClick={() => onOpenImage(slot.originalIndex)}
-                className="relative aspect-[4/5] overflow-hidden block w-full p-0"
+                className="relative aspect-[4/5] overflow-hidden block w-[70vw] shrink-0 snap-start md:w-auto md:shrink md:snap-align-none p-0"
               >
                 <ProjectThumb
                   image={slot.image}

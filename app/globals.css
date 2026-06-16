@@ -54,10 +54,19 @@ a:hover {
 
 .marquee-track {
   animation: marquee 38s linear infinite;
+  will-change: transform;
+  backface-visibility: hidden;
+  transform: translateZ(0);
 }
 
 .marquee-track:hover {
   animation-play-state: paused;
+}
+
+@media (max-width: 640px) {
+  .marquee-track {
+    animation-duration: 22s;
+  }
 }
 
 @keyframes page-fade-in {

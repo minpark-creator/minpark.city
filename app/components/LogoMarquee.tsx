@@ -23,7 +23,7 @@ function LogoTile({ item }: { item: LogoItem }) {
   );
 
   const tileClass =
-    "shrink-0 inline-flex items-center justify-center h-20 sm:h-24";
+    "shrink-0 inline-flex items-center justify-center h-14 sm:h-24";
 
   if (item.url) {
     return (

@@ -105,7 +105,7 @@ export default async function AboutPage() {
             {about.email && (
               <a
                 href={`mailto:${about.email}`}
-                className="font-display block mt-8 sm:mt-10 tracking-[-0.01em] text-[24px] sm:text-[30px] md:text-[36px] lg:text-[42px] leading-[1.1] hover:opacity-70 transition-opacity duration-500 ease-out no-underline hover:no-underline"
+                className="font-display block mt-8 sm:mt-10 tracking-[-0.01em] text-[20px] sm:text-[28px] md:text-[34px] lg:text-[40px] leading-[1.15] [overflow-wrap:anywhere] hover:opacity-70 transition-opacity duration-500 ease-out no-underline hover:no-underline"
               >
                 {about.email}
               </a>

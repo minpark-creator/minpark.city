@@ -13,8 +13,8 @@ export default async function FilmPage() {
       <div className="pt-8 sm:pt-12 pb-2">
         <p className="font-display text-[12px] sm:text-[13px] lg:text-[14px] leading-[1.5]">
           A collection of moving images and observations
-          <br />
-          exploring how people use and inhabit public space.
+          <br className="hidden sm:inline" />
+          {" "}exploring how people use and inhabit public space.
         </p>
       </div>
       <FilmClient films={films} />

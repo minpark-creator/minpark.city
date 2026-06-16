@@ -49,12 +49,12 @@ export default async function Home() {
               />
             </h1>
             {lead && (
-              <p className="font-display mt-6 sm:mt-8 text-[12px] sm:text-[13px] lg:text-[14px] leading-[1.5] whitespace-nowrap">
+              <p className="font-display mt-6 sm:mt-8 text-[12px] sm:text-[13px] lg:text-[14px] leading-[1.5] max-w-[42ch] sm:max-w-none mx-auto sm:whitespace-nowrap">
                 {lead}
               </p>
             )}
             {bulletLines.length > 0 && (
-              <ul className="font-display mt-4 sm:mt-5 space-y-1 text-[11px] sm:text-[12px] lg:text-[13px] leading-[1.55] text-muted inline-block text-left">
+              <ul className="font-display mt-4 sm:mt-5 space-y-1 text-[11px] sm:text-[12px] lg:text-[13px] leading-[1.55] text-muted inline-block text-left max-w-full">
                 {bulletLines.map((item, i) => (
                   <li key={i} className="flex gap-3">
                     <span aria-hidden className="select-none">•</span>

@@ -119,7 +119,7 @@ export default function FilmClient({ films }: { films: Film[] }) {
         <section className="pt-6 pb-12">
           <FilmPlayer key={active._id} film={active} />
           <div className="pt-4 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 text-[14px]">
-            <span className="font-medium">{active.title}</span>
+            <span className="font-display font-medium">{active.title}</span>
             <span className="text-muted">{formatDate(active.date)}</span>
           </div>
           {active.caption && (
@@ -130,7 +130,7 @@ export default function FilmClient({ films }: { films: Film[] }) {
         </section>
       )}
 
-      <div className="pt-8 border-t border-neutral-200">
+      <div className="pt-8">
         <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-1 pt-4">
           {films.map((film) => {
             const isActive = film._id === active?._id;
@@ -139,12 +139,12 @@ export default function FilmClient({ films }: { films: Film[] }) {
                 <button
                   type="button"
                   onClick={() => setActiveId(film._id)}
-                  className={`w-full text-left py-3 border-b border-neutral-100 transition-opacity ${
+                  className={`w-full text-left py-3 transition-opacity ${
                     isActive ? "opacity-100" : "opacity-70 hover:opacity-100"
                   }`}
                 >
                   <div
-                    className={`text-[15px] truncate ${
+                    className={`font-display text-[15px] truncate ${
                       isActive ? "font-medium" : ""
                     }`}
                   >

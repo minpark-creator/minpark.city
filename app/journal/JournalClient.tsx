@@ -43,13 +43,13 @@ export default function JournalClient({
                 <button
                   type="button"
                   onClick={() => setActiveId(entry._id)}
-                  className={`w-full text-left py-3 border-b border-neutral-100 transition-colors ${
+                  className={`w-full text-left py-3 transition-colors ${
                     isActive ? "opacity-100" : "opacity-70 hover:opacity-100"
                   }`}
                 >
                   <div className="flex items-baseline justify-between gap-4">
                     <span
-                      className={`text-[15px] ${
+                      className={`font-display text-[15px] ${
                         isActive ? "font-medium" : ""
                       }`}
                     >
@@ -59,11 +59,6 @@ export default function JournalClient({
                       {formatDate(entry.date)}
                     </span>
                   </div>
-                  {entry.excerpt && (
-                    <div className="text-[13px] text-muted mt-1 line-clamp-2">
-                      {entry.excerpt}
-                    </div>
-                  )}
                 </button>
               </li>
             );
@@ -74,13 +69,18 @@ export default function JournalClient({
       <article className="col-span-12 md:col-span-7 md:col-start-6">
         {active && (
           <>
-            <header className="mb-8 pb-6 border-b border-neutral-200">
+            <header className="mb-8 pb-6">
               <div className="text-[13px] text-muted">
                 {formatDate(active.date)}
               </div>
-              <h2 className="mt-2 text-[22px] sm:text-[26px] lg:text-[28px] font-medium leading-tight">
+              <h2 className="font-display mt-2 text-[22px] sm:text-[26px] lg:text-[28px] font-medium leading-tight">
                 {active.title}
               </h2>
+              {active.excerpt && (
+                <div className="mt-3 text-[13px] text-muted">
+                  {active.excerpt}
+                </div>
+              )}
             </header>
             <Paragraphs text={active.bodyText} />
           </>

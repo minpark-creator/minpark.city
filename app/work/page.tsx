@@ -18,7 +18,7 @@ export default async function WorkPage() {
     <PageShell>
       <div className="pt-8 sm:pt-12">
         <div className="flex items-baseline justify-between py-4">
-          <h1 className="text-[16px] font-medium">All projects by date</h1>
+          <h1 className="text-[16px]">All projects by date</h1>
           <span className="text-muted text-[14px]">
             {allByDate.length} projects
           </span>

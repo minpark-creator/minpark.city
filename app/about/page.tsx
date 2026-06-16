@@ -52,7 +52,7 @@ export default async function AboutPage() {
               : "md:col-span-9 md:col-start-1"
           }`}
         >
-          <div className="space-y-5 text-[16px] sm:text-[17px] leading-[1.7] max-w-[58ch]">
+          <div className="space-y-5 text-[14px] sm:text-[15px] leading-[1.7] max-w-[58ch]">
             {paragraphs.length > 0 ? (
               paragraphs.map((p, i) => <p key={i}>{p}</p>)
             ) : (
@@ -96,16 +96,16 @@ export default async function AboutPage() {
                 : "md:col-span-9 md:col-start-1 md:row-start-2"
             } pt-10 sm:pt-16`}
           >
-            <h2 className="text-[16px] font-medium mb-6">Contact</h2>
+            <h2 className="text-[14px] sm:text-[15px] mb-4">Contact</h2>
             {about.contactIntro && (
-              <p className="text-[16px] sm:text-[17px] leading-[1.7] max-w-[56ch] whitespace-pre-line">
+              <p className="text-[14px] sm:text-[15px] leading-[1.7] max-w-[56ch] whitespace-pre-line">
                 {about.contactIntro}
               </p>
             )}
             {about.email && (
               <a
                 href={`mailto:${about.email}`}
-                className="block mt-8 sm:mt-10 tracking-[-0.01em] text-[24px] sm:text-[30px] md:text-[36px] lg:text-[42px] leading-[1.1] hover:opacity-70 transition-opacity duration-500 ease-out no-underline hover:no-underline"
+                className="font-display block mt-8 sm:mt-10 tracking-[-0.01em] text-[24px] sm:text-[30px] md:text-[36px] lg:text-[42px] leading-[1.1] hover:opacity-70 transition-opacity duration-500 ease-out no-underline hover:no-underline"
               >
                 {about.email}
               </a>

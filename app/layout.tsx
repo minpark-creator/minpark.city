@@ -1,12 +1,12 @@
 import type { Metadata, Viewport } from "next";
-import { EB_Garamond } from "next/font/google";
+import { Space_Mono } from "next/font/google";
 import "./globals.css";
 
-const ebGaramond = EB_Garamond({
+const spaceMono = Space_Mono({
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
-  style: ["normal"],
-  variable: "--font-eb-garamond",
+  weight: ["400", "700"],
+  style: ["normal", "italic"],
+  variable: "--font-space-mono",
   display: "swap",
 });
 
@@ -44,7 +44,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`h-full antialiased ${ebGaramond.variable}`}>
+    <html lang="en" className={`h-full antialiased ${spaceMono.variable}`}>
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );

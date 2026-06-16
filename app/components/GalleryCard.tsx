@@ -34,12 +34,13 @@ export default function GalleryCard({
         onClick={() =>
           imageClickable && onOpenImage!(coverSlot?.originalIndex ?? 0)
         }
-        className="relative aspect-[3/4] overflow-hidden block w-full p-0"
+        className="group relative aspect-[3/4] overflow-hidden block w-full p-0"
       >
         <ProjectThumb
           image={cover}
           alt={project.title}
           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 280px"
+          className="grayscale group-hover:grayscale-0 transition-[filter] duration-500 ease-out"
         />
         <div
           aria-hidden
@@ -52,7 +53,7 @@ export default function GalleryCard({
         onClick={onOpenInfo}
         className="flex items-baseline justify-between gap-2 text-[14px] w-full text-left hover:opacity-70 transition-opacity duration-500 ease-out"
       >
-        <span className="font-medium truncate">{project.title}</span>
+        <span className="font-display font-medium truncate">{project.title}</span>
         {(project.year || project.date) && (
           <span className="text-muted shrink-0 font-normal">
             {project.year ?? new Date(project.date!).getFullYear()}

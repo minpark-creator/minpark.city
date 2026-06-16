@@ -19,6 +19,10 @@ export default function ProjectEntry({
   const [hovered, setHovered] = useState<number | null>(null);
 
   const slots = resolveFeaturedSlots(project, 3);
+  const allSlots = project.images.map((image, originalIndex) => ({
+    image,
+    originalIndex,
+  }));
 
   return (
     <article className="grid grid-cols-12 gap-x-6 gap-y-6 py-10 sm:py-14">
@@ -64,7 +68,26 @@ export default function ProjectEntry({
         className="col-span-12 md:col-span-9"
         onMouseLeave={() => setHovered(null)}
       >
-        <div className="flex gap-3 overflow-x-auto -mx-6 px-6 snap-x snap-mandatory md:mx-0 md:px-0 md:grid md:grid-cols-3 md:gap-4 md:overflow-visible md:snap-none">
+        {/* Mobile: all images, horizontal scroll, non-clickable. */}
+        <div
+          className="md:hidden flex gap-3 overflow-x-auto -mx-6 px-6 snap-x snap-mandatory"
+          aria-label={`${project.title} images — scroll horizontally`}
+        >
+          {allSlots.map((slot) => (
+            <div
+              key={`m-${slot.originalIndex}`}
+              className="relative aspect-[4/5] overflow-hidden block w-[70vw] shrink-0 snap-start"
+            >
+              <ProjectThumb
+                image={slot.image}
+                alt={`${project.title} image ${slot.originalIndex + 1}`}
+              />
+            </div>
+          ))}
+        </div>
+
+        {/* Desktop: featured 3-up grid, clickable. */}
+        <div className="hidden md:grid md:grid-cols-3 md:gap-4">
           {slots.map((slot, i) => {
             const dimmed = hovered !== null && hovered !== i;
             return (
@@ -73,7 +96,7 @@ export default function ProjectEntry({
                 key={`${slot.originalIndex}-${i}`}
                 onMouseEnter={() => setHovered(i)}
                 onClick={() => onOpenImage(slot.originalIndex)}
-                className="relative aspect-[4/5] overflow-hidden block w-[70vw] shrink-0 snap-start md:w-auto md:shrink md:snap-align-none p-0"
+                className="relative aspect-[4/5] overflow-hidden block w-full p-0"
               >
                 <ProjectThumb
                   image={slot.image}

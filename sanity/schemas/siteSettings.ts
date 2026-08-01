@@ -28,6 +28,14 @@ export const siteSettingsSchema = defineType({
       description: "Shown under the heading, centered.",
     }),
     defineField({
+      name: "heroImages",
+      title: "Hero Background Images",
+      type: "array",
+      of: [{ type: "image", options: { hotspot: true } }],
+      description:
+        "Background photos behind the mp mark + intro on the home page. One is picked at random on every page load. Upload landscape photos for best results.",
+    }),
+    defineField({
       name: "viewMoreCount",
       title: "View more projects — count",
       type: "number",

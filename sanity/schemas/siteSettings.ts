@@ -6,21 +6,6 @@ export const siteSettingsSchema = defineType({
   type: "document",
   fields: [
     defineField({
-      name: "title",
-      title: "Site Title Prefix",
-      type: "string",
-      description: "Shown before the cycling word (e.g. 'minpark.')",
-      initialValue: "minpark.",
-    }),
-    defineField({
-      name: "words",
-      title: "Cycling Words",
-      type: "array",
-      of: [{ type: "string" }],
-      description:
-        "List of words that cycle after the title prefix (e.g. city, design, research).",
-    }),
-    defineField({
       name: "intro",
       title: "Intro Paragraph",
       type: "text",
@@ -34,15 +19,6 @@ export const siteSettingsSchema = defineType({
       of: [{ type: "image", options: { hotspot: true } }],
       description:
         "Background photos behind the mp mark + intro on the home page. One is picked at random on every page load. Upload landscape photos for best results.",
-    }),
-    defineField({
-      name: "viewMoreCount",
-      title: "View more projects — count",
-      type: "number",
-      description:
-        "How many non-Selected projects to show in the home 'View more projects' grid. Default 4.",
-      initialValue: 4,
-      validation: (r) => r.min(0).max(24),
     }),
     defineField({
       name: "logos",
@@ -79,33 +55,44 @@ export const siteSettingsSchema = defineType({
         "Logos of institutions / clients shown in a horizontal marquee under the intro. Adjust 'Display height' on each logo to visually balance.",
     }),
     defineField({
-      name: "heroVideoUrl",
-      title: "Hero Video URL (Vimeo / YouTube / MP4)",
-      type: "url",
+      name: "contactEmail",
+      title: "Contact Email",
+      type: "string",
       description:
-        "If set, this plays below the intro. Vimeo / YouTube embed URLs work, or a direct .mp4 link. Prefer Vimeo for best quality.",
+        "Used by the 'email' tab in the footer, which opens a pre-addressed Gmail compose window. Leave blank to fall back to the email on the About page.",
     }),
     defineField({
-      name: "heroVideoFile",
-      title: "Hero Video File (upload)",
-      type: "file",
-      options: { accept: "video/*" },
+      name: "socialLinks",
+      title: "Footer Links",
+      type: "array",
       description:
-        "Alternative to Hero Video URL. Direct upload (smaller files only — use Vimeo link above for high quality long videos).",
-    }),
-    defineField({
-      name: "heroPoster",
-      title: "Hero Poster Image",
-      type: "image",
-      options: { hotspot: true },
-      description:
-        "Still frame shown (with a blur-up) while the hero video loads. Use a 16:9 frame from the video.",
+        "Tabs shown in the footer after 'email', in this order. Labels are lower-cased automatically and get an ↗ to mark them as external.",
+      of: [
+        {
+          type: "object",
+          fields: [
+            {
+              name: "label",
+              title: "Label",
+              type: "string",
+              description: "e.g. linkedin, blog, instagram",
+              validation: (r) => r.required(),
+            },
+            {
+              name: "url",
+              title: "URL",
+              type: "url",
+              validation: (r) => r.required(),
+            },
+          ],
+          preview: { select: { title: "label", subtitle: "url" } },
+        },
+      ],
     }),
   ],
   preview: {
-    select: { title: "title" },
-    prepare({ title }) {
-      return { title: title || "Site Settings" };
+    prepare() {
+      return { title: "Site Settings" };
     },
   },
 });

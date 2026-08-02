@@ -7,8 +7,6 @@ import type {
 } from "./queries";
 
 export const fallbackSettings: SiteSettings = {
-  title: "minpark.",
-  words: ["city", "strategy", "research", "planning"],
   intro:
     "Creating livable, lovable cities through urban research, strategy, design, and narrative!\n\n* across scales, from detail to system.\n* rooted in inclusivity and climate resilience.\n* output: masterplans, exhibitions, reports, workshops, talks.",
   logos: [
@@ -17,10 +15,11 @@ export const fallbackSettings: SiteSettings = {
     { _key: "l3", name: "MPlan Mag", height: 40, image: { url: null } },
     { _key: "l4", name: "Europe-Korea Conference", height: 50, image: { url: null } },
   ],
-  heroVideoUrl: undefined,
-  heroVideoFileUrl: null,
-  heroPoster: null,
-  viewMoreCount: 4,
+  contactEmail: "contact.minpark@gmail.com",
+  socialLinks: [
+    { _key: "s1", label: "linkedin", url: "https://www.linkedin.com/in/minpark-urban-strategy" },
+    { _key: "s2", label: "instagram", url: "https://www.instagram.com/iamminggoo/" },
+  ],
 };
 
 export const fallbackAbout: AboutPage = {

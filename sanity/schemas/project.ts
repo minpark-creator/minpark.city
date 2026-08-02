@@ -62,10 +62,11 @@ export const projectSchema = defineType({
     }),
     defineField({
       name: "summary",
-      title: "Summary",
+      title: "Summary (unused)",
       type: "text",
       rows: 3,
-      description: "Short 1–2 sentence subtitle shown in lists.",
+      description:
+        "Not shown anywhere on the site — the home page lists role / affiliation / year, and the lightbox shows Body. Kept so existing text isn't lost.",
     }),
     defineField({
       name: "body",

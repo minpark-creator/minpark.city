@@ -56,16 +56,12 @@ export type HeroPoster = {
 };
 
 export type SiteSettings = {
-  title: string;
-  words: string[];
   intro: string;
   logos: LogoItem[];
   heroImages?: ProjectImage[];
-  heroVideoUrl?: string;
-  heroVideoFileUrl?: string | null;
-  heroPoster?: HeroPoster | null;
-  /** Number of non-Selected projects shown in the home "View more" grid. */
-  viewMoreCount?: number;
+  /** Site Settings' own contact email, falling back to the About page's. */
+  contactEmail?: string | null;
+  socialLinks?: { _key?: string; label: string; url: string }[];
 };
 
 export type AboutSection = {
@@ -139,8 +135,7 @@ type RawPoster = {
 
 type RawProject = Omit<Project, "images"> & { images?: RawImage[] };
 type RawFilm = Omit<Film, "poster"> & { poster?: RawPoster | null };
-type RawSettings = Omit<SiteSettings, "heroPoster" | "heroImages"> & {
-  heroPoster?: RawPoster | null;
+type RawSettings = Omit<SiteSettings, "heroImages"> & {
   heroImages?: RawImage[];
 };
 
@@ -195,11 +190,12 @@ const PROJECTS_QUERY = /* groq */ `
 
 const SETTINGS_QUERY = /* groq */ `
   *[_type == "siteSettings"][0]{
-    title, words, intro, heroVideoUrl, viewMoreCount,
-    "heroVideoFileUrl": heroVideoFile.asset->url,
-    "heroPoster": heroPoster${POSTER_PROJECTION},
+    intro,
     "heroImages": heroImages[]${IMAGE_PROJECTION},
-    "logos": logos[]{ _key, name, url, height, "image": { "url": image.asset->url } }
+    "logos": logos[]{ _key, name, url, height, "image": { "url": image.asset->url } },
+    socialLinks[]{ _key, label, url },
+    // Falls back to the About page so the email only has to be typed once.
+    "contactEmail": coalesce(contactEmail, *[_type == "aboutPage"][0].email)
   }`;
 
 const ABOUT_QUERY = /* groq */ `
@@ -259,23 +255,18 @@ export async function getSiteSettings(): Promise<SiteSettings> {
     const s = await client.fetch<RawSettings | null>(SETTINGS_QUERY);
     if (!s) return fallbackSettings;
     return {
-      title: s.title || fallbackSettings.title,
-      words:
-        s.words && s.words.length > 0 ? s.words : fallbackSettings.words,
       intro: s.intro || fallbackSettings.intro,
       logos: s.logos && s.logos.length > 0 ? s.logos : fallbackSettings.logos,
-      heroVideoUrl: s.heroVideoUrl || fallbackSettings.heroVideoUrl,
-      heroVideoFileUrl:
-        s.heroVideoFileUrl ?? fallbackSettings.heroVideoFileUrl ?? null,
-      heroPoster:
-        toPoster(s.heroPoster) ?? fallbackSettings.heroPoster ?? null,
       heroImages: (s.heroImages ?? [])
         .map(toImage)
         .filter((img): img is ProjectImage => img !== null),
-      viewMoreCount:
-        typeof s.viewMoreCount === "number"
-          ? s.viewMoreCount
-          : fallbackSettings.viewMoreCount ?? 4,
+      // Studio is the source of truth once filled in; the fallbacks only
+      // apply when Sanity is unreachable or the fields are still empty.
+      contactEmail: s.contactEmail || fallbackSettings.contactEmail,
+      socialLinks:
+        s.socialLinks && s.socialLinks.length > 0
+          ? s.socialLinks
+          : fallbackSettings.socialLinks,
     };
   } catch {
     return fallbackSettings;

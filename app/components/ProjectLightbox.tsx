@@ -9,8 +9,10 @@ type Props = {
   /**
    * Original 0-based index of the image the user clicked, or `null` if they
    * opened the project from a title (info-only). On an image click the
-   * clicked image is the first slide, followed by the info slide, then the
-   * remaining images in order. On a title click the info slide comes first.
+   * clicked image is the first slide, followed by the remaining images in
+   * order, with the info slide last — so paging forward runs through every
+   * photo, hits the text, then wraps back to the clicked image. On a title
+   * click the info slide comes first.
    */
   imageStart: number | null;
   onClose: () => void;
@@ -34,7 +36,7 @@ export default function ProjectLightbox({
 
   const slides: Slide[] =
     imageStart != null && imageSlides.length > 0
-      ? [imageSlides[0], { kind: "info" }, ...imageSlides.slice(1)]
+      ? [...imageSlides, { kind: "info" }]
       : [{ kind: "info" }, ...imageSlides];
   const total = slides.length;
 

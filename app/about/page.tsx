@@ -20,20 +20,23 @@ export default async function AboutPage() {
   return (
     <PageShell>
       {/*
-        Desktop: portrait pinned to the LEFT column, bio + sections + contact
-                 in the RIGHT column directly next to the photo (less separated).
-        Mobile: portrait first, then bio + sections, then contact.
+        Desktop: fixed-width square portrait on the left, everything else in a
+        flexible column beside it. Flex rather than the 12-col grid so the gap
+        between photo and text is an exact value, not whatever the column
+        arithmetic leaves over.
+        Mobile: portrait first, then bio + sections + contact stacked.
       */}
-      <div className="grid grid-cols-12 gap-x-6 sm:gap-x-10 gap-y-10 pt-8 sm:pt-14">
-        {/* Portrait (left column on desktop, first on mobile) */}
+      <div className="flex flex-col md:flex-row gap-y-10 md:gap-x-12 pt-8 sm:pt-14">
         {portrait?.url && (
-          <div className="col-span-12 md:col-span-5 md:col-start-1 md:row-start-1">
-            <div className="relative w-full aspect-[3/4] overflow-hidden">
+          <div className="w-full max-w-[240px] md:max-w-none md:w-[320px] md:shrink-0">
+            {/* A hair taller than square (320 × 324) so the photo's baseline
+                lands on the last line of the bio. */}
+            <div className="relative w-full aspect-square md:aspect-[80/81] overflow-hidden">
               <Image
                 src={portrait.url}
                 alt={portrait.alt || "Portrait of Min Park"}
                 fill
-                sizes="(max-width: 768px) 100vw, 460px"
+                sizes="(max-width: 768px) 240px, 320px"
                 quality={92}
                 placeholder={portrait.lqip ? "blur" : "empty"}
                 blurDataURL={portrait.lqip ?? undefined}
@@ -44,15 +47,8 @@ export default async function AboutPage() {
           </div>
         )}
 
-        {/* Bio + sections (right column on desktop, between portrait and contact on mobile) */}
-        <div
-          className={`col-span-12 ${
-            portrait?.url
-              ? "md:col-span-7 md:col-start-6 md:row-start-1"
-              : "md:col-span-9 md:col-start-1"
-          }`}
-        >
-          <div className="space-y-5 text-[14px] sm:text-[15px] leading-[1.7] max-w-[58ch]">
+        <div className="flex-1 min-w-0">
+          <div className="space-y-5 text-[14px] sm:text-[15px] leading-[1.55] max-w-[58ch] md:max-w-none">
             {paragraphs.length > 0 ? (
               paragraphs.map((p, i) => <p key={i}>{p}</p>)
             ) : (
@@ -68,9 +64,9 @@ export default async function AboutPage() {
                   className="grid grid-cols-12 gap-x-4 sm:gap-x-8 gap-y-3"
                 >
                   <div className="col-span-12 md:col-span-3">
-                    <h2 className="text-[16px] font-medium">{section.title}</h2>
+                    <h2 className="text-[16px]">{section.title}</h2>
                   </div>
-                  <dl className="col-span-12 md:col-span-9 text-[15px] leading-[1.7]">
+                  <dl className="col-span-12 md:col-span-9 text-[15px] leading-[1.55]">
                     {section.items?.map((item, j) => (
                       <div key={j} className="flex gap-x-4 sm:gap-x-6 py-1">
                         <dt className="w-[80px] sm:w-[100px] shrink-0 text-muted text-[13px] sm:text-[14px]">
@@ -84,28 +80,19 @@ export default async function AboutPage() {
               ))}
             </div>
           )}
-        </div>
 
-        {/* Contact (right column under bio on desktop, last on mobile) */}
+        {/* Contact sits under the bio, inside the same right-hand column. */}
         {hasContact && (
-          <section
-            id="contact"
-            className={`col-span-12 ${
-              portrait?.url
-                ? "md:col-span-7 md:col-start-6 md:row-start-2"
-                : "md:col-span-9 md:col-start-1 md:row-start-2"
-            } pt-10 sm:pt-16`}
-          >
-            <h2 className="text-[14px] sm:text-[15px] mb-4">Contact</h2>
+          <section id="contact" className="pt-10 sm:pt-16">
             {about.contactIntro && (
-              <p className="text-[14px] sm:text-[15px] leading-[1.7] max-w-[56ch] whitespace-pre-line">
+              <p className="text-[14px] sm:text-[15px] leading-[1.55] max-w-[56ch] whitespace-pre-line">
                 {about.contactIntro}
               </p>
             )}
             {about.email && (
               <a
                 href={`mailto:${about.email}`}
-                className="font-display block mt-8 sm:mt-10 tracking-[-0.01em] text-[20px] sm:text-[28px] md:text-[34px] lg:text-[40px] leading-[1.15] [overflow-wrap:anywhere] hover:opacity-70 transition-opacity duration-500 ease-out no-underline hover:no-underline"
+                className="font-display block mt-8 sm:mt-10 tracking-[-0.01em] text-[18px] sm:text-[24px] md:text-[28px] lg:text-[32px] leading-[1.15] [overflow-wrap:anywhere] hover:opacity-70 transition-opacity duration-500 ease-out no-underline hover:no-underline"
               >
                 {about.email}
               </a>
@@ -128,6 +115,7 @@ export default async function AboutPage() {
             )}
           </section>
         )}
+        </div>
       </div>
     </PageShell>
   );

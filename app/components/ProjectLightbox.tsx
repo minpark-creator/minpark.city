@@ -8,9 +8,9 @@ type Props = {
   project: Project;
   /**
    * Original 0-based index of the image the user clicked, or `null` if they
-   * opened the project from a title (info-only). The lightbox always starts
-   * on the info slide; the image slides are then ordered so this image
-   * comes first when the user presses next.
+   * opened the project from a title (info-only). On an image click the
+   * clicked image is the first slide, followed by the info slide, then the
+   * remaining images in order. On a title click the info slide comes first.
    */
   imageStart: number | null;
   onClose: () => void;
@@ -24,30 +24,20 @@ export default function ProjectLightbox({
   imageStart,
   onClose,
 }: Props) {
-  // Reorder image slides so the clicked image is first after info.
-  const ordered: ProjectImage[] = (() => {
-    const n = project.images.length;
-    if (n === 0) return [];
-    const start = imageStart != null && imageStart >= 0 && imageStart < n
-      ? imageStart
-      : 0;
-    return Array.from({ length: n }, (_, k) => project.images[(start + k) % n]);
-  })();
+  const n = project.images.length;
+  const start =
+    imageStart != null && imageStart >= 0 && imageStart < n ? imageStart : 0;
+  const imageSlides: ImageSlide[] = Array.from({ length: n }, (_, k) => {
+    const index = (start + k) % n;
+    return { kind: "image" as const, image: project.images[index], index };
+  });
 
-  // For the counter we still want to show "5 / 10" using the original upload
-  // index, so keep both around.
-  const slides: Slide[] = [
-    { kind: "info" },
-    ...ordered.map((image, k) => {
-      const originalIndex =
-        (imageStart != null && imageStart >= 0 ? imageStart : 0) + k;
-      const wrapped = originalIndex % project.images.length;
-      return { kind: "image" as const, image, index: wrapped };
-    }),
-  ];
+  const slides: Slide[] =
+    imageStart != null && imageSlides.length > 0
+      ? [imageSlides[0], { kind: "info" }, ...imageSlides.slice(1)]
+      : [{ kind: "info" }, ...imageSlides];
   const total = slides.length;
 
-  // Always land on info first.
   const [i, setI] = useState(0);
 
   const prev = () => setI((x) => (x - 1 + total) % total);
@@ -292,14 +282,21 @@ function InfoSlide({ project }: { project: Project }) {
     : [];
 
   return (
+    // Fixed height rather than max-height: the parent centres this box, so a
+    // max-height would let short entries float up and long ones sit lower,
+    // moving the title from project to project. Pinning the height parks the
+    // top edge in the same place every time and lets the text scroll inside.
     <div
       className="text-white overflow-y-auto overscroll-contain"
       style={{
         width: "min(720px, calc(100vw - 3rem))",
-        maxHeight: "calc(100vh - 8rem)",
+        height: "calc(100vh - 8rem)",
       }}
     >
-      <div className="w-full text-left pr-2">
+      {/* Top padding sets where the title sits — upper third of the viewport.
+          It scrolls away with the content, so long entries still get the full
+          height to run into. */}
+      <div className="w-full text-left pr-2 pt-[18vh]">
         <h2 className="font-display text-[26px] sm:text-[32px] leading-[1.2]">
           {project.title}
         </h2>
@@ -323,7 +320,7 @@ function InfoSlide({ project }: { project: Project }) {
         )}
 
         {paragraphs.length > 0 && (
-          <div className="mt-12 space-y-4 text-[16px] leading-[1.55] text-white/90 text-left pb-2">
+          <div className="mt-12 space-y-4 text-[16px] leading-[1.5] font-light text-white/75 text-left pb-2">
             {paragraphs.map((p, idx) => (
               <p key={idx}>{p}</p>
             ))}

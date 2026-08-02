@@ -16,7 +16,7 @@ export default function Header() {
 
   return (
     <header className="w-full pt-6 pb-4">
-      <nav className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 sm:gap-x-8 lg:gap-x-12 text-[14px] sm:text-[15px]">
+      <nav className="flex items-center justify-between gap-x-2 text-[14px] sm:text-[15px] font-nav lowercase tracking-[0.06em] font-light">
         {nav.map((item) => {
           const active = pathname === item.href;
           return (

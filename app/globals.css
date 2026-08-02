@@ -19,12 +19,38 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-muted: var(--muted);
-  --font-sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  --font-display: var(--font-space-mono), "Space Mono", "Courier New", monospace;
+  /* Body copy: Inter Light. Pretendard trails it to cover Hangul, which
+     Inter has no glyphs for. */
+  --font-sans: var(--font-inter), "Pretendard Variable", Pretendard, Helvetica,
+    Arial, sans-serif;
+  /* Titles — same face and weight as body copy. */
+  --font-display: var(--font-sans);
+  /* Header and footer tabs. */
+  --font-nav: "Pretendard Variable", Pretendard, var(--font-inter), Helvetica,
+    Arial, sans-serif;
 }
 
 .font-display {
   font-family: var(--font-display);
+  font-weight: 300;
+}
+
+.font-nav {
+  font-family: var(--font-nav);
+}
+
+/* Nothing on the site is set bolder than regular. */
+.font-medium,
+.font-semibold,
+.font-bold {
+  font-weight: 400;
+}
+
+/* The base reset pins headings and paragraphs to 400 outright, which beats
+   inheritance and left every <p> heavier than the Light body weight. Hand
+   them back to whatever the ancestor sets. */
+:where(h1, h2, h3, h4, h5, h6, p) {
+  font-weight: inherit;
 }
 
 html,
@@ -32,6 +58,7 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
+  font-weight: 300;
   font-size: 12px;
   line-height: 1.35;
   -webkit-font-smoothing: antialiased;

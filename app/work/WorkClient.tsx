@@ -19,7 +19,10 @@ export default function WorkClient({ projects }: Props) {
   const openInfo = (project: Project) =>
     setOpen({ project, imageStart: null });
 
-  const openImage = (project: Project, originalIndex: number) => {
+  // On Work, opening a project always starts on the info slide — the thumbnail
+  // and the title lead to the same place. (The home page differs: there a
+  // thumbnail click opens that specific image first.)
+  const openFromThumb = (project: Project) => {
     const isTouch =
       typeof window !== "undefined" &&
       window.matchMedia("(hover: none)").matches;
@@ -27,13 +30,13 @@ export default function WorkClient({ projects }: Props) {
       setPrimedId(project._id);
       return;
     }
-    setOpen({ project, imageStart: originalIndex });
+    openInfo(project);
   };
 
   return (
     <>
       <div
-        className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-5 gap-y-10 pt-6"
+        className="grid grid-cols-2 md:grid-cols-3 gap-x-5 gap-y-14 pt-6"
         onMouseLeave={() => setHoverIdx(null)}
       >
         {projects.map((p, idx) => {
@@ -46,7 +49,7 @@ export default function WorkClient({ projects }: Props) {
               primed={primedId === p._id}
               onHover={() => setHoverIdx(idx)}
               onLeave={() => setHoverIdx(null)}
-              onOpenImage={(originalIndex) => openImage(p, originalIndex)}
+              onOpenImage={() => openFromThumb(p)}
               onOpenInfo={() => openInfo(p)}
             />
           );

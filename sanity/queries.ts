@@ -60,6 +60,7 @@ export type SiteSettings = {
   words: string[];
   intro: string;
   logos: LogoItem[];
+  heroImages?: ProjectImage[];
   heroVideoUrl?: string;
   heroVideoFileUrl?: string | null;
   heroPoster?: HeroPoster | null;
@@ -138,8 +139,9 @@ type RawPoster = {
 
 type RawProject = Omit<Project, "images"> & { images?: RawImage[] };
 type RawFilm = Omit<Film, "poster"> & { poster?: RawPoster | null };
-type RawSettings = Omit<SiteSettings, "heroPoster"> & {
+type RawSettings = Omit<SiteSettings, "heroPoster" | "heroImages"> & {
   heroPoster?: RawPoster | null;
+  heroImages?: RawImage[];
 };
 
 function toImage(raw: RawImage | undefined): ProjectImage | null {
@@ -196,6 +198,7 @@ const SETTINGS_QUERY = /* groq */ `
     title, words, intro, heroVideoUrl, viewMoreCount,
     "heroVideoFileUrl": heroVideoFile.asset->url,
     "heroPoster": heroPoster${POSTER_PROJECTION},
+    "heroImages": heroImages[]${IMAGE_PROJECTION},
     "logos": logos[]{ _key, name, url, height, "image": { "url": image.asset->url } }
   }`;
 
@@ -266,6 +269,9 @@ export async function getSiteSettings(): Promise<SiteSettings> {
         s.heroVideoFileUrl ?? fallbackSettings.heroVideoFileUrl ?? null,
       heroPoster:
         toPoster(s.heroPoster) ?? fallbackSettings.heroPoster ?? null,
+      heroImages: (s.heroImages ?? [])
+        .map(toImage)
+        .filter((img): img is ProjectImage => img !== null),
       viewMoreCount:
         typeof s.viewMoreCount === "number"
           ? s.viewMoreCount

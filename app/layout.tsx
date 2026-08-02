@@ -1,12 +1,10 @@
 import type { Metadata, Viewport } from "next";
-import { Space_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 
-const spaceMono = Space_Mono({
+const inter = Inter({
   subsets: ["latin"],
-  weight: ["400", "700"],
-  style: ["normal", "italic"],
-  variable: "--font-space-mono",
+  variable: "--font-inter",
   display: "swap",
 });
 
@@ -44,7 +42,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`h-full antialiased ${spaceMono.variable}`}>
+    <html lang="en" className={`h-full antialiased ${inter.variable}`}>
+      <head>
+        {/*
+          Self-hosted Pretendard, linked rather than @import-ed: Next's CSS
+          bundler resolves @import at build time as a module, so a /public
+          path can't be reached that way. The dynamic subset splits the family
+          across unicode-range chunks, so a Latin page pulls a few KB instead
+          of the 2MB full variable font.
+        */}
+        <link
+          rel="stylesheet"
+          href="/fonts/pretendard/pretendardvariable-dynamic-subset.css"
+        />
+      </head>
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );

@@ -79,7 +79,7 @@ export const projectSchema = defineType({
       title: "External Links",
       type: "array",
       description:
-        "Optional links shown on the main page under the summary as 'Click to see <label>'.",
+        "Optional links shown on the main page as '<label> here →'.",
       of: [
         {
           type: "object",
@@ -89,7 +89,7 @@ export const projectSchema = defineType({
               title: "Label",
               type: "string",
               description:
-                "Link name shown in 'Click to see <label>'. e.g. 'the report', 'press coverage'.",
+                "Link name shown in '<label> here →', lower-cased automatically. e.g. 'full report', 'linkedin post'.",
               validation: (r) => r.required(),
             },
             {

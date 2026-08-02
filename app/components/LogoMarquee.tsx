@@ -51,7 +51,7 @@ export default function LogoMarquee({ logos }: Props) {
 
   return (
     <div
-      className="relative overflow-hidden py-8 sm:py-10 select-none mt-8 sm:mt-12"
+      className="relative overflow-hidden py-8 sm:py-10 select-none mt-1 sm:mt-2"
       style={{
         WebkitMaskImage: fadeMask,
         maskImage: fadeMask,

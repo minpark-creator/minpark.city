@@ -123,7 +123,7 @@ export default function FilmClient({ films }: { films: Film[] }) {
             <span className="text-muted">{formatDate(active.date)}</span>
           </div>
           {active.caption && (
-            <p className="mt-2 text-[14px] text-muted leading-[1.6] max-w-[56ch]">
+            <p className="mt-2 text-[14px] text-muted leading-[1.5] max-w-[56ch]">
               {active.caption}
             </p>
           )}

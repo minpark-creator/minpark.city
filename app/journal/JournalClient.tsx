@@ -16,7 +16,7 @@ function formatDate(iso?: string) {
 function Paragraphs({ text }: { text?: string }) {
   if (!text) return null;
   return (
-    <div className="space-y-5 text-[16px] leading-[1.75]">
+    <div className="space-y-5 text-[16px] leading-[1.55]">
       {text.split(/\n\s*\n/).map((p, i) => (
         <p key={i}>{p}</p>
       ))}
@@ -48,6 +48,9 @@ export default function JournalClient({
                   }`}
                 >
                   <div className="flex items-baseline justify-between gap-4">
+                    {/* Selected entry steps up a weight here in the list only —
+                        the article heading on the right stays light. Matches
+                        the Observations list. */}
                     <span
                       className={`font-display text-[15px] ${
                         isActive ? "font-medium" : ""
@@ -73,7 +76,7 @@ export default function JournalClient({
               <div className="text-[13px] text-muted">
                 {formatDate(active.date)}
               </div>
-              <h2 className="font-display mt-2 text-[22px] sm:text-[26px] lg:text-[28px] font-medium leading-tight">
+              <h2 className="font-display mt-2 text-[22px] sm:text-[26px] lg:text-[28px] leading-tight">
                 {active.title}
               </h2>
               {active.excerpt && (

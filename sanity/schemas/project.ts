@@ -141,10 +141,26 @@ export const projectSchema = defineType({
       validation: (r) => r.unique(),
     }),
     defineField({
+      name: "track",
+      title: "Track",
+      type: "string",
+      description:
+        "Groups the project on the home page. Research comes first, then Practice, then Design. Leave blank to keep it out of the groups.",
+      options: {
+        list: [
+          { title: "Research", value: "research" },
+          { title: "Practice", value: "practice" },
+          { title: "Design", value: "design" },
+        ],
+        layout: "radio",
+      },
+    }),
+    defineField({
       name: "isSelected",
-      title: "Show in Selected",
+      title: "Show in Featured",
       type: "boolean",
-      description: "When on, this project appears in the Selected list on home.",
+      description:
+        "When on, this project appears in Featured projects on the home page.",
       initialValue: false,
     }),
   ],

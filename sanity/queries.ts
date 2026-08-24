@@ -5,6 +5,7 @@ import {
   fallbackAbout,
   fallbackJournal,
   fallbackFilms,
+  fallbackPublications,
 } from "./fallback";
 
 export type ProjectImage = {
@@ -31,6 +32,8 @@ export type Project = {
   summary?: string;
   body?: string;
   isSelected?: boolean;
+  /** "research" | "practice" | "design" — groups the home page list. */
+  track?: string;
   images: ProjectImage[];
   /**
    * 1-based indices into `images`, set in Studio. Used to choose the cover and
@@ -43,6 +46,11 @@ export type Project = {
 export type LogoItem = {
   _key?: string;
   name?: string;
+  /** Timeline fields. A logo without a description stays out of the timeline. */
+  years?: string;
+  description?: string;
+  /** Logos sharing a group key collapse into one timeline row. */
+  timelineGroup?: string;
   url?: string;
   height?: number;
   image?: { url: string | null };
@@ -59,6 +67,9 @@ export type SiteSettings = {
   intro: string;
   logos: LogoItem[];
   heroImages?: ProjectImage[];
+  logosNote?: string;
+  /** Direct URL of the uploaded CV PDF, or null when none is set. */
+  cvUrl?: string | null;
   /** Site Settings' own contact email, falling back to the About page's. */
   contactEmail?: string | null;
   socialLinks?: { _key?: string; label: string; url: string }[];
@@ -85,6 +96,12 @@ export type AboutPage = {
   location?: string;
   links?: { label: string; url: string }[];
   sections: AboutSection[];
+  education?: {
+    years?: string;
+    institution: string;
+    degree?: string;
+    focus?: string;
+  }[];
 };
 
 export type JournalEntry = {
@@ -94,6 +111,18 @@ export type JournalEntry = {
   excerpt?: string;
   body?: unknown[];
   bodyText?: string;
+};
+
+export type Publication = {
+  _id: string;
+  title: string;
+  kind?: string;
+  year?: string;
+  date?: string;
+  venue?: string;
+  authors?: string;
+  abstract?: string;
+  links?: { label: string; url: string; _key?: string }[];
 };
 
 export type Film = {
@@ -182,7 +211,7 @@ const POSTER_PROJECTION = /* groq */ `{
 const PROJECTS_QUERY = /* groq */ `
   *[_type == "project"] | order(order asc, date desc) {
     _id, title, "slug": slug.current, year, date,
-    client, partners, location, role, summary, body, isSelected,
+    client, partners, location, role, summary, body, isSelected, track,
     featured,
     links[]{ _key, label, url },
     "images": images[]${IMAGE_PROJECTION}
@@ -192,7 +221,9 @@ const SETTINGS_QUERY = /* groq */ `
   *[_type == "siteSettings"][0]{
     intro,
     "heroImages": heroImages[]${IMAGE_PROJECTION},
-    "logos": logos[]{ _key, name, url, height, "image": { "url": image.asset->url } },
+    logosNote,
+    "cvUrl": cv.asset->url,
+    "logos": logos[]{ _key, name, years, description, timelineGroup, url, height, "image": { "url": image.asset->url } },
     socialLinks[]{ _key, label, url },
     // Falls back to the About page so the email only has to be typed once.
     "contactEmail": coalesce(contactEmail, *[_type == "aboutPage"][0].email)
@@ -200,7 +231,7 @@ const SETTINGS_QUERY = /* groq */ `
 
 const ABOUT_QUERY = /* groq */ `
   *[_type == "aboutPage"][0]{
-    headline, bio, sections,
+    headline, bio, sections, education,
     contactIntro, email, location,
     links[]{ label, url },
     "portrait": portrait{
@@ -214,6 +245,12 @@ const ABOUT_QUERY = /* groq */ `
 const JOURNAL_QUERY = /* groq */ `
   *[_type == "journalEntry"] | order(date desc) {
     _id, title, date, excerpt, body
+  }`;
+
+const PUBLICATIONS_QUERY = /* groq */ `
+  *[_type == "publication"] | order(order asc, date desc) {
+    _id, title, kind, year, date, venue, authors, abstract,
+    links[]{ _key, label, url }
   }`;
 
 const FILMS_QUERY = /* groq */ `
@@ -249,6 +286,38 @@ export async function getProjects(): Promise<Project[]> {
   }
 }
 
+/**
+ * The logo images live in Studio; the timeline copy for each organisation may
+ * not have been typed there yet. Where a logo carries no description, fall
+ * back to the seeded entry with the same name so the timeline still has
+ * something to say. Anything typed in Studio wins.
+ */
+const LOGO_ALIASES: Record<string, string> = {
+  uff: "urban frontiers foundation",
+  "c40": "c40 cities",
+  "university college london": "ucl",
+  holcim: "holcim foundation",
+};
+
+function mergeLogoTimeline(logos: LogoItem[]): LogoItem[] {
+  return logos.map((logo) => {
+    if (logo.description?.trim()) return logo;
+    const raw = (logo.name ?? "").trim().toLowerCase();
+    const key = LOGO_ALIASES[raw] ?? raw;
+    const seed = fallbackSettings.logos.find((l) => {
+      const seedName = (l.name ?? "").trim().toLowerCase();
+      return seedName === key || (LOGO_ALIASES[seedName] ?? seedName) === key;
+    });
+    if (!seed) return logo;
+    return {
+      ...logo,
+      years: logo.years ?? seed.years,
+      timelineGroup: logo.timelineGroup ?? seed.timelineGroup,
+      description: seed.description,
+    };
+  });
+}
+
 export async function getSiteSettings(): Promise<SiteSettings> {
   if (!client) return fallbackSettings;
   try {
@@ -256,12 +325,16 @@ export async function getSiteSettings(): Promise<SiteSettings> {
     if (!s) return fallbackSettings;
     return {
       intro: s.intro || fallbackSettings.intro,
-      logos: s.logos && s.logos.length > 0 ? s.logos : fallbackSettings.logos,
+      logos: mergeLogoTimeline(
+        s.logos && s.logos.length > 0 ? s.logos : fallbackSettings.logos
+      ),
       heroImages: (s.heroImages ?? [])
         .map(toImage)
         .filter((img): img is ProjectImage => img !== null),
       // Studio is the source of truth once filled in; the fallbacks only
       // apply when Sanity is unreachable or the fields are still empty.
+      logosNote: s.logosNote || fallbackSettings.logosNote,
+      cvUrl: s.cvUrl ?? null,
       contactEmail: s.contactEmail || fallbackSettings.contactEmail,
       socialLinks:
         s.socialLinks && s.socialLinks.length > 0
@@ -325,6 +398,16 @@ export async function getJournalEntries(): Promise<JournalEntry[]> {
     return j.map((e) => ({ ...e, bodyText: portableTextToPlain(e.body) }));
   } catch {
     return fallbackJournal;
+  }
+}
+
+export async function getPublications(): Promise<Publication[]> {
+  if (!client) return fallbackPublications;
+  try {
+    const p = await client.fetch<Publication[]>(PUBLICATIONS_QUERY);
+    return p.length ? p : fallbackPublications;
+  } catch {
+    return fallbackPublications;
   }
 }
 

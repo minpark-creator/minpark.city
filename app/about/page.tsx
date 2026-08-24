@@ -56,6 +56,36 @@ export default async function AboutPage() {
             )}
           </div>
 
+          {about.education && about.education.length > 0 && (
+            <div className="mt-14 sm:mt-20 grid grid-cols-12 gap-x-4 sm:gap-x-8 gap-y-3">
+              <div className="col-span-12 md:col-span-3">
+                <h2 className="text-[16px]">Education</h2>
+              </div>
+              <dl className="col-span-12 md:col-span-9 text-[15px] leading-[1.55]">
+                {about.education.map((item, i) => (
+                  <div key={i} className="flex gap-x-4 sm:gap-x-6 py-2">
+                    <dt className="w-[80px] sm:w-[100px] shrink-0 text-muted text-[13px] sm:text-[14px]">
+                      {item.years}
+                    </dt>
+                    <dd>
+                      <div>{item.institution}</div>
+                      {item.degree && (
+                        <div className="text-muted text-[14px] mt-1">
+                          {item.degree}
+                        </div>
+                      )}
+                      {item.focus && (
+                        <div className="text-muted text-[14px] mt-1">
+                          {item.focus}
+                        </div>
+                      )}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+          )}
+
           {about.sections && about.sections.length > 0 && (
             <div className="mt-14 sm:mt-20 space-y-10 sm:space-y-14">
               {about.sections.map((section, i) => (

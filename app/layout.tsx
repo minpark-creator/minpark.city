@@ -12,11 +12,11 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://minpark.city"),
   title: "minpark.city",
   description:
-    "Min Park — urban designer working across masterplans, policy, and the magazines cities deserve.",
+    "Min Park — urban policy researcher working across research, masterplans, and the magazines cities deserve.",
   openGraph: {
     title: "minpark.city",
     description:
-      "Min Park — urban designer working across masterplans, policy, and the magazines cities deserve.",
+      "Min Park — urban policy researcher working across research, masterplans, and the magazines cities deserve.",
     url: "https://minpark.city",
     siteName: "minpark.city",
     images: [{ url: "/og.png", width: 1200, height: 630, alt: "minpark.city" }],
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "minpark.city",
     description:
-      "Min Park — urban designer working across masterplans, policy, and the magazines cities deserve.",
+      "Min Park — urban policy researcher working across research, masterplans, and the magazines cities deserve.",
     images: ["/og.png"],
   },
 };

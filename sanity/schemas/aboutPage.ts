@@ -58,6 +58,48 @@ export const aboutPageSchema = defineType({
       ],
     }),
     defineField({
+      name: "education",
+      title: "Education",
+      type: "array",
+      description:
+        "Degrees, newest first. Shown as a dated list under the bio — the thing a PhD panel looks for.",
+      of: [
+        {
+          type: "object",
+          fields: [
+            {
+              name: "years",
+              type: "string",
+              title: "Years",
+              description: "e.g. 2023–2024",
+            },
+            {
+              name: "institution",
+              type: "string",
+              title: "Institution",
+              validation: (r) => r.required(),
+            },
+            {
+              name: "degree",
+              type: "string",
+              title: "Degree",
+              description: "e.g. MSc City Planning, BArch Architecture.",
+            },
+            {
+              name: "focus",
+              type: "string",
+              title: "Focus / result",
+              description:
+                "e.g. Thesis: green belt governance in London and Seoul (Distinction).",
+            },
+          ],
+          preview: {
+            select: { title: "institution", subtitle: "degree" },
+          },
+        },
+      ],
+    }),
+    defineField({
       name: "sections",
       title: "Sections",
       type: "array",

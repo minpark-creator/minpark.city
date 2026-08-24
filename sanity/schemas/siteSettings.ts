@@ -35,6 +35,28 @@ export const siteSettingsSchema = defineType({
               title: "Logo image",
             },
             { name: "name", type: "string", title: "Name" },
+            {
+              name: "timelineGroup",
+              type: "string",
+              title: "Timeline group",
+              description:
+                "Give two logos the same word here (e.g. 'greenbelts') and they share one row in the timeline, with one description between them. Leave blank for a row of its own.",
+            },
+            {
+              name: "years",
+              type: "string",
+              title: "Years",
+              description:
+                "e.g. 2024–2026, or 2025. Shown in the timeline under the logo strip.",
+            },
+            {
+              name: "description",
+              type: "text",
+              rows: 3,
+              title: "What the work was",
+              description:
+                "One or two sentences: what you actually did with them, and what came out of it. This is the part that turns a logo into evidence. Leave blank to keep the organisation out of the timeline.",
+            },
             { name: "url", type: "url", title: "Link (optional)" },
             {
               name: "height",
@@ -47,12 +69,28 @@ export const siteSettingsSchema = defineType({
             },
           ],
           preview: {
-            select: { title: "name", media: "image" },
+            select: { title: "name", subtitle: "years", media: "image" },
           },
         },
       ],
       description:
-        "Logos of institutions / clients shown in a horizontal marquee under the intro. Adjust 'Display height' on each logo to visually balance.",
+        "Logos of the organisations you have been paid or selected to work with, shown in a horizontal marquee under the intro. Fill in 'Years' and 'What the work was' — those two feed the timeline underneath. Adjust 'Display height' to visually balance.",
+    }),
+    defineField({
+      name: "logosNote",
+      title: "Timeline heading",
+      type: "string",
+      description:
+        "Heading above the collaboration timeline on the home page.",
+      initialValue: "Professional Collaborations",
+    }),
+    defineField({
+      name: "cv",
+      title: "CV (PDF)",
+      type: "file",
+      options: { accept: ".pdf" },
+      description:
+        "Upload your CV. When set, a 'cv' tab appears in the footer. Re-upload to replace it — the link never changes.",
     }),
     defineField({
       name: "contactEmail",

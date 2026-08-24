@@ -22,6 +22,7 @@ function LogoTile({ item }: { item: LogoItem }) {
     </span>
   );
 
+  // The strip stays wordless — the timeline underneath does the explaining.
   const tileClass =
     "shrink-0 inline-flex items-center justify-center h-14 sm:h-24";
 

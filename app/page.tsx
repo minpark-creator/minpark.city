@@ -4,6 +4,7 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import HeroBackdrop from "./components/HeroBackdrop";
 import LogoMarquee from "./components/LogoMarquee";
+import CollaborationTimeline from "./components/CollaborationTimeline";
 import ProjectsClient from "./components/ProjectsClient";
 import { getProjects, getSiteSettings } from "../sanity/queries";
 
@@ -106,6 +107,11 @@ export default async function Home() {
         )}
 
         <LogoMarquee logos={settings.logos} />
+
+        <CollaborationTimeline
+          logos={settings.logos}
+          heading={settings.logosNote}
+        />
 
         <ProjectsClient selected={selected} />
 

@@ -4,6 +4,8 @@ export default async function Footer() {
   const settings = await getSiteSettings();
   const email = settings.contactEmail?.trim();
 
+  const cvUrl = settings.cvUrl?.trim();
+
   const links = [
     ...(email
       ? [
@@ -17,6 +19,9 @@ export default async function Footer() {
           },
         ]
       : []),
+    // The CV sits right after email: for a research reader it is the second
+    // thing they want, ahead of any social account.
+    ...(cvUrl ? [{ label: "cv", href: cvUrl }] : []),
     ...(settings.socialLinks ?? []).map((link) => ({
       label: link.label,
       href: link.url,

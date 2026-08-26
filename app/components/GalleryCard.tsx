@@ -10,6 +10,8 @@ type Props = {
   onLeave?: () => void;
   dimmed?: boolean;
   primed?: boolean;
+  /** Headline projects take two columns and a wider frame. */
+  large?: boolean;
 };
 
 export default function GalleryCard({
@@ -20,13 +22,16 @@ export default function GalleryCard({
   onLeave,
   dimmed = false,
   primed = false,
+  large = false,
 }: Props) {
   const coverSlot = resolveCover(project);
   const cover = coverSlot?.image;
   const imageClickable = !!cover && !!onOpenImage;
   return (
     <div
-      className="w-full space-y-2"
+      className={`group/card w-full space-y-2 ${
+        large ? "col-span-2" : ""
+      }`}
       onMouseEnter={onHover}
       onMouseLeave={onLeave}
     >
@@ -36,12 +41,12 @@ export default function GalleryCard({
         onClick={() =>
           imageClickable && onOpenImage!(coverSlot?.originalIndex ?? 0)
         }
-        className="group relative aspect-[3/2] overflow-hidden block w-full p-0"
+        className={`group relative ${large ? "aspect-[16/9]" : "aspect-[3/2]"} overflow-hidden rounded-xl block w-full p-0`}
       >
         <ProjectThumb
           image={cover}
           alt={project.title}
-          sizes="(max-width: 768px) 50vw, 380px"
+          sizes={large ? "(max-width: 768px) 100vw, 780px" : "(max-width: 768px) 50vw, 380px"}
           className={`${
             primed ? "" : "grayscale"
           } group-hover:grayscale-0 transition-[filter] duration-500 ease-out`}
@@ -55,9 +60,9 @@ export default function GalleryCard({
       <button
         type="button"
         onClick={onOpenInfo}
-        className="block text-[14px] w-full text-left hover:opacity-70 transition-opacity duration-500 ease-out"
+        className="block text-[14px] w-full text-left hover:opacity-80 transition-opacity duration-300 ease-out"
       >
-        <span className="font-display text-[15px] line-clamp-2 leading-snug block">
+        <span className="font-display text-[15px] line-clamp-2 leading-snug block transition-colors duration-300 ease-out group-hover/card:opacity-50">
           {project.title}
         </span>
         {(project.year || project.date) && (

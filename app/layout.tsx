@@ -1,22 +1,20 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-  display: "swap",
-});
+// No webfont. The reference sets everything in Helvetica Now and falls back to
+// Helvetica Neue → Helvetica → Arial; that fallback stack is the closest thing
+// to it and costs nothing to load. Pretendard, already self-hosted below,
+// carries Hangul.
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://minpark.city"),
   title: "minpark.city",
   description:
-    "Min Park — urban policy researcher working across research, masterplans, and the magazines cities deserve.",
+    "Min Park, urban policy researcher working across research, masterplans, and the magazines cities deserve.",
   openGraph: {
     title: "minpark.city",
     description:
-      "Min Park — urban policy researcher working across research, masterplans, and the magazines cities deserve.",
+      "Min Park, urban policy researcher working across research, masterplans, and the magazines cities deserve.",
     url: "https://minpark.city",
     siteName: "minpark.city",
     images: [{ url: "/og.png", width: 1200, height: 630, alt: "minpark.city" }],
@@ -26,7 +24,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "minpark.city",
     description:
-      "Min Park — urban policy researcher working across research, masterplans, and the magazines cities deserve.",
+      "Min Park, urban policy researcher working across research, masterplans, and the magazines cities deserve.",
     images: ["/og.png"],
   },
 };
@@ -42,7 +40,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`h-full antialiased ${inter.variable}`}>
+    <html lang="en" className="h-full antialiased">
       <head>
         {/*
           Self-hosted Pretendard, linked rather than @import-ed: Next's CSS

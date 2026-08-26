@@ -1,72 +1,76 @@
 import PageShell from "../components/PageShell";
+import Reveal from "../components/Reveal";
 import { getPublications } from "../../sanity/queries";
 
 export const revalidate = 60;
 
-export const metadata = { title: "Publications — minpark" };
+export const metadata = { title: "Publications · minpark" };
 
 export default async function PublicationsPage() {
   const publications = await getPublications();
 
   return (
-    <PageShell>
-      <div className="pt-8 sm:pt-12">
-        <div className="flex items-baseline justify-between py-4">
-          <h1 className="text-[16px]">Published and peer-reviewed work</h1>
-          <span className="text-muted text-[14px]">
-            {publications.length} entries
-          </span>
-        </div>
-
+    <PageShell
+      eyebrow={`${publications.length} entries`}
+      title="Publications"
+      intro="Commissioned reports, dissertations and articles, kept apart from the essays, which are personal writing."
+      wash="blue"
+    >
+      <div>
         {publications.length === 0 ? (
-          <p className="py-10 text-muted text-[14px]">Nothing here yet.</p>
+          <p className="py-10 text-muted">Nothing here yet.</p>
         ) : (
-          <ul className="mt-2">
+          <ul>
             {publications.map((pub) => (
               <li
                 key={pub._id}
-                className="grid grid-cols-12 gap-x-6 gap-y-3 py-8 sm:py-10 border-t border-black/10"
+                className="grid grid-cols-12 gap-x-6 gap-y-4 py-10 sm:py-14 border-t border-rule first:border-t-0"
               >
-                <div className="col-span-12 md:col-span-3 text-[14px] text-muted space-y-1">
-                  {pub.kind && <div>{pub.kind}</div>}
-                  {pub.year && <div>{pub.year}</div>}
-                </div>
+                <Reveal className="col-span-12 md:col-span-3">
+                  {pub.kind && <p className="label text-accent-ink">{pub.kind}</p>}
+                  {pub.year && <p className="label mt-3 text-muted">{pub.year}</p>}
+                </Reveal>
 
-                <div className="col-span-12 md:col-span-9 space-y-3">
-                  <h2 className="font-display text-[19px] sm:text-[18px] leading-snug">
+                <Reveal className="col-span-12 md:col-span-9" delay={80}>
+                  <h2 className="display text-[20px] sm:text-[26px] max-w-[40ch]">
                     {pub.title}
                   </h2>
 
+                  <span
+                    aria-hidden
+                    className="mt-4 block w-14 h-px bg-rule"
+                  />
+
                   {(pub.venue || pub.authors) && (
-                    <div className="text-[14px] text-muted space-y-1">
+                    <div className="label mt-5 text-muted space-y-2">
                       {pub.venue && <div>{pub.venue}</div>}
-                      {pub.authors && <div>{pub.authors}</div>}
+                      {pub.authors && <div className="normal-case tracking-[0.05em]">{pub.authors}</div>}
                     </div>
                   )}
 
                   {pub.abstract && (
-                    <p className="text-[15px] leading-[1.55] max-w-[62ch]">
+                    <p className="mt-6 text-[15px] sm:text-[16px] leading-[1.7] max-w-[68ch]">
                       {pub.abstract}
                     </p>
                   )}
 
                   {pub.links && pub.links.length > 0 && (
-                    <ul className="pt-1 space-y-1 text-[14px]">
+                    <ul className="pt-6 flex flex-wrap gap-x-8 gap-y-2">
                       {pub.links.map((link, idx) => (
                         <li key={link._key ?? idx}>
                           <a
                             href={link.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-muted underline-offset-2 hover:underline"
+                            className="label text-brand hover:text-accent-ink"
                           >
-                            {`${link.label} here`.toLowerCase()} →
+                            {`${link.label} →`.toLowerCase()}
                           </a>
                         </li>
                       ))}
                     </ul>
                   )}
-                </div>
+                </Reveal>
               </li>
             ))}
           </ul>

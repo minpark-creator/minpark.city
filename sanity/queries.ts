@@ -68,6 +68,12 @@ export type SiteSettings = {
   logos: LogoItem[];
   heroImages?: ProjectImage[];
   logosNote?: string;
+  footerName?: string;
+  location?: string;
+  origin?: string;
+  availability?: string;
+  contactNote?: string;
+  phone?: string;
   /** Direct URL of the uploaded CV PDF, or null when none is set. */
   cvUrl?: string | null;
   /** Site Settings' own contact email, falling back to the About page's. */
@@ -168,9 +174,21 @@ type RawSettings = Omit<SiteSettings, "heroImages"> & {
   heroImages?: RawImage[];
 };
 
+/**
+ * Ask the CDN for a WebP no wider than 2400px rather than the original.
+ * `auto("format")` only converts when the requesting client sends the right
+ * Accept header, which Next's image optimiser does not — so it was pulling
+ * 2.6MB, 6773px-wide PNGs and timing out on them. Explicit fm=webp takes the
+ * same asset to ~150KB, and 2400px still covers a 1200px container at 2x.
+ */
+function cdnUrl(raw: { asset?: unknown } | null | undefined): string | null {
+  if (!raw?.asset) return null;
+  return urlFor(raw)?.width(2400).format("webp").quality(85).url() ?? null;
+}
+
 function toImage(raw: RawImage | undefined): ProjectImage | null {
   if (!raw || !raw.asset) return null;
-  const built = urlFor(raw)?.auto("format").url() ?? null;
+  const built = cdnUrl(raw);
   return {
     _key: raw._key,
     alt: raw.alt,
@@ -184,7 +202,7 @@ function toImage(raw: RawImage | undefined): ProjectImage | null {
 
 function toPoster(raw: RawPoster | null | undefined) {
   if (!raw || !raw.asset) return null;
-  const built = urlFor(raw)?.auto("format").url() ?? null;
+  const built = cdnUrl(raw);
   return {
     url: built,
     lqip: raw.lqip ?? null,
@@ -222,6 +240,12 @@ const SETTINGS_QUERY = /* groq */ `
     intro,
     "heroImages": heroImages[]${IMAGE_PROJECTION},
     logosNote,
+    footerName,
+    location,
+    origin,
+    availability,
+    contactNote,
+    phone,
     "cvUrl": cv.asset->url,
     "logos": logos[]{ _key, name, years, description, timelineGroup, url, height, "image": { "url": image.asset->url } },
     socialLinks[]{ _key, label, url },
@@ -260,9 +284,38 @@ const FILMS_QUERY = /* groq */ `
     "poster": poster${POSTER_PROJECTION}
   }`;
 
+/**
+ * Provisional tracks, matched by title, for projects that have not been given
+ * one in Studio yet. Anything set in Studio wins; anything unlisted falls into
+ * "Other". Delete an entry here once its project carries a real track.
+ */
+const TRACK_SEED: Record<string, string> = {
+  "green belts 2.0 report": "research",
+  "holcim foundation fellowship": "research",
+  "europe-korea conference": "research",
+
+  "symbiotic thamesmead": "planning",
+  "stratford islands": "planning",
+  "waste zoning": "planning",
+  "data centre city masterplan": "planning",
+  "micro publics: a second home for teens": "planning",
+  "apt. prototype 273": "planning",
+  "city in a park": "planning",
+  "the ideal green collage": "planning",
+
+  "mplan magazine issue 01": "editorial",
+  "mplan mag website": "editorial",
+  "mplan mag workshops": "editorial",
+  "launch at omved gardens": "editorial",
+
+  "plant a chair": "built",
+  "play-scape pavillion": "built",
+};
+
 function hydrateProjects(raws: RawProject[]): Project[] {
   return raws.map((p) => ({
     ...p,
+    track: p.track || TRACK_SEED[p.title.trim().toLowerCase()],
     images: (p.images ?? [])
       .map(toImage)
       .filter((img): img is ProjectImage => img !== null),
@@ -334,6 +387,12 @@ export async function getSiteSettings(): Promise<SiteSettings> {
       // Studio is the source of truth once filled in; the fallbacks only
       // apply when Sanity is unreachable or the fields are still empty.
       logosNote: s.logosNote || fallbackSettings.logosNote,
+      footerName: s.footerName || fallbackSettings.footerName,
+      location: s.location || fallbackSettings.location,
+      origin: s.origin || fallbackSettings.origin,
+      availability: s.availability || fallbackSettings.availability,
+      contactNote: s.contactNote || fallbackSettings.contactNote,
+      phone: s.phone || fallbackSettings.phone,
       cvUrl: s.cvUrl ?? null,
       contactEmail: s.contactEmail || fallbackSettings.contactEmail,
       socialLinks:

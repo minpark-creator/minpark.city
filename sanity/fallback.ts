@@ -19,7 +19,7 @@ export const fallbackSettings: SiteSettings = {
       timelineGroup: "greenbelts",
       years: "2024\u20132026",
       description:
-        "Research post with the Urban Frontiers Foundation, working alongside Nicky Gavron \u2014 former Deputy Mayor of London, who laid the political groundwork for C40 Cities and founded the foundation. Co-authored Green Belts 2.0, a 50-page open-access report published on the C40 Knowledge Hub: seven deep-dive cases and five shorter comparisons across twelve cities, sixteen stakeholder interviews, and twenty-odd maps and governance diagrams.",
+        "Research post with the Urban Frontiers Foundation, working alongside Nicky Gavron, former Deputy Mayor of London, who laid the political groundwork for C40 Cities and founded the foundation. Co-authored Green Belts 2.0, a 50-page open-access report published on the C40 Knowledge Hub: seven deep-dive cases and five shorter comparisons across twelve cities, sixteen stakeholder interviews, and twenty-odd maps and governance diagrams.",
     },
     {
       _key: "l2",
@@ -77,6 +77,12 @@ export const fallbackSettings: SiteSettings = {
     },
   ],
   logosNote: "Professional Collaborations",
+  footerName: "Min Park",
+  location: "London, UK",
+  origin: "From Seoul, South Korea",
+  availability: "Could be anywhere",
+  contactNote: "Email reaches me fastest.",
+  phone: "+44 7587 455050",
   cvUrl: null,
   contactEmail: "contact.minpark@gmail.com",
   socialLinks: [
@@ -106,9 +112,9 @@ export const fallbackAbout: AboutPage = {
   bio: [],
   portrait: null,
   bioText:
-    "Min Park is an urban policy researcher working at the intersection of policy, research, and design. Her work translates slow, complicated urban questions \u2014 green belts, peripheral corridors, regeneration sites \u2014 into frameworks that hold up over decades.\n\nRecent work includes Green Belts 2.0 with C40 Cities, masterplans in the UK and the Middle East at Buro Happold, and academic research at UCL on privately owned public spaces. She is also design lead and co-founder of MPLAN Mag, an independent magazine on planning and strategy.\n\nShe holds an MSc City Planning from UCL and a BArch from Yonsei University. Based in London.",
+    "Min Park is an urban policy researcher working at the intersection of policy, research, and design. Her work translates slow, complicated urban questions such as green belts, peripheral corridors and regeneration sites into frameworks that hold up over decades.\n\nRecent work includes Green Belts 2.0 with C40 Cities, masterplans in the UK and the Middle East at Buro Happold, and academic research at UCL on privately owned public spaces. She is also design lead and co-founder of MPLAN Mag, an independent magazine on planning and strategy.\n\nShe holds an MSc City Planning from UCL and a BArch from Yonsei University. Based in London.",
   contactIntro:
-    "Write to me about projects you can't quite frame yet. About cities that need a longer horizon than the next election cycle. About the planning question you've been carrying around but haven't found a place to put down.\n\nI'm always open to new commissions, partnerships, lectures, and conversations — and especially to the briefs that are still being written. The fastest way through is email.",
+    "Write to me about projects you can't quite frame yet. About cities that need a longer horizon than the next election cycle. About the planning question you've been carrying around but haven't found a place to put down.\n\nI'm always open to new commissions, partnerships, lectures, and conversations, and especially to the briefs that are still being written. The fastest way through is email.",
   email: "contact.minpark@gmail.com",
   location: "",
   links: [
@@ -120,17 +126,17 @@ export const fallbackAbout: AboutPage = {
     {
       title: "Expertise",
       items: [
-        { year: "—", text: "Strategic planning" },
-        { year: "—", text: "Visioning & spatial narratives" },
-        { year: "—", text: "Policy research" },
-        { year: "—", text: "Masterplanning" },
-        { year: "—", text: "Public speaking & lectures" },
+        { year: "", text: "Strategic planning" },
+        { year: "", text: "Visioning & spatial narratives" },
+        { year: "", text: "Policy research" },
+        { year: "", text: "Masterplanning" },
+        { year: "", text: "Public speaking & lectures" },
       ],
     },
     {
       title: "Selected Clients",
       items: [
-        { year: "2026", text: "C40 Cities — Green Belts 2.0 Policy Report" },
+        { year: "2026", text: "C40 Cities: Green Belts 2.0 Policy Report" },
         { year: "2026", text: "The Riyadh Ring Masterplan" },
         { year: "2026", text: "MPlan Mag" },
         { year: "2025", text: "Holcim Foundation Fellowship Workshop" },
@@ -147,7 +153,7 @@ export const fallbackJournal: JournalEntry[] = [
     date: "2026-03-17",
     excerpt: "Rethinking urban fringes as dynamic infrastructure.",
     bodyText:
-      "Working on Green Belts 2.0 with C40 pushed me to question the preservation-versus-development framing that still dominates most policy conversations. Green belts perform best when they're understood as multifunctional landscapes — carrying ecosystem services, flood management, and cultural use all at once.\n\nThe hardest part of the report wasn't making the case for this view. It was finding governance and financing structures that could actually sustain it.",
+      "Working on Green Belts 2.0 with C40 pushed me to question the preservation-versus-development framing that still dominates most policy conversations. Green belts perform best when they're understood as multifunctional landscapes carrying ecosystem services, flood management, and cultural use all at once.\n\nThe hardest part of the report wasn't making the case for this view. It was finding governance and financing structures that could actually sustain it.",
   },
   {
     _id: "j2",
@@ -155,7 +161,7 @@ export const fallbackJournal: JournalEntry[] = [
     date: "2025-11-02",
     excerpt: "On severance, and the limits of connectivity.",
     bodyText:
-      "Walked Stratford again this month. The 2023 masterplan strategy still holds up in my view: the five anchor destinations are well-served by transit but remain poorly linked to each other on foot. The triangular sites formed by the rail lines are still the most promising opportunity to stitch the district together.\n\nWhat's changed is the pace of new residential on the edges — it's making the severance worse, not better.",
+      "Walked Stratford again this month. The 2023 masterplan strategy still holds up in my view: the five anchor destinations are well-served by transit but remain poorly linked to each other on foot. The triangular sites formed by the rail lines are still the most promising opportunity to stitch the district together.\n\nWhat's changed is the pace of new residential on the edges, which is making the severance worse, not better.",
   },
 ];
 
@@ -212,7 +218,7 @@ export const fallbackPublications: Publication[] = [
     venue: "MPLAN Magazine, Issue 01",
     authors: "Sole author",
     abstract:
-      "On what happens when the logic of the startup \u2014 speed, iteration, product-market fit \u2014 is applied to building cities, and where it breaks down.",
+      "On what happens when the logic of the startup, with its speed, iteration and product-market fit, is applied to building cities, and where it breaks down.",
     links: [{ label: "the magazine", url: "https://mplanmag.com/" }],
   },
   {
@@ -232,7 +238,7 @@ export const fallbackPublications: Publication[] = [
 export const fallbackFilms: Film[] = [
   {
     _id: "f1",
-    title: "Riyadh Ring — site walk",
+    title: "Riyadh Ring, site walk",
     date: "2026-02-14",
     location: "Riyadh",
     caption: "Ring corridor, morning light.",
@@ -242,7 +248,7 @@ export const fallbackFilms: Film[] = [
   },
   {
     _id: "f2",
-    title: "Stratford — severance",
+    title: "Stratford, severance",
     date: "2025-10-08",
     location: "London",
     caption: "Walking the rail edges.",
@@ -252,7 +258,7 @@ export const fallbackFilms: Film[] = [
   },
   {
     _id: "f3",
-    title: "Holcim workshop — day two",
+    title: "Holcim workshop, day two",
     date: "2025-06-21",
     location: "Zurich",
     caption: "Working session.",
@@ -274,7 +280,7 @@ const raw: Omit<Project, "_id" | "images">[] = [
     summary:
       "A policy report reframing urban green belts as multifunctional infrastructure for climate resilience, biodiversity, and sustainable expansion.",
     body:
-      "The report examines green belts as strategically planned open spaces on the urban fringe that function as critical infrastructure for urban problem-solving. Originally developed in London by Nicky Gavron, the initiative proposes moving beyond simple preservation-versus-development debates toward viewing these spaces as multifunctional landscapes.\n\nKey benefits highlighted include climate resilience support, biodiversity enhancement, improved public well-being, and sustainable urban expansion. The report emphasizes that green belts can deliver multiple environmental and social benefits when supported by effective planning, governance, and financing strategies.\n\nThe approach advocates reconceiving green belts as dynamic infrastructure rather than passive reserves. This perspective integrates ecosystem services — including flood management, temperature regulation, species protection, and agricultural production — into comprehensive urban planning and climate adaptation frameworks.",
+      "The report examines green belts as strategically planned open spaces on the urban fringe that function as critical infrastructure for urban problem-solving. Originally developed in London by Nicky Gavron, the initiative proposes moving beyond simple preservation-versus-development debates toward viewing these spaces as multifunctional landscapes.\n\nKey benefits highlighted include climate resilience support, biodiversity enhancement, improved public well-being, and sustainable urban expansion. The report emphasizes that green belts can deliver multiple environmental and social benefits when supported by effective planning, governance, and financing strategies.\n\nThe approach advocates reconceiving green belts as dynamic infrastructure rather than passive reserves. This perspective integrates ecosystem services, including flood management, temperature regulation, species protection, and agricultural production, into comprehensive urban planning and climate adaptation frameworks.",
     track: "research",
     isSelected: true,
   },
@@ -290,7 +296,7 @@ const raw: Omit<Project, "_id" | "images">[] = [
       "A masterplan for a new ring corridor around Riyadh, integrating mobility, ecology, and long-term development phasing.",
     body:
       "The Riyadh Ring Masterplan proposes a framework for growth along a new peripheral corridor, balancing mobility, ecological infrastructure, and phased development. The plan uses spatial strategy to align short-term delivery with a long-term urban vision.",
-    track: "practice",
+    track: "planning",
     isSelected: true,
   },
   {
@@ -305,7 +311,7 @@ const raw: Omit<Project, "_id" | "images">[] = [
       "An independent magazine on planning, urban research, and spatial strategy.",
     body:
       "MPlan Mag is a self-initiated magazine gathering essays, interviews, and visual research on the practice of urban planning and strategy. It collects voices from across the discipline and publishes them in a format closer to a reader than a report.",
-    track: "design",
+    track: "editorial",
     isSelected: true,
   },
   {
@@ -349,7 +355,7 @@ const raw: Omit<Project, "_id" | "images">[] = [
     summary:
       "A masterplan that stitches Stratford's fragmented destinations into a walkable, interconnected district.",
     body:
-      "The project addresses urban fragmentation at Stratford despite its strong transport connections. Elevated rail infrastructure and waterways create significant urban severance, limiting pedestrian permeability across the district.\n\nFive key destinations anchor the area — Queen Elizabeth Olympic Park, London Stadium, Stratford Station, Westfield, and Stratford High Street — yet remain inadequately linked. Rather than expanding outward, the strategy strengthens connections between these existing hubs.\n\nThe approach repurposes three triangular sites formed by railway lines as new urban nodes. Through sectional design and environmental modelling, the proposal integrates pedestrian routes, public spaces, and development plots across multiple levels.\n\nThe result shifts Stratford's character from a transit-accessible zone to a walkable, interconnected district with improved pedestrian flow across previously fragmented areas.",
+      "The project addresses urban fragmentation at Stratford despite its strong transport connections. Elevated rail infrastructure and waterways create significant urban severance, limiting pedestrian permeability across the district.\n\nFive key destinations anchor the area: Queen Elizabeth Olympic Park, London Stadium, Stratford Station, Westfield, and Stratford High Street, yet they remain inadequately linked. Rather than expanding outward, the strategy strengthens connections between these existing hubs.\n\nThe approach repurposes three triangular sites formed by railway lines as new urban nodes. Through sectional design and environmental modelling, the proposal integrates pedestrian routes, public spaces, and development plots across multiple levels.\n\nThe result shifts Stratford's character from a transit-accessible zone to a walkable, interconnected district with improved pedestrian flow across previously fragmented areas.",
     isSelected: true,
   },
 ];

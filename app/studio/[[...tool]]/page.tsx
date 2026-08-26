@@ -17,7 +17,7 @@ export default function StudioPage() {
         }}
       >
         <h1 style={{ fontSize: 32, marginBottom: 16 }}>
-          Sanity Studio — not configured
+          Sanity Studio: not configured
         </h1>
         <p>
           Create a Sanity project at{" "}

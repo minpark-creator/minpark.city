@@ -74,7 +74,7 @@ export const siteSettingsSchema = defineType({
         },
       ],
       description:
-        "Logos of the organisations you have been paid or selected to work with, shown in a horizontal marquee under the intro. Fill in 'Years' and 'What the work was' — those two feed the timeline underneath. Adjust 'Display height' to visually balance.",
+        "Logos of the organisations you have been paid or selected to work with, shown in a horizontal marquee under the intro. Fill in 'Years' and 'What the work was'; those two feed the timeline underneath. Adjust 'Display height' to visually balance.",
     }),
     defineField({
       name: "logosNote",
@@ -90,7 +90,46 @@ export const siteSettingsSchema = defineType({
       type: "file",
       options: { accept: ".pdf" },
       description:
-        "Upload your CV. When set, a 'cv' tab appears in the footer. Re-upload to replace it — the link never changes.",
+        "Upload your CV. When set, a 'cv' tab appears in the footer. Re-upload to replace it; the link never changes.",
+    }),
+    defineField({
+      name: "footerName",
+      title: "Footer: name",
+      type: "string",
+      description: "First line of the footer address block.",
+      initialValue: "Min Park",
+    }),
+    defineField({
+      name: "location",
+      title: "Footer: location",
+      type: "string",
+      description: "e.g. London, UK. Shown under the name in the footer.",
+    }),
+    defineField({
+      name: "origin",
+      title: "Footer: origin",
+      type: "string",
+      description: "e.g. From Seoul, South Korea.",
+    }),
+    defineField({
+      name: "availability",
+      title: "Footer: availability",
+      type: "string",
+      description:
+        "One line on where you would consider working. e.g. Could be anywhere.",
+    }),
+    defineField({
+      name: "contactNote",
+      title: "Footer: contact note",
+      type: "string",
+      description: "Short line under the email. e.g. Email reaches me fastest.",
+    }),
+    defineField({
+      name: "phone",
+      title: "Footer: phone (optional)",
+      type: "string",
+      description:
+        "Shown under the email. Leave blank to omit it.",
     }),
     defineField({
       name: "contactEmail",

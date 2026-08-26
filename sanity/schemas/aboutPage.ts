@@ -62,7 +62,7 @@ export const aboutPageSchema = defineType({
       title: "Education",
       type: "array",
       description:
-        "Degrees, newest first. Shown as a dated list under the bio — the thing a PhD panel looks for.",
+        "Degrees, newest first. Shown as a dated list under the bio, the thing a PhD panel looks for.",
       of: [
         {
           type: "object",

@@ -1,10 +1,11 @@
 import Image from "next/image";
 import PageShell from "../components/PageShell";
+import Reveal from "../components/Reveal";
 import { getAboutPage } from "../../sanity/queries";
 
 export const revalidate = 60;
 
-export const metadata = { title: "About — minpark" };
+export const metadata = { title: "About · minpark" };
 
 export default async function AboutPage() {
   const about = await getAboutPage();
@@ -18,7 +19,7 @@ export default async function AboutPage() {
     !!(about.contactIntro || about.email || (about.links && about.links.length > 0));
 
   return (
-    <PageShell>
+    <PageShell eyebrow="Who this is" title="About" wash="blue">
       {/*
         Desktop: fixed-width square portrait on the left, everything else in a
         flexible column beside it. Flex rather than the 12-col grid so the gap
@@ -26,12 +27,12 @@ export default async function AboutPage() {
         arithmetic leaves over.
         Mobile: portrait first, then bio + sections + contact stacked.
       */}
-      <div className="flex flex-col md:flex-row gap-y-10 md:gap-x-12 pt-8 sm:pt-14">
+      <div className="flex flex-col md:flex-row gap-y-10 md:gap-x-14">
         {portrait?.url && (
           <div className="w-full max-w-[240px] md:max-w-none md:w-[320px] md:shrink-0">
             {/* A hair taller than square (320 × 324) so the photo's baseline
                 lands on the last line of the bio. */}
-            <div className="relative w-full aspect-square md:aspect-[80/81] overflow-hidden">
+            <div className="relative w-full aspect-square md:aspect-[80/81] overflow-hidden rounded-xl">
               <Image
                 src={portrait.url}
                 alt={portrait.alt || "Portrait of Min Park"}
@@ -48,7 +49,7 @@ export default async function AboutPage() {
         )}
 
         <div className="flex-1 min-w-0">
-          <div className="space-y-5 text-[14px] sm:text-[15px] leading-[1.55] max-w-[58ch] md:max-w-none">
+          <div className="space-y-6 text-[16px] sm:text-[17px] leading-[1.75] max-w-[64ch]">
             {paragraphs.length > 0 ? (
               paragraphs.map((p, i) => <p key={i}>{p}</p>)
             ) : (
@@ -57,25 +58,31 @@ export default async function AboutPage() {
           </div>
 
           {about.education && about.education.length > 0 && (
-            <div className="mt-14 sm:mt-20 grid grid-cols-12 gap-x-4 sm:gap-x-8 gap-y-3">
-              <div className="col-span-12 md:col-span-3">
-                <h2 className="text-[16px]">Education</h2>
-              </div>
-              <dl className="col-span-12 md:col-span-9 text-[15px] leading-[1.55]">
+            <Reveal className="mt-16 sm:mt-24">
+              <h2 className="display text-[22px] sm:text-[30px]">
+                Education
+              </h2>
+              <dl className="mt-8 pl-16 sm:pl-28">
                 {about.education.map((item, i) => (
-                  <div key={i} className="flex gap-x-4 sm:gap-x-6 py-2">
-                    <dt className="w-[80px] sm:w-[100px] shrink-0 text-muted text-[13px] sm:text-[14px]">
-                      {item.years}
-                    </dt>
-                    <dd>
-                      <div>{item.institution}</div>
+                  <div key={i} className="relative pb-9 last:pb-0">
+                    <span
+                      aria-hidden
+                      className="absolute left-[-28px] sm:left-[-40px] top-0 bottom-0 w-px bg-rule"
+                    />
+                    <span
+                      aria-hidden
+                      className="absolute left-[-28px] sm:left-[-40px] top-[6px] w-[7px] h-[7px] -translate-x-1/2 bg-foreground"
+                    />
+                    <dt className="label text-accent-ink">{item.years}</dt>
+                    <dd className="mt-3">
+                      <div className="font-display text-[19px] text-brand">
+                        {item.institution}
+                      </div>
                       {item.degree && (
-                        <div className="text-muted text-[14px] mt-1">
-                          {item.degree}
-                        </div>
+                        <div className="label mt-2 text-muted">{item.degree}</div>
                       )}
                       {item.focus && (
-                        <div className="text-muted text-[14px] mt-1">
+                        <div className="mt-3 text-[15px] leading-[1.7] max-w-[62ch]">
                           {item.focus}
                         </div>
                       )}
@@ -83,59 +90,61 @@ export default async function AboutPage() {
                   </div>
                 ))}
               </dl>
-            </div>
+            </Reveal>
           )}
 
           {about.sections && about.sections.length > 0 && (
-            <div className="mt-14 sm:mt-20 space-y-10 sm:space-y-14">
+            <div className="mt-16 sm:mt-24 space-y-14 sm:space-y-20">
               {about.sections.map((section, i) => (
-                <div
-                  key={section.title + i}
-                  className="grid grid-cols-12 gap-x-4 sm:gap-x-8 gap-y-3"
-                >
-                  <div className="col-span-12 md:col-span-3">
-                    <h2 className="text-[16px]">{section.title}</h2>
-                  </div>
-                  <dl className="col-span-12 md:col-span-9 text-[15px] leading-[1.55]">
+                <Reveal key={section.title + i}>
+                  <h2 className="display text-[22px] sm:text-[30px]">
+                    {section.title}
+                  </h2>
+                  <dl className="mt-7">
                     {section.items?.map((item, j) => (
-                      <div key={j} className="flex gap-x-4 sm:gap-x-6 py-1">
-                        <dt className="w-[80px] sm:w-[100px] shrink-0 text-muted text-[13px] sm:text-[14px]">
+                      <div
+                        key={j}
+                        className="flex flex-col sm:flex-row gap-x-8 gap-y-1 py-3 border-t border-rule first:border-t-0"
+                      >
+                        <dt className="label text-accent-ink w-[90px] shrink-0 pt-1">
                           {item.year}
                         </dt>
-                        <dd>{item.text}</dd>
+                        <dd className="text-[15px] sm:text-[16px] leading-[1.7] max-w-[68ch]">
+                          {item.text}
+                        </dd>
                       </div>
                     ))}
                   </dl>
-                </div>
+                </Reveal>
               ))}
             </div>
           )}
 
         {/* Contact sits under the bio, inside the same right-hand column. */}
         {hasContact && (
-          <section id="contact" className="pt-10 sm:pt-16">
+          <section id="contact" className="pt-16 sm:pt-24">
             {about.contactIntro && (
-              <p className="text-[14px] sm:text-[15px] leading-[1.55] max-w-[56ch] whitespace-pre-line">
+              <p className="text-[16px] leading-[1.75] max-w-[62ch] whitespace-pre-line">
                 {about.contactIntro}
               </p>
             )}
             {about.email && (
               <a
                 href={`mailto:${about.email}`}
-                className="font-display block mt-8 sm:mt-10 tracking-[-0.01em] text-[18px] sm:text-[24px] md:text-[28px] lg:text-[32px] leading-[1.15] [overflow-wrap:anywhere] hover:opacity-70 transition-opacity duration-500 ease-out no-underline hover:no-underline"
+                className="btn btn-ghost mt-8"
               >
                 {about.email}
               </a>
             )}
             {about.links && about.links.length > 0 && (
-              <ul className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-[14px]">
+              <ul className="mt-8 flex flex-wrap gap-x-8 gap-y-2">
                 {about.links.map((link, i) => (
                   <li key={link.label + i}>
                     <a
                       href={link.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-muted underline-offset-2 hover:underline"
+                      className="label text-brand hover:text-accent-ink"
                     >
                       {link.label}
                     </a>

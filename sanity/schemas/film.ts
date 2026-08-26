@@ -32,7 +32,7 @@ export const filmSchema = defineType({
       title: "Video URL (Vimeo / YouTube / MP4)",
       type: "url",
       description:
-        "Recommended — paste a Vimeo or YouTube link for best quality. Or a direct .mp4 URL.",
+        "Recommended: paste a Vimeo or YouTube link for best quality. Or a direct .mp4 URL.",
     }),
     defineField({
       name: "videoFile",

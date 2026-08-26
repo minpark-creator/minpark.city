@@ -3,51 +3,65 @@ import { getSiteSettings } from "../../sanity/queries";
 export default async function Footer() {
   const settings = await getSiteSettings();
   const email = settings.contactEmail?.trim();
-
   const cvUrl = settings.cvUrl?.trim();
+  const phone = settings.phone?.trim();
 
   const links = [
-    ...(email
-      ? [
-          {
-            label: "email",
-            // Gmail's compose view, pre-addressed. `fs=1` forces the full
-            // compose window rather than a reply-style inline box.
-            href: `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(
-              email
-            )}`,
-          },
-        ]
-      : []),
-    // The CV sits right after email: for a research reader it is the second
-    // thing they want, ahead of any social account.
-    ...(cvUrl ? [{ label: "cv", href: cvUrl }] : []),
     ...(settings.socialLinks ?? []).map((link) => ({
       label: link.label,
       href: link.url,
     })),
+    ...(cvUrl ? [{ label: "Full CV", href: cvUrl }] : []),
   ];
 
-  if (links.length === 0) return <footer className="mt-24 pb-10" />;
-
   return (
-    <footer className="mt-24 pt-8 pb-10">
-      <nav className="flex items-center justify-between gap-x-2 text-[14px] sm:text-[15px] font-nav lowercase tracking-[0.06em] font-light">
-        {links.map((link) => (
-          <a
-            key={link.label}
-            href={link.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:underline"
-          >
-            {link.label}
-            <span aria-hidden className="ml-1 inline-block">
-              ↗
-            </span>
-          </a>
-        ))}
-      </nav>
+    /*
+      Narrow screens read the footer as a single left-aligned column, in the
+      order you would say it out loud: who and where, then how to reach them,
+      then the outbound links. From sm up it becomes the columns pushed to the
+      right that the desktop layout uses.
+    */
+    <footer className="mt-20 sm:mt-32 px-4 sm:px-5 pb-8">
+      <div className="flex flex-col sm:flex-row sm:flex-wrap sm:justify-end gap-y-6 sm:gap-x-10 pb-8 sm:pb-8">
+        <address className="not-italic flex flex-col gap-1 sm:min-w-[160px] order-1 sm:order-3">
+          {settings.footerName && <span>{settings.footerName}</span>}
+          {settings.location && <span>{settings.location}</span>}
+          {settings.origin && (
+            <span className="text-muted">{settings.origin}</span>
+          )}
+        </address>
+
+        {/* The email is plain text, not a mailto: it is meant to be read and
+            copied, not to hijack a mail client. */}
+        <div className="flex flex-col gap-1 sm:min-w-[200px] [overflow-wrap:anywhere] order-2">
+          {email && <span>{email}</span>}
+          {phone && <span>{phone}</span>}
+          {settings.contactNote && (
+            <span className="text-muted">{settings.contactNote}</span>
+          )}
+        </div>
+
+        <nav className="flex flex-col gap-1 sm:min-w-[120px] order-3 sm:order-1">
+          {links.map((link) => (
+            <a
+              key={link.label}
+              href={link.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              /* inline-flex keeps the arrow locked to the label; as plain
+                 inline content it wrapped onto the line above. */
+              className="capitalize w-fit inline-flex items-center gap-1"
+            >
+              <span aria-hidden>↗</span>
+              {link.label}
+            </a>
+          ))}
+        </nav>
+      </div>
+
+      <p className="text-muted">
+        ©{new Date().getFullYear()} Min Park. All rights reserved.
+      </p>
     </footer>
   );
 }

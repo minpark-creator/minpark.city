@@ -1,8 +1,9 @@
-import Image from "next/image";
 import Link from "next/link";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
-import HeroBackdrop from "./components/HeroBackdrop";
+import BackToTop from "./components/BackToTop";
+import Reveal from "./components/Reveal";
+import HeroTrail from "./components/HeroTrail";
 import LogoMarquee from "./components/LogoMarquee";
 import CollaborationTimeline from "./components/CollaborationTimeline";
 import ProjectsClient from "./components/ProjectsClient";
@@ -31,101 +32,81 @@ export default async function Home() {
       leadLines.push(line);
     }
   }
-  let lead = leadLines.join("\n").trim();
-  // If the Studio intro is a single line, break it into two lines before
-  // "working across". Line breaks typed in Studio take precedence.
-  if (lead && !lead.includes("\n")) {
-    lead = lead.replace(/\s+(working across)/i, "\n$1");
-  }
-  const hasHeroImages = (settings.heroImages?.length ?? 0) > 0;
+  const lead = leadLines.join(" ").replace(/\s+/g, " ").trim();
 
   return (
-    <div className="mx-auto w-full max-w-[1200px] px-6 sm:px-10 lg:px-16">
+    <>
       <Header />
 
-      <main className="pb-16">
-        {hasHeroImages ? (
-          <section className="relative w-screen mx-[calc(50%-50vw)] bg-neutral-900 aspect-square sm:aspect-[16/9] lg:aspect-[2/1] overflow-hidden">
-            <HeroBackdrop images={settings.heroImages!} />
-            <div className="absolute inset-0 flex flex-col justify-between p-6 sm:p-10 lg:p-14">
-              <h1 className="m-0 self-start">
-                <Image
-                  src="/mp-mark-white.png"
-                  alt="minpark.city"
-                  width={268}
-                  height={267}
-                  priority
-                  className="w-[110px] sm:w-[140px] lg:w-[170px] h-auto block"
-                />
-              </h1>
-              <div className="self-end text-right text-white">
-                {lead && (
-                  <p className="font-light whitespace-pre-line text-[11px] sm:text-[15px] lg:text-[17px] leading-[1.5]">
-                    {lead}
-                  </p>
-                )}
-                {bulletLines.length > 0 && (
-                  <ul className="mt-4 space-y-1 text-[11px] sm:text-[12px] lg:text-[13px] leading-[1.5] text-white/85">
-                    {bulletLines.map((item, i) => (
-                      <li key={i}>{item}</li>
-                    ))}
-                  </ul>
-                )}
-              </div>
+      <main>
+        {/*
+          The statement is the whole first screen: centred, uppercase, set
+          large in the display cut with nothing else competing. The photograph
+          follows it rather than sitting under it.
+        */}
+        <HeroTrail images={settings.heroImages ?? []}>
+          <section className="px-4 sm:px-5 pt-[132px] sm:pt-[168px] pb-12 sm:pb-16">
+            <h1 className="display uppercase mx-auto text-center max-w-[24ch] text-[34px] sm:text-[52px] lg:text-[62px]">
+              {lead || "min park is an urban policy researcher."}
+            </h1>
+
+            {bulletLines.length > 0 && (
+              <ul className="mt-10 mx-auto max-w-[60ch] text-center space-y-1 text-muted">
+                {bulletLines.map((item, i) => (
+                  <li key={i}>{item}</li>
+                ))}
+              </ul>
+            )}
+
+            <div className="mt-10 sm:mt-14 flex flex-wrap justify-center gap-2.5">
+              <Link href="/publications" className="btn">
+                Publications
+                <span aria-hidden>↘</span>
+              </Link>
+              <Link href="/work" className="btn">
+                All projects
+                <span aria-hidden>↘</span>
+              </Link>
+              <Link href="/about" className="btn">
+                About
+                <span aria-hidden>↘</span>
+              </Link>
             </div>
           </section>
-        ) : (
-          <section className="pt-10 sm:pt-14 lg:pt-16 pb-4 sm:pb-5">
-            <div className="text-center">
-              <h1 className="m-0">
-                <Image
-                  src="/mp-mark.png"
-                  alt="minpark.city"
-                  width={750}
-                  height={750}
-                  priority
-                  className="mx-auto w-full max-w-[180px] h-auto block"
-                />
-              </h1>
-              {lead && (
-                <p className="font-light mt-6 sm:mt-8 text-[12px] sm:text-[13px] lg:text-[14px] leading-[1.5] max-w-[42ch] sm:max-w-none mx-auto whitespace-pre-line">
-                  {lead}
-                </p>
-              )}
-              {bulletLines.length > 0 && (
-                <ul className="mt-4 sm:mt-5 space-y-1 text-[11px] sm:text-[12px] lg:text-[13px] leading-[1.5] text-muted inline-block text-left max-w-[42ch] sm:max-w-none w-full sm:w-auto">
-                  {bulletLines.map((item, i) => (
-                    <li key={i} className="flex gap-3">
-                      <span aria-hidden className="select-none">•</span>
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              )}
+        </HeroTrail>
+
+        {/* Collaborations: the logo strip, then what each one actually was. */}
+        <section>
+          <div className="px-4 sm:px-5 pt-2 sm:pt-4 pb-4">
+            <LogoMarquee logos={settings.logos} />
+            <Reveal>
+              <CollaborationTimeline
+                logos={settings.logos}
+                heading={settings.logosNote}
+              />
+            </Reveal>
+          </div>
+        </section>
+
+        {/* Featured Projects. */}
+        <section className="pt-16 sm:pt-24">
+          <div>
+            <div className="px-4 sm:px-5 pt-4 pb-8">
+              <ProjectsClient selected={selected} />
+
+              <Reveal className="pt-14 sm:pt-20">
+                <Link href="/work" className="btn">
+                  All projects
+                  <span aria-hidden>↘</span>
+                </Link>
+              </Reveal>
             </div>
-          </section>
-        )}
-
-        <LogoMarquee logos={settings.logos} />
-
-        <CollaborationTimeline
-          logos={settings.logos}
-          heading={settings.logosNote}
-        />
-
-        <ProjectsClient selected={selected} />
-
-        <section className="pt-12 sm:pt-16 text-right">
-          <Link
-            href="/work"
-            className="text-[15px] hover:underline"
-          >
-            more projects here →
-          </Link>
+          </div>
         </section>
       </main>
 
       <Footer />
-    </div>
+      <BackToTop />
+    </>
   );
 }

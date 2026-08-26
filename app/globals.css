@@ -3,15 +3,35 @@
 :root {
   color-scheme: light only;
   --background: #ffffff;
-  --foreground: #231f20;
-  --muted: #6b6b6b;
+  --foreground: #000000;
+  --muted: #6e6e6e;
+
+  /* SPACE10 runs on white, near-black and two greys. The colour on the page
+     comes from the photographs, never from the interface. */
+  --ink: #2e2e2e;
+  --chip: #e4e4e4;
+  --chip-hover: #d8d8d8;
+  --hairline: #e4e4e4;
+
+  /* One point colour: red, on hover and on the current page. #E01B00 clears
+     AA on white at 4.9:1, which #FF2B00 (3.8:1) does not at 13px. */
+  --red: #e01b00;
+
+  /* Kept under their old names so the components carry over unchanged. */
+  --brand: #000000;
+  --brand-deep: #2e2e2e;
+  --accent: #e01b00;
+  --accent-ink: #e01b00;
+  --lime: #ffffff;
+  --paper: #eeeeee;
+  --rule: #e4e4e4;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #ffffff;
-    --foreground: #231f20;
-    --muted: #6b6b6b;
+    --foreground: #000000;
+    --muted: #6e6e6e;
   }
 }
 
@@ -19,38 +39,23 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-muted: var(--muted);
-  /* Body copy: Inter Light. Pretendard trails it to cover Hangul, which
-     Inter has no glyphs for. */
-  --font-sans: var(--font-inter), "Pretendard Variable", Pretendard, Helvetica,
-    Arial, sans-serif;
-  /* Titles — same face and weight as body copy. */
-  --font-display: var(--font-sans);
-  /* Header and footer tabs. */
-  --font-nav: "Pretendard Variable", Pretendard, var(--font-inter), Helvetica,
-    Arial, sans-serif;
-}
+  --color-ink: var(--ink);
+  --color-chip: var(--chip);
+  --color-red: var(--red);
+  --color-brand: var(--brand);
+  --color-brand-deep: var(--brand-deep);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-lime: var(--lime);
+  --color-paper: var(--paper);
+  --color-rule: var(--rule);
 
-.font-display {
-  font-family: var(--font-display);
-  font-weight: 300;
-}
-
-.font-nav {
-  font-family: var(--font-nav);
-}
-
-/* Nothing on the site is set bolder than regular. */
-.font-medium,
-.font-semibold,
-.font-bold {
-  font-weight: 400;
-}
-
-/* The base reset pins headings and paragraphs to 400 outright, which beats
-   inheritance and left every <p> heavier than the Light body weight. Hand
-   them back to whatever the ancestor sets. */
-:where(h1, h2, h3, h4, h5, h6, p) {
-  font-weight: inherit;
+  --font-sans: "Helvetica Now Text", "Helvetica Neue", Helvetica,
+    "Pretendard Variable", Pretendard, Arial, sans-serif;
+  --font-display: "Helvetica Now Display", "Helvetica Neue", Helvetica,
+    "Pretendard Variable", Pretendard, Arial, sans-serif;
+  --font-serif: var(--font-sans);
+  --font-nav: var(--font-sans);
 }
 
 html,
@@ -58,9 +63,11 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
-  font-weight: 300;
-  font-size: 12px;
-  line-height: 1.35;
+  font-weight: 400;
+  /* The whole interface sits at 13px. Only the display line is large. */
+  font-size: 13px;
+  line-height: 1.4;
+  letter-spacing: 0;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
@@ -68,11 +75,150 @@ body {
 a {
   color: inherit;
   text-decoration: none;
+  transition: opacity 0.2s ease-in-out;
 }
 
 a:hover {
-  text-decoration: underline;
+  opacity: 1;
+  color: var(--red);
 }
+
+@layer components {
+  /* ---------------------------------------------------------------- type */
+
+  .font-display {
+    font-family: var(--font-display);
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+
+  .font-nav {
+    font-family: var(--font-sans);
+  }
+
+  /* The statement voice: uppercase, tight, set in the display cut. */
+  .display {
+    font-family: var(--font-display);
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    line-height: 1.06;
+  }
+
+  .label {
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    line-height: 1.4;
+  }
+
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    color: var(--muted);
+  }
+
+  .eyebrow-on-blue {
+    color: var(--muted);
+  }
+
+  .section-title {
+    font-family: var(--font-display);
+    font-weight: 400;
+    color: var(--foreground);
+    letter-spacing: -0.015em;
+    line-height: 1.08;
+  }
+
+  .mark {
+    color: var(--foreground);
+  }
+
+  /* ------------------------------------------------------------- surfaces */
+
+  .wash-blue,
+  .wash-lime,
+  .wash-pink {
+    background-image: none;
+  }
+
+  /* -------------------------------------------------------------- buttons */
+
+  /* Controls are grey pills, not outlined boxes. */
+  .btn {
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: 13px;
+    letter-spacing: 0;
+    text-transform: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border: 0;
+    border-radius: 8px;
+    background: var(--chip);
+    color: var(--foreground);
+    transition: background-color 0.2s ease-in-out;
+  }
+
+  .btn:hover {
+    opacity: 1;
+    background: var(--chip-hover);
+    color: var(--red);
+  }
+
+  /* Filter chips: one selected at a time, the selected one inverted. */
+  .chip {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    display: inline-flex;
+    align-items: center;
+    padding: 7px 14px;
+    border-radius: 999px;
+    background: var(--chip);
+    color: var(--foreground);
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+    white-space: nowrap;
+  }
+
+  .chip:hover {
+    color: var(--red);
+  }
+
+  .chip-active,
+  .chip-active:hover {
+    background: var(--foreground);
+    color: var(--background);
+  }
+
+  .btn-solid {
+    background: var(--foreground);
+    color: var(--background);
+  }
+
+  .btn-solid:hover {
+    background: var(--ink);
+  }
+
+  .btn-ghost,
+  .btn-on-blue {
+    background: var(--chip);
+    color: var(--foreground);
+  }
+
+  /* An underlined text link with an arrow, the reference's other affordance. */
+  .link-arrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    border-bottom: 1px solid currentColor;
+    padding-bottom: 2px;
+  }
+}
+
+/* ------------------------------------------------------------- motion */
 
 @keyframes marquee {
   from { transform: translateX(0); }
@@ -80,7 +226,7 @@ a:hover {
 }
 
 .marquee-track {
-  animation: marquee 38s linear infinite;
+  animation: marquee 44s linear infinite;
   will-change: transform;
   backface-visibility: hidden;
   transform: translateZ(0);
@@ -92,30 +238,68 @@ a:hover {
 
 @media (max-width: 640px) {
   .marquee-track {
-    animation-duration: 22s;
+    animation-duration: 26s;
+  }
+}
+
+/* Trail images pop in and fade out where the pointer passed. */
+@keyframes trail-shot {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.96); }
+  12% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  70% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(1); }
+}
+
+.trail-shot {
+  animation: trail-shot 900ms ease-out forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .trail-shot {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+@media (min-width: 1024px) {
+  .film-list {
+    max-height: var(--list-max, calc(100vh - 150px));
+  }
+}
+
+.reveal {
+  opacity: 0;
+  transition: opacity 0.5s ease-out;
+}
+
+.reveal-in {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .reveal-in {
+    opacity: 1;
+    transition: none;
+  }
+
+  .marquee-track {
+    animation: none;
   }
 }
 
 @keyframes page-fade-in {
   from { opacity: 0; }
-  to   { opacity: 1; }
+  to { opacity: 1; }
 }
 
 body {
-  animation: page-fade-in 420ms ease-out both;
-}
-
-.italic,
-i,
-em {
-  font-style: normal !important;
-  font-weight: 500;
+  animation: page-fade-in 300ms ease-out both;
 }
 
 @layer base {
   :where(h1, h2, h3, h4, p) {
     margin: 0;
-    font-weight: 400;
   }
 
   :where(button) {

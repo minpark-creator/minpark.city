@@ -32,6 +32,48 @@ export function resolveFeaturedSlots(
   }));
 }
 
+/**
+ * Featured slots topped up to `count` from the project's remaining images.
+ *
+ * Studio's "Featured image numbers" often names only one or two pictures, but
+ * a layout may have three frames to fill. The named picks lead, then the rest
+ * of the gallery follows in upload order, so a row is never short.
+ */
+export function resolveSlotsPadded(
+  project: Project,
+  count: number
+): FeaturedSlot[] {
+  const picked = resolveFeaturedSlots(project, count);
+  if (picked.length >= count) return picked.slice(0, count);
+
+  const taken = new Set(picked.map((slot) => slot.originalIndex));
+  const padded = [...picked];
+  project.images.forEach((image, originalIndex) => {
+    if (padded.length >= count || taken.has(originalIndex)) return;
+    padded.push({ image, originalIndex });
+  });
+  return padded;
+}
+
+/**
+ * Pixel count of an image, used to decide which of a project's photographs
+ * deserves the larger frame. Sanity gives us the source dimensions, so a
+ * scan or a full-frame photo outranks a small crop or a screenshot.
+ * Unknown dimensions score 0 and take the smaller slot.
+ */
+export function imagePixels(image?: ProjectImage): number {
+  if (!image?.width || !image?.height) return 0;
+  return image.width * image.height;
+}
+
+/**
+ * Order a project's slots so the highest-resolution image comes first, which
+ * is the one the layouts hand the larger frame to.
+ */
+export function slotsByResolution(slots: FeaturedSlot[]): FeaturedSlot[] {
+  return [...slots].sort((a, b) => imagePixels(b.image) - imagePixels(a.image));
+}
+
 /** First featured slot (the cover) or `undefined` if there are no images. */
 export function resolveCover(project: Project): FeaturedSlot | undefined {
   return resolveFeaturedSlots(project, 1)[0];

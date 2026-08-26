@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Film } from "../../sanity/queries";
 
 function formatDate(iso?: string) {
@@ -61,7 +61,7 @@ function FilmPlayer({ film }: { film: Film }) {
 
   if (embed) {
     return (
-      <div className="relative w-full aspect-video overflow-hidden bg-white">
+      <div className="relative w-full aspect-video overflow-hidden rounded-xl bg-paper">
         <PosterLayer film={film} />
         <LoadingIndicator visible={!ready} />
         <iframe
@@ -81,7 +81,7 @@ function FilmPlayer({ film }: { film: Film }) {
 
   if (directUrl) {
     return (
-      <div className="relative w-full aspect-video overflow-hidden bg-white">
+      <div className="relative w-full aspect-video overflow-hidden rounded-xl bg-paper">
         <PosterLayer film={film} />
         <LoadingIndicator visible={!ready} />
         <video
@@ -103,7 +103,7 @@ function FilmPlayer({ film }: { film: Film }) {
   }
 
   return (
-    <div className="relative w-full aspect-video overflow-hidden bg-white">
+    <div className="relative w-full aspect-video overflow-hidden rounded-xl bg-paper">
       <PosterLayer film={film} />
     </div>
   );
@@ -113,57 +113,84 @@ export default function FilmClient({ films }: { films: Film[] }) {
   const [activeId, setActiveId] = useState(films[0]?._id ?? null);
   const active = films.find((f) => f._id === activeId) ?? films[0];
 
-  return (
-    <>
-      {active && (
-        <section className="pt-6 pb-12">
-          <FilmPlayer key={active._id} film={active} />
-          <div className="pt-4 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 text-[14px]">
-            <span className="font-display font-medium">{active.title}</span>
-            <span className="text-muted">{formatDate(active.date)}</span>
-          </div>
-          {active.caption && (
-            <p className="mt-2 text-[14px] text-muted leading-[1.5] max-w-[56ch]">
-              {active.caption}
-            </p>
-          )}
-        </section>
-      )}
+  /*
+    The list is capped at the height of the player beside it. Tying the two
+    together is what makes the column actually scroll: left to a viewport
+    fraction it was taller than its own contents on a big screen, so there was
+    nothing to scroll and the wheel did nothing.
+  */
+  const playerRef = useRef<HTMLDivElement>(null);
+  const [listMax, setListMax] = useState<number | undefined>();
 
-      <div className="pt-8">
-        <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-1 pt-4">
-          {films.map((film) => {
-            const isActive = film._id === active?._id;
-            return (
-              <li key={film._id}>
-                <button
-                  type="button"
-                  onClick={() => setActiveId(film._id)}
-                  className={`w-full text-left py-3 transition-opacity ${
-                    isActive ? "opacity-100" : "opacity-70 hover:opacity-100"
-                  }`}
-                >
-                  <div
-                    className={`font-display text-[15px] truncate ${
-                      isActive ? "font-medium" : ""
-                    }`}
-                  >
-                    {film.title}
-                  </div>
-                  {film.location && (
-                    <div className="text-[13px] text-muted mt-1">
-                      {film.location}
-                    </div>
-                  )}
-                  <div className="text-[12px] text-muted mt-2">
-                    {formatDate(film.date)}
-                  </div>
-                </button>
-              </li>
-            );
-          })}
-        </ul>
+  useEffect(() => {
+    const el = playerRef.current;
+    if (!el || typeof ResizeObserver === "undefined") return;
+    const ro = new ResizeObserver(([entry]) =>
+      setListMax(Math.round(entry.contentRect.height))
+    );
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  return (
+    /*
+      Player on the left, list on the right. The player is sticky, so it holds
+      its place while the titles scroll past it and the selection changes
+      under a fixed frame. Below lg the two stack and the player pins to the
+      top of the viewport instead.
+    */
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-x-8 gap-y-8">
+      <div className="lg:col-span-8 xl:col-span-9">
+        {active && (
+          <div className="lg:sticky lg:top-[110px]" ref={playerRef}>
+            <FilmPlayer key={active._id} film={active} />
+            <div className="pt-4 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
+              <span className="font-display">{active.title}</span>
+              <span className="text-muted">{formatDate(active.date)}</span>
+            </div>
+            {active.location && (
+              <p className="mt-1 text-muted">{active.location}</p>
+            )}
+            {active.caption && (
+              <p className="mt-2 text-muted leading-[1.5] max-w-[56ch]">
+                {active.caption}
+              </p>
+            )}
+          </div>
+        )}
       </div>
-    </>
+
+      {/*
+        The list keeps its own scrollbar and swallows the wheel at its edges,
+        so pointing at the titles scrolls the titles rather than the page.
+      */}
+      <ul
+        className="lg:col-span-4 xl:col-span-3 lg:sticky lg:top-[110px] lg:overflow-y-auto lg:overscroll-contain lg:pr-2 film-list"
+        style={listMax ? ({ ["--list-max" as string]: `${listMax}px` }) : undefined}
+      >
+        {films.map((film) => {
+          const isActive = film._id === active?._id;
+          return (
+            <li key={film._id} className="border-t border-rule first:border-t-0">
+              <button
+                type="button"
+                onClick={() => setActiveId(film._id)}
+                aria-current={isActive ? "true" : undefined}
+                className="w-full text-left py-3 transition-colors"
+                style={{ color: isActive ? "var(--red)" : undefined }}
+              >
+                <div className="font-display text-[14px] sm:text-[15px] leading-[1.25]">
+                  {film.title}
+                </div>
+                <div className="mt-1 flex flex-wrap gap-x-3 text-[12px] text-muted">
+                  {film.location && <span>{film.location}</span>}
+                  <span>{formatDate(film.date)}</span>
+                </div>
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
   );
 }

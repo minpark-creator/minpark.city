@@ -4,7 +4,7 @@ import { getProjects } from "../../sanity/queries";
 
 export const revalidate = 60;
 
-export const metadata = { title: "Work — minpark" };
+export const metadata = { title: "Projects · minpark" };
 
 export default async function WorkPage() {
   const projects = await getProjects();
@@ -15,16 +15,13 @@ export default async function WorkPage() {
   });
 
   return (
-    <PageShell>
-      <div className="pt-8 sm:pt-12">
-        <div className="flex items-baseline justify-between py-4">
-          <h1 className="text-[16px]">All projects by date</h1>
-          <span className="text-muted text-[14px]">
-            {allByDate.length} projects
-          </span>
-        </div>
-        <WorkClient projects={allByDate} />
-      </div>
+    <PageShell
+      eyebrow={`${allByDate.length} projects`}
+      title="Projects"
+      intro="Research, planning and design, the magazine, and the things that got built. Filter by what the work produced."
+      wash="blue"
+    >
+      <WorkClient projects={allByDate} />
     </PageShell>
   );
 }

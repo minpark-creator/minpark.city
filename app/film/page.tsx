@@ -4,19 +4,17 @@ import FilmClient from "./FilmClient";
 
 export const revalidate = 60;
 
-export const metadata = { title: "Observations — minpark" };
+export const metadata = { title: "Observations · minpark" };
 
 export default async function FilmPage() {
   const films = await getFilms();
   return (
-    <PageShell>
-      <div className="pt-8 sm:pt-12 pb-2">
-        <p className="font-display text-[12px] sm:text-[13px] lg:text-[14px] leading-[1.5]">
-          A collection of moving images and observations
-          <br className="hidden sm:inline" />
-          {" "}exploring how people use and inhabit public space.
-        </p>
-      </div>
+    <PageShell
+      eyebrow="Field recordings"
+      title="Observations"
+      intro="A collection of moving images and observations exploring how people use and inhabit public space."
+      wash="none"
+    >
       <FilmClient films={films} />
     </PageShell>
   );

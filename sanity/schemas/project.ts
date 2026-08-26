@@ -66,7 +66,7 @@ export const projectSchema = defineType({
       type: "text",
       rows: 3,
       description:
-        "Not shown anywhere on the site — the home page lists role / affiliation / year, and the lightbox shows Body. Kept so existing text isn't lost.",
+        "Not shown anywhere on the site. The home page lists role / affiliation / year, and the lightbox shows Body. Kept so existing text isn't lost.",
     }),
     defineField({
       name: "body",
@@ -145,12 +145,13 @@ export const projectSchema = defineType({
       title: "Track",
       type: "string",
       description:
-        "Groups the project on the home page. Research comes first, then Practice, then Design. Leave blank to keep it out of the groups.",
+        "Groups the project on the home page and on Work. Research first, then Planning & Design, Editorial & Events, Built Work. Leave blank and it lands under 'Other'.",
       options: {
         list: [
           { title: "Research", value: "research" },
-          { title: "Practice", value: "practice" },
-          { title: "Design", value: "design" },
+          { title: "Planning & Design", value: "planning" },
+          { title: "Editorial & Events", value: "editorial" },
+          { title: "Built Work", value: "built" },
         ],
         layout: "radio",
       },
@@ -160,7 +161,7 @@ export const projectSchema = defineType({
       title: "Show in Featured",
       type: "boolean",
       description:
-        "When on, this project appears in Featured projects on the home page.",
+        "When on, this project appears in Featured Projects on the home page.",
       initialValue: false,
     }),
   ],

@@ -68,7 +68,7 @@ export default function ProjectLightbox({
 
   return (
     <div
-      className="fixed inset-0 z-50 bg-black/95 overflow-hidden"
+      className="fixed inset-0 z-[60] bg-black/95 overflow-hidden"
       onClick={onClose}
       role="dialog"
       aria-modal="true"

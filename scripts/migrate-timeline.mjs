@@ -125,7 +125,10 @@ logos.forEach((logo, i) => {
     console.log(`· ${name} — organisation already exists, reusing it`);
     return;
   }
-  const _id = `organisation.${slug(name)}`;
+  // No dot in the id: Sanity treats a document whose _id contains a period as
+  // private, readable only with a token, which would hide the logos from the
+  // live site while looking perfectly fine in Studio.
+  const _id = `organisation-${slug(name)}`;
   idFor.set(logo._key, _id);
   byName.set(name.toLowerCase(), _id);
   creates.push({
@@ -187,7 +190,7 @@ console.log(
 );
 for (const entry of timeline) {
   const names = entry.organisations
-    .map((r) => r._ref.replace(/^organisation\./, ""))
+    .map((r) => r._ref.replace(/^organisation-/, ""))
     .join(" + ");
   console.log(
     `  ${[entry.start, entry.end].filter(Boolean).join("–") || "(undated)"}  ${names}`

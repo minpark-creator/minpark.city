@@ -7,6 +7,22 @@ import type { Project, ProjectImage } from "../../sanity/queries";
 export type FeaturedSlot = { image: ProjectImage; originalIndex: number };
 
 /**
+ * Every image the project's "Featured image numbers" names, in Studio order
+ * and with no cap. Numbers pointing past the end of the gallery are dropped,
+ * so an empty result means the field is blank or names nothing that exists —
+ * the signal to fall back to upload order.
+ */
+export function explicitFeaturedSlots(project: Project): FeaturedSlot[] {
+  const picks: FeaturedSlot[] = [];
+  for (const n of project.featured ?? []) {
+    const idx = n - 1;
+    const image = project.images[idx];
+    if (image) picks.push({ image, originalIndex: idx });
+  }
+  return picks;
+}
+
+/**
  * Resolve the project's featured image slots.
  *
  * `project.featured` is a list of 1-based indices set in Studio
@@ -17,15 +33,9 @@ export function resolveFeaturedSlots(
   project: Project,
   max = 3
 ): FeaturedSlot[] {
-  if (project.featured && project.featured.length > 0) {
-    const picks: FeaturedSlot[] = [];
-    for (const n of project.featured) {
-      const idx = n - 1;
-      const image = project.images[idx];
-      if (image) picks.push({ image, originalIndex: idx });
-    }
-    if (picks.length > 0) return picks.slice(0, max);
-  }
+  const picks = explicitFeaturedSlots(project);
+  if (picks.length > 0) return picks.slice(0, max);
+
   return project.images.slice(0, max).map((image, originalIndex) => ({
     image,
     originalIndex,

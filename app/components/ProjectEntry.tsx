@@ -3,7 +3,11 @@
 import { useState } from "react";
 import type { Project } from "../../sanity/queries";
 import ProjectThumb from "./ProjectThumb";
-import { resolveSlotsPadded, slotsByResolution } from "../lib/featured";
+import {
+  explicitFeaturedSlots,
+  resolveSlotsPadded,
+  slotsByResolution,
+} from "../lib/featured";
 
 type Props = {
   project: Project;
@@ -42,6 +46,36 @@ const LAYOUTS_3 = [
   ],
 ] as const;
 
+// Studio can name a single photograph, and then a single photograph is what
+// shows. Kept well short of full width so it still reads as a project rather
+// than a hero.
+const LAYOUTS_1 = [
+  [{ span: "col-span-7", ratio: "aspect-[4/3]" }],
+  [{ span: "col-span-8", ratio: "aspect-[16/10]" }],
+] as const;
+
+type Frame = { span: string; ratio: string };
+
+/**
+ * Frames for a given number of photographs. Two and three keep the hand-made
+ * arrangements, alternating down the page; one and four-or-more get an even
+ * grid, since a named set of that size has no "largest" frame to earn.
+ */
+function layoutFor(count: number, index: number): readonly Frame[] {
+  if (count <= 1) return LAYOUTS_1[index % LAYOUTS_1.length];
+  if (count === 2) return LAYOUTS_2[Math.floor(index / 2) % LAYOUTS_2.length];
+  if (count === 3) return LAYOUTS_3[Math.floor(index / 2) % LAYOUTS_3.length];
+  if (count === 4)
+    return Array.from({ length: 4 }, () => ({
+      span: "col-span-6",
+      ratio: "aspect-[4/3]",
+    }));
+  return Array.from({ length: count }, () => ({
+    span: "col-span-4",
+    ratio: "aspect-[1/1]",
+  }));
+}
+
 export default function ProjectEntry({
   project,
   index = 0,
@@ -50,15 +84,20 @@ export default function ProjectEntry({
 }: Props) {
   const [hovered, setHovered] = useState<number | null>(null);
 
-  // Alternate two and three frames down the page, but never ask for more
-  // photographs than the project actually has.
-  const want = index % 2 === 0 ? 2 : 3;
-  const count = Math.min(want, Math.max(project.images.length, 1));
-  const set = count >= 3 ? LAYOUTS_3 : LAYOUTS_2;
-  const layout = set[Math.floor(index / 2) % set.length];
+  // Studio's "Featured image numbers" is taken literally: exactly those
+  // images, in exactly that order, however many there are.
+  const picked = explicitFeaturedSlots(project);
 
-  // Sharpest first, so it lands in whichever frame the layout makes largest.
-  const slots = slotsByResolution(resolveSlotsPadded(project, count));
+  // With nothing named, alternate two and three frames down the page, but
+  // never ask for more photographs than the project actually has.
+  const want = index % 2 === 0 ? 2 : 3;
+  const fallbackCount = Math.min(want, Math.max(project.images.length, 1));
+  const slots = picked.length
+    ? picked
+    // Sharpest first, so it lands in whichever frame the layout makes largest.
+    : slotsByResolution(resolveSlotsPadded(project, fallbackCount));
+
+  const layout = layoutFor(slots.length, index);
   const frames = [...layout]
     .sort((a, b) => Number(b.span.match(/\d+/)![0]) - Number(a.span.match(/\d+/)![0]))
     .slice(0, slots.length);

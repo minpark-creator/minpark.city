@@ -81,7 +81,7 @@ export default async function Home() {
             <LogoMarquee logos={settings.logos} />
             <Reveal>
               <CollaborationTimeline
-                logos={settings.logos}
+                entries={settings.timeline}
                 eyebrow={settings.logosEyebrow}
                 heading={settings.logosNote}
                 intro={settings.logosIntro}

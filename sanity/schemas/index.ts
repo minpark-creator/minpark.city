@@ -4,6 +4,8 @@ import { siteSettingsSchema } from "./siteSettings";
 import { filmSchema } from "./film";
 import { aboutPageSchema } from "./aboutPage";
 import { pageHeaderSchema, pageIntrosSchema } from "./pageIntros";
+import { organisationSchema } from "./organisation";
+import { timelineEntrySchema } from "./timelineEntry";
 
 export const schemaTypes = [
   projectSchema,
@@ -13,4 +15,6 @@ export const schemaTypes = [
   pageIntrosSchema,
   pageHeaderSchema,
   filmSchema,
+  organisationSchema,
+  timelineEntrySchema,
 ];

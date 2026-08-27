@@ -21,9 +21,19 @@ export const siteSettingsSchema = defineType({
         "Background photos behind the mp mark + intro on the home page. One is picked at random on every page load. Upload landscape photos for best results.",
     }),
     defineField({
-      name: "logos",
-      title: "Logos",
+      name: "timeline",
+      title: "Timeline",
       type: "array",
+      of: [{ type: "timelineEntry" }],
+      description:
+        "The collaboration timeline on the home page, one entry per piece of work. Order here does not matter — the site sorts entries by when they finished, newest first. Add the organisations under 'Organisations' first; each entry then points at one or more of them, and an organisation may appear on as many entries as it needs to.",
+    }),
+    defineField({
+      name: "logos",
+      title: "Logos (old, replaced by Organisations)",
+      type: "array",
+      readOnly: true,
+      hidden: ({ value }) => !Array.isArray(value) || value.length === 0,
       of: [
         {
           type: "object",
@@ -35,38 +45,16 @@ export const siteSettingsSchema = defineType({
               title: "Logo image",
             },
             { name: "name", type: "string", title: "Name" },
-            {
-              name: "timelineGroup",
-              type: "string",
-              title: "Timeline group",
-              description:
-                "Give two logos the same word here (e.g. 'greenbelts') and they share one row in the timeline, with one description between them. Leave blank for a row of its own.",
-            },
-            {
-              name: "years",
-              type: "string",
-              title: "Years",
-              description:
-                "e.g. 2024–2026, or 2025. Shown in the timeline under the logo strip.",
-            },
+            { name: "timelineGroup", type: "string", title: "Timeline group" },
+            { name: "years", type: "string", title: "Years" },
             {
               name: "description",
               type: "text",
               rows: 3,
               title: "What the work was",
-              description:
-                "The paragraph shown next to this logo in the home-page timeline: what you actually did with them, and what came out of it. Leave blank to keep the organisation out of the timeline.",
             },
             { name: "url", type: "url", title: "Link (optional)" },
-            {
-              name: "height",
-              type: "number",
-              title: "Display height (px)",
-              description:
-                "Per-logo height tuning. Default 48. Try 32–72 to visually balance logos that differ in aspect ratio.",
-              validation: (r) => r.min(16).max(120),
-              initialValue: 48,
-            },
+            { name: "height", type: "number", title: "Display height (px)" },
           ],
           preview: {
             select: { title: "name", subtitle: "years", media: "image" },
@@ -74,7 +62,7 @@ export const siteSettingsSchema = defineType({
         },
       ],
       description:
-        "Logos of the organisations you have been paid or selected to work with, shown in a horizontal marquee under the intro. Fill in 'Years' and 'What the work was'; those two feed the timeline underneath. Adjust 'Display height' to visually balance.",
+        "Kept only so nothing typed here is lost. Logos now live as their own Organisation documents and the copy lives in Timeline above, which is what the site reads. Once the timeline reads correctly this list can be emptied.",
     }),
     defineField({
       name: "logosEyebrow",

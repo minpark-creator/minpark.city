@@ -1,5 +1,9 @@
 import { client, urlFor } from "./client";
+import { compareTimeline, formatTimelineDate } from "./timeline";
 import {
+  fallbackOrganisations,
+  fallbackTimeline,
+  legacyLogoSeed,
   fallbackProjects,
   fallbackSettings,
   fallbackAbout,
@@ -43,17 +47,41 @@ export type Project = {
   links?: { label: string; url: string; _key?: string }[];
 };
 
+/** One organisation's logo, as the marquee and the timeline both want it. */
 export type LogoItem = {
   _key?: string;
   name?: string;
-  /** Timeline fields. A logo without a description stays out of the timeline. */
-  years?: string;
-  description?: string;
-  /** Logos sharing a group key collapse into one timeline row. */
-  timelineGroup?: string;
   url?: string;
   height?: number;
   image?: { url: string | null };
+};
+
+/**
+ * The pre-Organisations shape, where the copy and the dates hung off the logo
+ * itself. Read only to bridge a Site Settings document that has not been
+ * migrated yet.
+ */
+export type LegacyLogo = LogoItem & {
+  years?: string;
+  description?: string;
+  timelineGroup?: string;
+};
+
+/**
+ * One row of the home-page timeline. Its organisations are resolved logos
+ * rather than ids, and `dateText` is already written out, so the component
+ * only has to lay it out.
+ */
+export type TimelineEntry = {
+  _key?: string;
+  start?: string;
+  end?: string;
+  ongoing?: boolean;
+  dateLabel?: string;
+  /** Formatted from start/end (or the override) — e.g. "2024.03 – 2026.02". */
+  dateText: string;
+  description: string;
+  logos: LogoItem[];
 };
 
 export type HeroPoster = {
@@ -65,7 +93,10 @@ export type HeroPoster = {
 
 export type SiteSettings = {
   intro: string;
+  /** The scrolling logo strip. Sorted for the marquee, not the timeline. */
   logos: LogoItem[];
+  /** Already sorted newest-finished first. */
+  timeline: TimelineEntry[];
   heroImages?: ProjectImage[];
   logosEyebrow?: string;
   logosNote?: string;
@@ -177,8 +208,13 @@ type RawPoster = {
 
 type RawProject = Omit<Project, "images"> & { images?: RawImage[] };
 type RawFilm = Omit<Film, "poster"> & { poster?: RawPoster | null };
-type RawSettings = Omit<SiteSettings, "heroImages"> & {
+type RawSettings = Omit<SiteSettings, "heroImages" | "logos" | "timeline"> & {
   heroImages?: RawImage[];
+  organisations?: LogoItem[];
+  timeline?: (Omit<TimelineEntry, "dateText" | "logos"> & {
+    logos?: (LogoItem | null)[] | null;
+  })[];
+  legacyLogos?: LegacyLogo[];
 };
 
 /**
@@ -256,7 +292,20 @@ const SETTINGS_QUERY = /* groq */ `
     "cvUrl": cv.asset->url,
     logosEyebrow,
     logosIntro,
-    "logos": logos[]{ _key, name, years, description, timelineGroup, url, height, "image": { "url": image.asset->url } },
+    // The marquee reads every organisation; the timeline picks out the ones
+    // each entry points at. Both come from the same documents, so a logo
+    // uploaded once shows up everywhere it is used.
+    "organisations": *[_type == "organisation" && showInMarquee != false]
+      | order(order asc, name asc){
+        "_key": _id, name, url, height, "image": { "url": logo.asset->url }
+      },
+    timeline[]{
+      _key, start, end, ongoing, dateLabel, description,
+      "logos": organisations[]->{
+        "_key": _id, name, url, height, "image": { "url": logo.asset->url }
+      }
+    },
+    "legacyLogos": logos[]{ _key, name, years, description, timelineGroup, url, height, "image": { "url": image.asset->url } },
     socialLinks[]{ _key, label, url },
     // Falls back to the About page so the email only has to be typed once.
     "contactEmail": coalesce(contactEmail, *[_type == "aboutPage"][0].email)
@@ -349,28 +398,34 @@ export async function getProjects(): Promise<Project[]> {
 }
 
 /**
- * The logo images live in Studio; the timeline copy for each organisation may
- * not have been typed there yet. While the document carries no timeline copy
- * at all, seed every row from the entry with the same name so the timeline
- * still has something to say. The moment a single description is typed in
- * Studio, Studio is the whole truth — including the rows left blank, which
- * then drop out of the timeline as intended.
+ * Before Organisations existed, the timeline was derived from the logo list:
+ * one row per logo, glued together with `timelineGroup`, dated by a free-text
+ * `years` string. Everything below reads that old shape, and exists only so a
+ * Site Settings document that has not been migrated yet still renders its own
+ * copy rather than dropping to the seed data. Once `timeline` has entries,
+ * none of it runs.
  */
 const LOGO_ALIASES: Record<string, string> = {
   uff: "urban frontiers foundation",
-  "c40": "c40 cities",
+  c40: "c40 cities",
   "university college london": "ucl",
   holcim: "holcim foundation",
 };
 
-function mergeLogoTimeline(logos: LogoItem[]): LogoItem[] {
+/**
+ * The logo images live in Studio; the timeline copy may never have been typed
+ * there. While the document carries no copy at all, seed every row from the
+ * entry with the same name. The moment a single description is typed in
+ * Studio, Studio is the whole truth.
+ */
+function mergeLegacyCopy(logos: LegacyLogo[]): LegacyLogo[] {
   const typedInStudio = logos.some((l) => l.description?.trim());
   if (typedInStudio) return logos;
 
   return logos.map((logo) => {
     const raw = (logo.name ?? "").trim().toLowerCase();
     const key = LOGO_ALIASES[raw] ?? raw;
-    const seed = fallbackSettings.logos.find((l) => {
+    const seed = legacyLogoSeed.find((l) => {
       const seedName = (l.name ?? "").trim().toLowerCase();
       return seedName === key || (LOGO_ALIASES[seedName] ?? seedName) === key;
     });
@@ -384,6 +439,83 @@ function mergeLogoTimeline(logos: LogoItem[]): LogoItem[] {
   });
 }
 
+/** "2024–2026" → { start: "2024", end: "2026" }. Year precision, at best. */
+function parseLegacyYears(years?: string) {
+  const found = (years ?? "").match(/\d{4}/g) ?? [];
+  return { start: found[0], end: found[found.length - 1] };
+}
+
+/** The old logos array, read as timeline entries. */
+function legacyTimeline(logos: LegacyLogo[]): TimelineEntry[] {
+  const order: string[] = [];
+  const groups = new Map<string, LegacyLogo[]>();
+
+  for (const logo of logos) {
+    const key = logo.timelineGroup?.trim() || logo._key || (logo.name ?? "");
+    if (!groups.has(key)) {
+      groups.set(key, []);
+      order.push(key);
+    }
+    groups.get(key)!.push(logo);
+  }
+
+  return order
+    .map((key) => {
+      const members = groups.get(key)!;
+      const described = members.find((m) => m.description?.trim());
+      const years = members.find((m) => m.years?.trim())?.years;
+      const entry = {
+        _key: key,
+        ...parseLegacyYears(years),
+        dateLabel: years,
+        description: described?.description?.trim() ?? "",
+        logos: members.map(({ _key, name, url, height, image }) => ({
+          _key,
+          name,
+          url,
+          height,
+          image,
+        })),
+      };
+      return { ...entry, dateText: formatTimelineDate(entry) };
+    })
+    .filter((entry) => entry.description)
+    .sort(compareTimeline);
+}
+
+function resolveTimeline(s: RawSettings): TimelineEntry[] {
+  const entries = (s.timeline ?? [])
+    .map((e) => ({
+      ...e,
+      description: e.description?.trim() ?? "",
+      // A reference to a deleted organisation dereferences to null.
+      logos: (e.logos ?? []).filter((l): l is LogoItem => !!l),
+    }))
+    .filter((e) => e.description)
+    .map((e) => ({ ...e, dateText: formatTimelineDate(e) }))
+    .sort(compareTimeline);
+
+  if (entries.length > 0) return entries;
+
+  const legacy = legacyTimeline(mergeLegacyCopy(s.legacyLogos ?? []));
+  return legacy.length > 0 ? legacy : fallbackTimeline;
+}
+
+/** The marquee: organisations if they exist, else whatever the old list held. */
+function resolveMarquee(s: RawSettings): LogoItem[] {
+  if (s.organisations && s.organisations.length > 0) return s.organisations;
+  if (s.legacyLogos && s.legacyLogos.length > 0) {
+    return s.legacyLogos.map(({ _key, name, url, height, image }) => ({
+      _key,
+      name,
+      url,
+      height,
+      image,
+    }));
+  }
+  return fallbackOrganisations;
+}
+
 export async function getSiteSettings(): Promise<SiteSettings> {
   if (!client) return fallbackSettings;
   try {
@@ -391,9 +523,8 @@ export async function getSiteSettings(): Promise<SiteSettings> {
     if (!s) return fallbackSettings;
     return {
       intro: s.intro || fallbackSettings.intro,
-      logos: mergeLogoTimeline(
-        s.logos && s.logos.length > 0 ? s.logos : fallbackSettings.logos
-      ),
+      logos: resolveMarquee(s),
+      timeline: resolveTimeline(s),
       heroImages: (s.heroImages ?? [])
         .map(toImage)
         .filter((img): img is ProjectImage => img !== null),

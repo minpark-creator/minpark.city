@@ -1,11 +1,15 @@
 import type {
   AboutPage,
   Film,
+  LegacyLogo,
+  LogoItem,
   PageIntros,
   Project,
   Publication,
   SiteSettings,
+  TimelineEntry,
 } from "./queries";
+import { compareTimeline, formatTimelineDate } from "./timeline";
 
 /**
  * The header copy for each inner page, used until the "Page Intros" document
@@ -35,10 +39,13 @@ export const fallbackPageIntros: PageIntros = {
   },
 };
 
-export const fallbackSettings: SiteSettings = {
-  intro:
-    "min park is an urban policy researcher working on housing, land governance, and climate adaptation.\n\n* across scales, from detail to system.\n* rooted in inclusivity and climate resilience.\n* output: masterplans, exhibitions, reports, workshops, talks.",
-  logos: [
+/**
+ * The pre-Organisations shape of the logo list: logo, years and copy all on
+ * one row. Only used to backfill a Site Settings document that still carries
+ * the old `logos` array and no `timeline` yet, so nothing goes blank between
+ * deploying this and running scripts/migrate-timeline.mjs.
+ */
+export const legacyLogoSeed: LegacyLogo[] = [
     {
       _key: "l1",
       name: "C40 Cities",
@@ -103,7 +110,102 @@ export const fallbackSettings: SiteSettings = {
       description:
         "Invited lecture at the Korea Research Institute for Human Settlements on green belt governance and climate adaptation.",
     },
-  ],
+];
+
+/**
+ * The logo strip, used until Organisation documents exist in Studio (and
+ * whenever Sanity is unreachable). Image URLs are null here — the seed exists
+ * for the names; the logo files themselves only live in Sanity.
+ */
+export const fallbackOrganisations: LogoItem[] = [
+  { _key: "c40", name: "C40 Cities", height: 46, image: { url: null } },
+  {
+    _key: "uff",
+    name: "Urban Frontiers Foundation",
+    height: 46,
+    image: { url: null },
+  },
+  { _key: "ucl", name: "UCL", height: 44, image: { url: null } },
+  { _key: "krihs", name: "KRIHS", height: 44, image: { url: null } },
+  { _key: "holcim", name: "Holcim Foundation", height: 54, image: { url: null } },
+  { _key: "molit", name: "MOLIT", height: 44, image: { url: null } },
+  { _key: "lh", name: "LH", height: 44, image: { url: null } },
+];
+
+/** Fills in the date text the site would otherwise compute from Studio. */
+function withDateText(entry: Omit<TimelineEntry, "dateText">): TimelineEntry {
+  return { ...entry, dateText: formatTimelineDate(entry) };
+}
+
+const org = (key: string) =>
+  fallbackOrganisations.find((o) => o._key === key) ?? { name: key };
+
+/**
+ * Seed timeline, used only when Sanity is unreachable. Dated to the year
+ * because the year is all this file has ever known; the real months live in
+ * Studio, which is what makes the live ordering exact. Sorted here by the
+ * same rule the site uses, so the fallback and the real thing agree on shape
+ * even when they cannot agree on precision.
+ */
+export const fallbackTimeline: TimelineEntry[] = [
+  {
+    _key: "t-krihs",
+    start: "2026",
+    end: "2026",
+    logos: [org("krihs")],
+    description:
+      "Invited lecture at the Korea Research Institute for Human Settlements on green belt governance and climate adaptation, presenting the Green Belts 2.0 cases to an audience of researchers and policy staff.",
+  },
+  {
+    _key: "t-greenbelts",
+    start: "2024",
+    end: "2026",
+    logos: [org("c40"), org("uff")],
+    description:
+      "Research post with the Urban Frontiers Foundation, working alongside Nicky Gavron, former Deputy Mayor of London, who laid the political groundwork for C40 Cities and founded the foundation. Co-authored Green Belts 2.0, a 50-page open-access report published on the C40 Knowledge Hub: seven deep-dive cases and five shorter comparisons across twelve cities, sixteen stakeholder interviews, and twenty-odd maps and governance diagrams.",
+  },
+  {
+    _key: "t-ucl",
+    start: "2025",
+    end: "2026",
+    logos: [org("ucl")],
+    description:
+      "Funded MPLAN Mag, the independent planning publication founded out of the Bartlett. The grant carried Issue 01 from commissioning through to the launch, and Issue 02 into production.",
+  },
+  {
+    _key: "t-holcim",
+    start: "2025",
+    end: "2025",
+    logos: [org("holcim")],
+    description:
+      "Fellowship, not a commission: one of fifteen selected internationally to work on adaptive reuse, regeneration, and policy-led incentives for low-carbon urban transformation. Brussels.",
+  },
+  {
+    _key: "t-briefing",
+    start: "2025",
+    end: "2025",
+    logos: [org("molit"), org("lh")],
+    description:
+      "Briefed the Ministry of Land, Infrastructure and Transport and Korea Land and Housing Corporation during their visit to London on UK growth management, green belts, planning reform, and what those reforms imply institutionally for Korean practice.",
+  },
+  // MOLIT twice over: once here for the 2021 award, and again on the 2025
+  // briefing above. This is the case the old one-row-per-logo model could not
+  // hold, and the reason organisations became documents.
+  {
+    _key: "t-molit-award",
+    start: "2021",
+    end: "2021",
+    logos: [org("molit")],
+    description:
+      "First place in the national seismic structural design contest run by the Ministry of Land, Infrastructure and Transport.",
+  },
+].map(withDateText).sort(compareTimeline);
+
+export const fallbackSettings: SiteSettings = {
+  intro:
+    "min park is an urban policy researcher working on housing, land governance, and climate adaptation.\n\n* across scales, from detail to system.\n* rooted in inclusivity and climate resilience.\n* output: masterplans, exhibitions, reports, workshops, talks.",
+  logos: fallbackOrganisations,
+  timeline: fallbackTimeline,
   logosEyebrow: "Since 2023",
   logosNote: "Professional Collaborations",
   footerName: "Min Park",

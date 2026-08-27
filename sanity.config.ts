@@ -36,6 +36,7 @@ export default defineConfig({
                 S.document().schemaType("pageIntros").documentId("pageIntros")
               ),
             S.divider(),
+            S.documentTypeListItem("organisation").title("Organisations"),
             S.documentTypeListItem("project").title("Projects"),
             S.documentTypeListItem("publication").title("Publications"),
             S.documentTypeListItem("film").title("Films"),

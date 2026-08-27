@@ -82,7 +82,9 @@ export default async function Home() {
             <Reveal>
               <CollaborationTimeline
                 logos={settings.logos}
+                eyebrow={settings.logosEyebrow}
                 heading={settings.logosNote}
+                intro={settings.logosIntro}
               />
             </Reveal>
           </div>

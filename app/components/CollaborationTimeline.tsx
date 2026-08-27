@@ -2,7 +2,9 @@ import type { LogoItem } from "../../sanity/queries";
 
 type Props = {
   logos: LogoItem[];
+  eyebrow?: string;
   heading?: string;
+  intro?: string;
 };
 
 type Row = {
@@ -52,19 +54,25 @@ function toRows(logos: LogoItem[]): Row[] {
     .sort((a, b) => lastYear(b.years) - lastYear(a.years));
 }
 
-export default function CollaborationTimeline({ logos, heading }: Props) {
+export default function CollaborationTimeline({
+  logos,
+  eyebrow,
+  heading,
+  intro,
+}: Props) {
   const rows = toRows(logos ?? []);
   if (rows.length === 0) return null;
 
   return (
     <section className="pt-12 sm:pt-16">
+      {eyebrow && <p className="label eyebrow">{eyebrow}</p>}
       {heading && (
-        <>
-          <p className="label eyebrow">Since 2023</p>
-          <h2 className="display mt-3 text-[28px] sm:text-[42px]">
-            {heading}
-          </h2>
-        </>
+        <h2 className="display mt-3 text-[28px] sm:text-[42px]">{heading}</h2>
+      )}
+      {intro && (
+        <p className="mt-5 max-w-[70ch] text-[15px] sm:text-[16px] leading-[1.7] text-muted">
+          {intro}
+        </p>
       )}
 
       {/* Each row draws its own length of rail and its own node, both anchored

@@ -38,7 +38,6 @@ export default defineConfig({
             S.divider(),
             S.documentTypeListItem("project").title("Projects"),
             S.documentTypeListItem("publication").title("Publications"),
-            S.documentTypeListItem("journalEntry").title("Journal"),
             S.documentTypeListItem("film").title("Films"),
           ]),
     }),

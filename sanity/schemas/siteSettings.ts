@@ -55,7 +55,7 @@ export const siteSettingsSchema = defineType({
               rows: 3,
               title: "What the work was",
               description:
-                "One or two sentences: what you actually did with them, and what came out of it. This is the part that turns a logo into evidence. Leave blank to keep the organisation out of the timeline.",
+                "The paragraph shown next to this logo in the home-page timeline: what you actually did with them, and what came out of it. Leave blank to keep the organisation out of the timeline.",
             },
             { name: "url", type: "url", title: "Link (optional)" },
             {
@@ -77,12 +77,28 @@ export const siteSettingsSchema = defineType({
         "Logos of the organisations you have been paid or selected to work with, shown in a horizontal marquee under the intro. Fill in 'Years' and 'What the work was'; those two feed the timeline underneath. Adjust 'Display height' to visually balance.",
     }),
     defineField({
-      name: "logosNote",
-      title: "Timeline heading",
+      name: "logosEyebrow",
+      title: "Timeline: small line above the heading",
       type: "string",
       description:
-        "Heading above the collaboration timeline on the home page.",
+        "The little uppercase line above the timeline heading on the home page.",
+      initialValue: "Since 2023",
+    }),
+    defineField({
+      name: "logosNote",
+      title: "Timeline: heading",
+      type: "string",
+      description:
+        "The big heading above the collaboration timeline on the home page.",
       initialValue: "Professional Collaborations",
+    }),
+    defineField({
+      name: "logosIntro",
+      title: "Timeline: description under the heading",
+      type: "text",
+      rows: 3,
+      description:
+        "Optional paragraph between the heading and the first row. Leave blank to omit it.",
     }),
     defineField({
       name: "cv",

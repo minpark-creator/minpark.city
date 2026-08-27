@@ -1,7 +1,6 @@
 import { projectSchema } from "./project";
 import { publicationSchema } from "./publication";
 import { siteSettingsSchema } from "./siteSettings";
-import { journalEntrySchema } from "./journalEntry";
 import { filmSchema } from "./film";
 import { aboutPageSchema } from "./aboutPage";
 import { pageHeaderSchema, pageIntrosSchema } from "./pageIntros";
@@ -13,6 +12,5 @@ export const schemaTypes = [
   aboutPageSchema,
   pageIntrosSchema,
   pageHeaderSchema,
-  journalEntrySchema,
   filmSchema,
 ];

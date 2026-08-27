@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "sanity:cleanup": "node scripts/cleanup-sanity.mjs"
   },
   "dependencies": {
     "@sanity/client": "^7.21.0",

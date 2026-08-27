@@ -1,6 +1,5 @@
 import type {
   AboutPage,
-  JournalEntry,
   Film,
   PageIntros,
   Project,
@@ -28,11 +27,7 @@ export const fallbackPageIntros: PageIntros = {
   publications: {
     title: "Publications",
     intro:
-      "Commissioned reports, dissertations and articles, kept apart from the essays, which are personal writing.",
-  },
-  journal: {
-    eyebrow: "Writing",
-    title: "Essays",
+      "Commissioned reports, dissertations and articles.",
   },
   about: {
     eyebrow: "Who this is",
@@ -109,6 +104,7 @@ export const fallbackSettings: SiteSettings = {
         "Invited lecture at the Korea Research Institute for Human Settlements on green belt governance and climate adaptation.",
     },
   ],
+  logosEyebrow: "Since 2023",
   logosNote: "Professional Collaborations",
   footerName: "Min Park",
   location: "London, UK",
@@ -178,25 +174,6 @@ export const fallbackAbout: AboutPage = {
     },
   ],
 };
-
-export const fallbackJournal: JournalEntry[] = [
-  {
-    _id: "j1",
-    title: "Notes from the Green Belts report",
-    date: "2026-03-17",
-    excerpt: "Rethinking urban fringes as dynamic infrastructure.",
-    bodyText:
-      "Working on Green Belts 2.0 with C40 pushed me to question the preservation-versus-development framing that still dominates most policy conversations. Green belts perform best when they're understood as multifunctional landscapes carrying ecosystem services, flood management, and cultural use all at once.\n\nThe hardest part of the report wasn't making the case for this view. It was finding governance and financing structures that could actually sustain it.",
-  },
-  {
-    _id: "j2",
-    title: "Field notes: Stratford revisited",
-    date: "2025-11-02",
-    excerpt: "On severance, and the limits of connectivity.",
-    bodyText:
-      "Walked Stratford again this month. The 2023 masterplan strategy still holds up in my view: the five anchor destinations are well-served by transit but remain poorly linked to each other on foot. The triangular sites formed by the rail lines are still the most promising opportunity to stitch the district together.\n\nWhat's changed is the pace of new residential on the edges, which is making the severance worse, not better.",
-  },
-];
 
 export const fallbackPublications: Publication[] = [
   {

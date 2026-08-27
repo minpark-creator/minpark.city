@@ -72,17 +72,7 @@ export const pageIntrosSchema = defineType({
         eyebrow: "",
         title: "Publications",
         intro:
-          "Commissioned reports, dissertations and articles, kept apart from the essays, which are personal writing.",
-      },
-    }),
-    defineField({
-      name: "journal",
-      title: "Essays page",
-      type: "pageHeader",
-      initialValue: {
-        eyebrow: "Writing",
-        title: "Essays",
-        intro: "",
+          "Commissioned reports, dissertations and articles.",
       },
     }),
     defineField({

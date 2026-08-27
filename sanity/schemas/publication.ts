@@ -5,7 +5,7 @@ export const publicationSchema = defineType({
   title: "Publication",
   type: "document",
   description:
-    "Peer-reviewed, commissioned, or formally published work. Kept apart from Essays, which are personal writing.",
+    "Peer-reviewed, commissioned, or formally published work.",
   fields: [
     defineField({
       name: "title",

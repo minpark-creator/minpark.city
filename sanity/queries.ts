@@ -3,7 +3,6 @@ import {
   fallbackProjects,
   fallbackSettings,
   fallbackAbout,
-  fallbackJournal,
   fallbackFilms,
   fallbackPageIntros,
   fallbackPublications,
@@ -68,7 +67,9 @@ export type SiteSettings = {
   intro: string;
   logos: LogoItem[];
   heroImages?: ProjectImage[];
+  logosEyebrow?: string;
   logosNote?: string;
+  logosIntro?: string;
   footerName?: string;
   location?: string;
   origin?: string;
@@ -122,17 +123,7 @@ export type PageIntros = {
   work: PageHeader;
   film: PageHeader;
   publications: PageHeader;
-  journal: PageHeader;
   about: PageHeader;
-};
-
-export type JournalEntry = {
-  _id: string;
-  title: string;
-  date: string;
-  excerpt?: string;
-  body?: unknown[];
-  bodyText?: string;
 };
 
 export type Publication = {
@@ -263,6 +254,8 @@ const SETTINGS_QUERY = /* groq */ `
     contactNote,
     phone,
     "cvUrl": cv.asset->url,
+    logosEyebrow,
+    logosIntro,
     "logos": logos[]{ _key, name, years, description, timelineGroup, url, height, "image": { "url": image.asset->url } },
     socialLinks[]{ _key, label, url },
     // Falls back to the About page so the email only has to be typed once.
@@ -284,12 +277,7 @@ const ABOUT_QUERY = /* groq */ `
 
 const PAGE_INTROS_QUERY = /* groq */ `
   *[_type == "pageIntros"][0]{
-    work, film, publications, journal, about
-  }`;
-
-const JOURNAL_QUERY = /* groq */ `
-  *[_type == "journalEntry"] | order(date desc) {
-    _id, title, date, excerpt, body
+    work, film, publications, about
   }`;
 
 const PUBLICATIONS_QUERY = /* groq */ `
@@ -362,9 +350,11 @@ export async function getProjects(): Promise<Project[]> {
 
 /**
  * The logo images live in Studio; the timeline copy for each organisation may
- * not have been typed there yet. Where a logo carries no description, fall
- * back to the seeded entry with the same name so the timeline still has
- * something to say. Anything typed in Studio wins.
+ * not have been typed there yet. While the document carries no timeline copy
+ * at all, seed every row from the entry with the same name so the timeline
+ * still has something to say. The moment a single description is typed in
+ * Studio, Studio is the whole truth — including the rows left blank, which
+ * then drop out of the timeline as intended.
  */
 const LOGO_ALIASES: Record<string, string> = {
   uff: "urban frontiers foundation",
@@ -374,8 +364,10 @@ const LOGO_ALIASES: Record<string, string> = {
 };
 
 function mergeLogoTimeline(logos: LogoItem[]): LogoItem[] {
+  const typedInStudio = logos.some((l) => l.description?.trim());
+  if (typedInStudio) return logos;
+
   return logos.map((logo) => {
-    if (logo.description?.trim()) return logo;
     const raw = (logo.name ?? "").trim().toLowerCase();
     const key = LOGO_ALIASES[raw] ?? raw;
     const seed = fallbackSettings.logos.find((l) => {
@@ -407,7 +399,9 @@ export async function getSiteSettings(): Promise<SiteSettings> {
         .filter((img): img is ProjectImage => img !== null),
       // Studio is the source of truth once filled in; the fallbacks only
       // apply when Sanity is unreachable or the fields are still empty.
+      logosEyebrow: s.logosEyebrow || fallbackSettings.logosEyebrow,
       logosNote: s.logosNote || fallbackSettings.logosNote,
+      logosIntro: s.logosIntro ?? fallbackSettings.logosIntro,
       footerName: s.footerName || fallbackSettings.footerName,
       location: s.location || fallbackSettings.location,
       origin: s.origin || fallbackSettings.origin,
@@ -504,22 +498,10 @@ export async function getPageIntros(): Promise<PageIntros> {
         p.publications,
         fallbackPageIntros.publications
       ),
-      journal: mergeHeader(p.journal, fallbackPageIntros.journal),
       about: mergeHeader(p.about, fallbackPageIntros.about),
     };
   } catch {
     return fallbackPageIntros;
-  }
-}
-
-export async function getJournalEntries(): Promise<JournalEntry[]> {
-  if (!client) return fallbackJournal;
-  try {
-    const j = await client.fetch<JournalEntry[]>(JOURNAL_QUERY);
-    if (!j.length) return fallbackJournal;
-    return j.map((e) => ({ ...e, bodyText: portableTextToPlain(e.body) }));
-  } catch {
-    return fallbackJournal;
   }
 }
 

@@ -4,7 +4,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
-// Essays folded into Publications; its route stays live but unlinked.
 // Observations earns its tab — the filming is the part nobody else has.
 const nav = [
   { label: "Home", href: "/" },

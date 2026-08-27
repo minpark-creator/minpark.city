@@ -1,8 +1,11 @@
 /**
  * One-off migration, run by hand:
  *
- *   SANITY_API_WRITE_TOKEN=sk... node scripts/migrate-timeline.mjs
- *   SANITY_API_WRITE_TOKEN=sk... node scripts/migrate-timeline.mjs --dry-run
+ *   node scripts/migrate-timeline.mjs --dry-run   # reads only, no token
+ *   node scripts/migrate-timeline.mjs             # writes
+ *
+ * Writing needs a Sanity token with Editor rights, read from
+ * SANITY_API_WRITE_TOKEN in the environment or in .env.local (gitignored).
  *
  * Moves the home-page timeline off the old `siteSettings.logos` array and onto
  * Organisation documents plus a `siteSettings.timeline` array.
@@ -29,31 +32,37 @@
  * year-only. Open Site Settings afterwards and narrow each entry to the month
  * it finished — that is what makes the ordering exact.
  *
- * Get a token with Editor rights at
- * https://www.sanity.io/manage  →  your project  →  API  →  Tokens.
+ * Get a token at https://www.sanity.io/manage → your project → API → Tokens.
  */
 import { createClient } from "@sanity/client";
 import { readFileSync } from "node:fs";
 
 const dryRun = process.argv.includes("--dry-run");
-const token = process.env.SANITY_API_WRITE_TOKEN;
-// --dry-run only reads, and the dataset is public, so it needs no token.
-if (!token && !dryRun) {
-  console.error(
-    "Set SANITY_API_WRITE_TOKEN first:\n" +
-      "  SANITY_API_WRITE_TOKEN=sk... node scripts/migrate-timeline.mjs\n" +
-      "Or preview what it would do, no token needed:\n" +
-      "  node scripts/migrate-timeline.mjs --dry-run"
-  );
-  process.exit(1);
-}
 
 const env = Object.fromEntries(
   readFileSync(new URL("../.env.local", import.meta.url), "utf8")
     .split("\n")
-    .filter((l) => l.includes("="))
-    .map((l) => l.split("=").map((p) => p.trim()))
+    .filter((l) => l.includes("=") && !l.trimStart().startsWith("#"))
+    // Only split on the first "=" — a token can contain one.
+    .map((l) => [l.slice(0, l.indexOf("=")).trim(), l.slice(l.indexOf("=") + 1).trim()])
 );
+
+// .env.local is gitignored, so the token can live there rather than being
+// typed on a command line that ends up in the shell history.
+const token = process.env.SANITY_API_WRITE_TOKEN || env.SANITY_API_WRITE_TOKEN;
+
+// --dry-run only reads, and the dataset is public, so it needs no token.
+if (!token && !dryRun) {
+  console.error(
+    "No write token found. Add this line to .env.local:\n" +
+      "  SANITY_API_WRITE_TOKEN=sk...\n" +
+      "Get one with Editor rights at https://www.sanity.io/manage → your\n" +
+      "project → API → Tokens.\n\n" +
+      "Or preview what this would do, no token needed:\n" +
+      "  node scripts/migrate-timeline.mjs --dry-run"
+  );
+  process.exit(1);
+}
 
 const client = createClient({
   projectId: env.NEXT_PUBLIC_SANITY_PROJECT_ID,

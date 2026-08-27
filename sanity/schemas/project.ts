@@ -107,6 +107,14 @@ export const projectSchema = defineType({
       ],
     }),
     defineField({
+      name: "pdf",
+      title: "PDF (report / deck)",
+      type: "file",
+      options: { accept: "application/pdf" },
+      description:
+        "Upload the PDF, save, then run 'PDF \u2192 page images' from the menu next to Publish. Every page is rendered into Images & Videos, so the lightbox flips through the document one page at a time. Re-running replaces the pages it made last time.",
+    }),
+    defineField({
       name: "images",
       title: "Images & Videos",
       type: "array",
@@ -118,6 +126,15 @@ export const projectSchema = defineType({
           options: { hotspot: true },
           fields: [
             { name: "alt", type: "string", title: "Alt text" },
+            {
+              // Stamped by the PDF action. Present only on generated pages,
+              // which is how a re-run knows which items to clear out.
+              name: "pdfPage",
+              type: "number",
+              title: "PDF page",
+              readOnly: true,
+              hidden: true,
+            },
             {
               name: "video",
               title: "Video (optional)",

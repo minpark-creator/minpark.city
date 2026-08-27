@@ -5,6 +5,7 @@ import { structureTool } from "sanity/structure";
 import { visionTool } from "@sanity/vision";
 import { apiVersion, dataset, projectId } from "./sanity/env";
 import { schemaTypes } from "./sanity/schemas";
+import { usePdfToPagesAction } from "./sanity/actions/pdfToPages";
 
 export default defineConfig({
   name: "default",
@@ -45,4 +46,9 @@ export default defineConfig({
     visionTool({ defaultApiVersion: apiVersion }),
   ],
   schema: { types: schemaTypes },
+  document: {
+    // Appends "PDF → page images" to the menu next to Publish. The action
+    // returns null for every type but `project`, so it only shows up there.
+    actions: (prev) => [...prev, usePdfToPagesAction],
+  },
 });

@@ -1,19 +1,24 @@
 import PageShell from "../components/PageShell";
 import Reveal from "../components/Reveal";
-import { getPublications } from "../../sanity/queries";
+import { getPageIntros, getPublications } from "../../sanity/queries";
 
 export const revalidate = 60;
 
 export const metadata = { title: "Publications · minpark" };
 
 export default async function PublicationsPage() {
-  const publications = await getPublications();
+  const [publications, intros] = await Promise.all([
+    getPublications(),
+    getPageIntros(),
+  ]);
+  const header = intros.publications;
 
   return (
     <PageShell
-      eyebrow={`${publications.length} entries`}
-      title="Publications"
-      intro="Commissioned reports, dissertations and articles, kept apart from the essays, which are personal writing."
+      // No eyebrow typed in Studio: fall back to the live count.
+      eyebrow={header.eyebrow || `${publications.length} entries`}
+      title={header.title}
+      intro={header.intro}
       wash="blue"
     >
       <div>

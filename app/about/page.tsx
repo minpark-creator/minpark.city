@@ -1,14 +1,15 @@
 import Image from "next/image";
 import PageShell from "../components/PageShell";
 import Reveal from "../components/Reveal";
-import { getAboutPage } from "../../sanity/queries";
+import { getAboutPage, getPageIntros } from "../../sanity/queries";
 
 export const revalidate = 60;
 
 export const metadata = { title: "About · minpark" };
 
 export default async function AboutPage() {
-  const about = await getAboutPage();
+  const [about, intros] = await Promise.all([getAboutPage(), getPageIntros()]);
+  const header = intros.about;
   const portrait = about.portrait;
 
   const paragraphs = about.bioText
@@ -19,7 +20,12 @@ export default async function AboutPage() {
     !!(about.contactIntro || about.email || (about.links && about.links.length > 0));
 
   return (
-    <PageShell eyebrow="Who this is" title="About" wash="blue">
+    <PageShell
+      eyebrow={header.eyebrow}
+      title={header.title}
+      intro={header.intro}
+      wash="blue"
+    >
       {/*
         Desktop: fixed-width square portrait on the left, everything else in a
         flexible column beside it. Flex rather than the 12-col grid so the gap

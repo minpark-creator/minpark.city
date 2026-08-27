@@ -1,5 +1,5 @@
 import PageShell from "../components/PageShell";
-import { getFilms } from "../../sanity/queries";
+import { getFilms, getPageIntros } from "../../sanity/queries";
 import FilmClient from "./FilmClient";
 
 export const revalidate = 60;
@@ -7,12 +7,14 @@ export const revalidate = 60;
 export const metadata = { title: "Observations · minpark" };
 
 export default async function FilmPage() {
-  const films = await getFilms();
+  const [films, intros] = await Promise.all([getFilms(), getPageIntros()]);
+  const header = intros.film;
+
   return (
     <PageShell
-      eyebrow="Field recordings"
-      title="Observations"
-      intro="A collection of moving images and observations exploring how people use and inhabit public space."
+      eyebrow={header.eyebrow}
+      title={header.title}
+      intro={header.intro}
       wash="none"
     >
       <FilmClient films={films} />

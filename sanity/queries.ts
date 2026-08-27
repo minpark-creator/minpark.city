@@ -5,6 +5,7 @@ import {
   fallbackAbout,
   fallbackJournal,
   fallbackFilms,
+  fallbackPageIntros,
   fallbackPublications,
 } from "./fallback";
 
@@ -108,6 +109,21 @@ export type AboutPage = {
     degree?: string;
     focus?: string;
   }[];
+};
+
+/** Header copy for one inner page, edited in Studio under "Page Intros". */
+export type PageHeader = {
+  eyebrow?: string;
+  title: string;
+  intro?: string;
+};
+
+export type PageIntros = {
+  work: PageHeader;
+  film: PageHeader;
+  publications: PageHeader;
+  journal: PageHeader;
+  about: PageHeader;
 };
 
 export type JournalEntry = {
@@ -264,6 +280,11 @@ const ABOUT_QUERY = /* groq */ `
       "width": asset->metadata.dimensions.width,
       "height": asset->metadata.dimensions.height
     }
+  }`;
+
+const PAGE_INTROS_QUERY = /* groq */ `
+  *[_type == "pageIntros"][0]{
+    work, film, publications, journal, about
   }`;
 
 const JOURNAL_QUERY = /* groq */ `
@@ -447,6 +468,48 @@ function portableTextToPlain(body: unknown): string {
     })
     .filter(Boolean)
     .join("\n\n");
+}
+
+type RawPageIntros = Partial<
+  Record<keyof PageIntros, Partial<PageHeader> | null>
+>;
+
+/**
+ * Once the Page Intros document exists, Studio is what the page shows: a
+ * description cleared there disappears from the site rather than springing
+ * back to the seeded copy. Only the title falls back, so a page can never
+ * lose its heading. The seeds apply as a whole when the document has not been
+ * created yet, or when Sanity is unreachable.
+ */
+function mergeHeader(
+  raw: Partial<PageHeader> | null | undefined,
+  fb: PageHeader
+): PageHeader {
+  return {
+    eyebrow: raw?.eyebrow?.trim() || undefined,
+    title: raw?.title?.trim() || fb.title,
+    intro: raw?.intro?.trim() || undefined,
+  };
+}
+
+export async function getPageIntros(): Promise<PageIntros> {
+  if (!client) return fallbackPageIntros;
+  try {
+    const p = await client.fetch<RawPageIntros | null>(PAGE_INTROS_QUERY);
+    if (!p) return fallbackPageIntros;
+    return {
+      work: mergeHeader(p.work, fallbackPageIntros.work),
+      film: mergeHeader(p.film, fallbackPageIntros.film),
+      publications: mergeHeader(
+        p.publications,
+        fallbackPageIntros.publications
+      ),
+      journal: mergeHeader(p.journal, fallbackPageIntros.journal),
+      about: mergeHeader(p.about, fallbackPageIntros.about),
+    };
+  } catch {
+    return fallbackPageIntros;
+  }
 }
 
 export async function getJournalEntries(): Promise<JournalEntry[]> {

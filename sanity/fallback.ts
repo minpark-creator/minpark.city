@@ -2,10 +2,43 @@ import type {
   AboutPage,
   JournalEntry,
   Film,
+  PageIntros,
   Project,
   Publication,
   SiteSettings,
 } from "./queries";
+
+/**
+ * The header copy for each inner page, used until the "Page Intros" document
+ * is created in Studio (and whenever Sanity is unreachable). Studio wins once
+ * it exists — including a cleared description, which then hides the line.
+ */
+export const fallbackPageIntros: PageIntros = {
+  work: {
+    title: "Projects",
+    intro:
+      "Research, planning and design, the magazine, and the things that got built. Filter by what the work produced.",
+  },
+  film: {
+    eyebrow: "Field recordings",
+    title: "Observations",
+    intro:
+      "A collection of moving images and observations exploring how people use and inhabit public space.",
+  },
+  publications: {
+    title: "Publications",
+    intro:
+      "Commissioned reports, dissertations and articles, kept apart from the essays, which are personal writing.",
+  },
+  journal: {
+    eyebrow: "Writing",
+    title: "Essays",
+  },
+  about: {
+    eyebrow: "Who this is",
+    title: "About",
+  },
+};
 
 export const fallbackSettings: SiteSettings = {
   intro:

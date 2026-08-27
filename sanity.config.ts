@@ -30,6 +30,11 @@ export default defineConfig({
               .child(
                 S.document().schemaType("aboutPage").documentId("aboutPage")
               ),
+            S.listItem()
+              .title("Page Intros")
+              .child(
+                S.document().schemaType("pageIntros").documentId("pageIntros")
+              ),
             S.divider(),
             S.documentTypeListItem("project").title("Projects"),
             S.documentTypeListItem("publication").title("Publications"),

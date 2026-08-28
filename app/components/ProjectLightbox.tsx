@@ -299,7 +299,7 @@ function InfoSlide({ project }: { project: Project }) {
           It scrolls away with the content, so long entries still get the full
           height to run into. */}
       <div className="w-full text-left pr-2 pt-[18vh]">
-        <h2 className="font-display text-[26px] sm:text-[32px] leading-[1.2]">
+        <h2 className="subhead text-[26px] sm:text-[32px] leading-[1.2]">
           {project.title}
         </h2>
         {meta && <div className="mt-2 text-white/70 text-[14px]">{meta}</div>}

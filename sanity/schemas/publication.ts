@@ -70,6 +70,14 @@ export const publicationSchema = defineType({
       description: "Two or three sentences. What it asked, and what it found.",
     }),
     defineField({
+      name: "pdf",
+      title: "PDF",
+      type: "file",
+      options: { accept: "application/pdf" },
+      description:
+        "Upload the document itself and it appears under the entry as a 'read pdf \u2192' link that opens in a new tab. Use Links below for anything hosted elsewhere.",
+    }),
+    defineField({
       name: "links",
       title: "Links",
       type: "array",

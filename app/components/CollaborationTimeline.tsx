@@ -56,7 +56,7 @@ export default function CollaborationTimeline({
     <section className="pt-12 sm:pt-16">
       {eyebrow && <p className="label eyebrow">{eyebrow}</p>}
       {heading && (
-        <h2 className="display mt-3 text-[28px] sm:text-[42px]">{heading}</h2>
+        <h2 className="display mt-3 text-[24px] sm:text-[37px]">{heading}</h2>
       )}
       {intro && (
         <p className="mt-5 max-w-[70ch] text-[15px] sm:text-[16px] leading-[1.7] text-muted">

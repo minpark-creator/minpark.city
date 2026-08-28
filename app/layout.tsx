@@ -1,10 +1,26 @@
 import type { Metadata, Viewport } from "next";
+import { EB_Garamond, Libre_Baskerville } from "next/font/google";
 import "./globals.css";
 
-// No webfont. The reference sets everything in Helvetica Now and falls back to
-// Helvetica Neue → Helvetica → Arial; that fallback stack is the closest thing
-// to it and costs nothing to load. Pretendard, already self-hosted below,
-// carries Hangul.
+// The interface stays in Helvetica Now → Helvetica Neue → Helvetica → Arial:
+// no webfont needed, and Pretendard (self-hosted below) carries Hangul. The
+// titles are the exception, and take two serifs: Libre Baskerville for the
+// big ones, EB Garamond for the smaller ones and the hero statement. Both are
+// self-hosted by next/font, so no request leaves for Google at runtime.
+// Baskerville ships as static cuts and needs its weight named; Garamond is
+// variable and does not.
+const titleSerif = Libre_Baskerville({
+  subsets: ["latin"],
+  weight: ["400"],
+  variable: "--font-title-serif",
+  display: "swap",
+});
+
+const subheadSerif = EB_Garamond({
+  subsets: ["latin"],
+  variable: "--font-subhead-serif",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://minpark.city"),
@@ -40,7 +56,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-full antialiased">
+    <html
+      lang="en"
+      className={`h-full antialiased ${titleSerif.variable} ${subheadSerif.variable}`}
+    >
       <head>
         {/*
           Self-hosted Pretendard, linked rather than @import-ed: Next's CSS

@@ -46,7 +46,7 @@ export default async function Home() {
         */}
         <HeroTrail images={settings.heroImages ?? []}>
           <section className="px-4 sm:px-5 pt-[132px] sm:pt-[168px] pb-12 sm:pb-16">
-            <h1 className="display uppercase mx-auto text-center max-w-[24ch] text-[34px] sm:text-[52px] lg:text-[62px]">
+            <h1 className="hero-statement uppercase mx-auto text-center max-w-[24ch] text-[34px] sm:text-[52px] lg:text-[62px]">
               {lead || "min park is an urban policy researcher."}
             </h1>
 

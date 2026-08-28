@@ -27,7 +27,7 @@ export default function ProjectsClient({ selected }: Props) {
     <>
       <section>
         <p className="label eyebrow">Selected work</p>
-        <h2 className="display mt-3 text-[26px] sm:text-[40px]">
+        <h2 className="display mt-3 text-[24px] sm:text-[37px]">
           Featured Projects
         </h2>
 

@@ -56,6 +56,12 @@
     "Pretendard Variable", Pretendard, Arial, sans-serif;
   --font-serif: var(--font-sans);
   --font-nav: var(--font-sans);
+  /* Titles run on two serifs against the Helvetica interface: Baskerville
+     for the big ones, Garamond for the smaller ones and the hero. */
+  --font-title: var(--font-title-serif), "Libre Baskerville", Georgia,
+    "Times New Roman", serif;
+  --font-subhead: var(--font-subhead-serif), "EB Garamond", Georgia,
+    "Times New Roman", serif;
 }
 
 html,
@@ -96,12 +102,32 @@ a:hover {
     font-family: var(--font-sans);
   }
 
-  /* The statement voice: uppercase, tight, set in the display cut. */
+  /* Page and big section titles. The tight tracking belonged to Helvetica; a
+     serif this size wants none of it. */
   .display {
-    font-family: var(--font-display);
+    font-family: var(--font-title);
     font-weight: 400;
-    letter-spacing: -0.02em;
-    line-height: 1.06;
+    letter-spacing: -0.005em;
+    line-height: 1.08;
+  }
+
+  /* The home statement: the only place the smaller serif runs large, and the
+     only place it is set uppercase. Caps at that size need air, not tracking
+     pulled out of them. */
+  .hero-statement {
+    font-family: var(--font-subhead);
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    line-height: 1.1;
+  }
+
+  /* Item titles: project entries, publications, cards, films. One step down
+     from .display in size and in voice. */
+  .subhead {
+    font-family: var(--font-subhead);
+    font-weight: 400;
+    letter-spacing: 0;
+    line-height: 1.2;
   }
 
   .label {
@@ -124,11 +150,11 @@ a:hover {
   }
 
   .section-title {
-    font-family: var(--font-display);
+    font-family: var(--font-title);
     font-weight: 400;
     color: var(--foreground);
-    letter-spacing: -0.015em;
-    line-height: 1.08;
+    letter-spacing: -0.005em;
+    line-height: 1.1;
   }
 
   .mark {

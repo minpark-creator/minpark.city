@@ -34,7 +34,7 @@ export default function PageShell({
           <section className={wash === "none" ? undefined : `wash-${wash}`}>
             <div className="px-4 sm:px-5 pt-[112px] sm:pt-[150px] pb-10 sm:pb-14">
               {eyebrow && <p className="label eyebrow">{eyebrow}</p>}
-              <h1 className="display mt-3 text-[30px] sm:text-[46px] lg:text-[56px] max-w-[24ch]">
+              <h1 className="display mt-3 text-[24px] sm:text-[37px] max-w-[24ch]">
                 {title}
               </h1>
               {intro && (

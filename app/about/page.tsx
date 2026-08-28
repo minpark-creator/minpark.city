@@ -55,7 +55,7 @@ export default async function AboutPage() {
         )}
 
         <div className="flex-1 min-w-0">
-          <div className="space-y-6 text-[16px] sm:text-[17px] leading-[1.75] max-w-[64ch]">
+          <div className="space-y-6 text-[15px] sm:text-[16px] leading-[1.7] max-w-[64ch]">
             {paragraphs.length > 0 ? (
               paragraphs.map((p, i) => <p key={i}>{p}</p>)
             ) : (
@@ -65,7 +65,7 @@ export default async function AboutPage() {
 
           {about.education && about.education.length > 0 && (
             <Reveal className="mt-16 sm:mt-24">
-              <h2 className="display text-[22px] sm:text-[30px]">
+              <h2 className="subhead text-[22px] sm:text-[30px]">
                 Education
               </h2>
               <dl className="mt-8 pl-16 sm:pl-28">
@@ -81,7 +81,7 @@ export default async function AboutPage() {
                     />
                     <dt className="label text-accent-ink">{item.years}</dt>
                     <dd className="mt-3">
-                      <div className="font-display text-[19px] text-brand">
+                      <div className="subhead text-[19px] text-brand">
                         {item.institution}
                       </div>
                       {item.degree && (
@@ -103,7 +103,7 @@ export default async function AboutPage() {
             <div className="mt-16 sm:mt-24 space-y-14 sm:space-y-20">
               {about.sections.map((section, i) => (
                 <Reveal key={section.title + i}>
-                  <h2 className="display text-[22px] sm:text-[30px]">
+                  <h2 className="subhead text-[22px] sm:text-[30px]">
                     {section.title}
                   </h2>
                   <dl className="mt-7">

@@ -145,7 +145,7 @@ export default function FilmClient({ films }: { films: Film[] }) {
           <div className="lg:sticky lg:top-[110px]" ref={playerRef}>
             <FilmPlayer key={active._id} film={active} />
             <div className="pt-4 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
-              <span className="font-display">{active.title}</span>
+              <span className="subhead text-[17px]">{active.title}</span>
               <span className="text-muted">{formatDate(active.date)}</span>
             </div>
             {active.location && (
@@ -179,7 +179,7 @@ export default function FilmClient({ films }: { films: Film[] }) {
                 className="w-full text-left py-3 transition-colors"
                 style={{ color: isActive ? "var(--red)" : undefined }}
               >
-                <div className="font-display text-[14px] sm:text-[15px] leading-[1.25]">
+                <div className="subhead text-[14px] sm:text-[15px] leading-[1.25]">
                   {film.title}
                 </div>
                 <div className="mt-1 flex flex-wrap gap-x-3 text-[12px] text-muted">

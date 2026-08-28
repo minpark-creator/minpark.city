@@ -166,6 +166,8 @@ export type Publication = {
   venue?: string;
   authors?: string;
   abstract?: string;
+  /** Direct URL of the PDF uploaded in Studio, or null when none is set. */
+  pdfUrl?: string | null;
   links?: { label: string; url: string; _key?: string }[];
 };
 
@@ -332,6 +334,7 @@ const PAGE_INTROS_QUERY = /* groq */ `
 const PUBLICATIONS_QUERY = /* groq */ `
   *[_type == "publication"] | order(order asc, date desc) {
     _id, title, kind, year, date, venue, authors, abstract,
+    "pdfUrl": pdf.asset->url,
     links[]{ _key, label, url }
   }`;
 

@@ -62,7 +62,7 @@ export default function GalleryCard({
         onClick={onOpenInfo}
         className="block text-[14px] w-full text-left hover:opacity-80 transition-opacity duration-300 ease-out"
       >
-        <span className="font-display text-[15px] line-clamp-2 leading-snug block transition-colors duration-300 ease-out group-hover/card:opacity-50">
+        <span className="subhead text-[15px] line-clamp-2 leading-snug block transition-colors duration-300 ease-out group-hover/card:opacity-50">
           {project.title}
         </span>
         {(project.year || project.date) && (

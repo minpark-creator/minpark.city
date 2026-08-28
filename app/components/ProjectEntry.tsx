@@ -132,7 +132,7 @@ export default function ProjectEntry({
         >
           {status && <p className="label text-accent-ink">{status}</p>}
 
-          <h3 className="display mt-3 text-[20px] sm:text-[24px] group-hover:opacity-50 transition-opacity">
+          <h3 className="subhead mt-3 text-[20px] sm:text-[24px] group-hover:opacity-50 transition-opacity">
             {project.title}
           </h3>
 

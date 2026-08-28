@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type { Project } from "../../sanity/queries";
+import type { Project, ProjectImage } from "../../sanity/queries";
 import ProjectThumb from "./ProjectThumb";
 import {
   explicitFeaturedSlots,
@@ -46,23 +46,35 @@ const LAYOUTS_3 = [
   ],
 ] as const;
 
-// Studio can name a single photograph, and then a single photograph is what
-// shows. Kept well short of full width so it still reads as a project rather
-// than a hero.
-const LAYOUTS_1 = [
-  [{ span: "col-span-7", ratio: "aspect-[4/3]" }],
-  [{ span: "col-span-8", ratio: "aspect-[16/10]" }],
-] as const;
+type Frame = {
+  span: string;
+  /** House ratio to crop to, or omitted to keep the image's own proportions. */
+  ratio?: string;
+};
 
-type Frame = { span: string; ratio: string };
+/**
+ * The image's own aspect ratio, clamped so a panorama or a tall poster can't
+ * run away with the page. Only the single-image layout uses it: that frame is
+ * full width with no neighbour to line up against, so it can show the whole
+ * photograph instead of a crop.
+ */
+function naturalAspect(image?: ProjectImage): number {
+  const w = image?.width;
+  const h = image?.height;
+  if (!w || !h) return 16 / 10;
+  return Math.min(Math.max(w / h, 3 / 4), 21 / 9);
+}
 
 /**
  * Frames for a given number of photographs. Two and three keep the hand-made
- * arrangements, alternating down the page; one and four-or-more get an even
- * grid, since a named set of that size has no "largest" frame to earn.
+ * arrangements, alternating down the page; one runs full width; four-or-more
+ * get an even grid, since a set that size has no "largest" frame to earn.
  */
 function layoutFor(count: number, index: number): readonly Frame[] {
-  if (count <= 1) return LAYOUTS_1[index % LAYOUTS_1.length];
+  // One photograph takes the whole image column, out to the right edge, and
+  // keeps its own proportions. There is no second frame to agree with, so
+  // cropping it to a house ratio only threw away picture.
+  if (count <= 1) return [{ span: "col-span-12" }];
   if (count === 2) return LAYOUTS_2[Math.floor(index / 2) % LAYOUTS_2.length];
   if (count === 3) return LAYOUTS_3[Math.floor(index / 2) % LAYOUTS_3.length];
   if (count === 4)
@@ -169,7 +181,12 @@ export default function ProjectEntry({
                   key={`${slot.originalIndex}-${i}`}
                   onMouseEnter={() => setHovered(i)}
                   onClick={() => onOpenImage(slot.originalIndex)}
-                  className={`relative ${frame.span} ${frame.ratio} overflow-hidden rounded-xl block w-full p-0`}
+                  className={`relative ${frame.span} ${frame.ratio ?? ""} overflow-hidden rounded-xl block w-full p-0`}
+                  style={
+                    frame.ratio
+                      ? undefined
+                      : { aspectRatio: naturalAspect(slot.image) }
+                  }
                   aria-label={`Open ${project.title} image ${slot.originalIndex + 1}`}
                 >
                   <ProjectThumb

@@ -141,27 +141,23 @@ export default function ProjectEntry({
             className="mt-4 block w-14 h-px bg-rule group-hover:w-24 transition-[width] duration-500 ease-out"
           />
 
+          {/*
+            One line saying what the project is. It sits between the title and
+            the year so the eye picks it up on the way past — without it the
+            column is a title and a date, and the reader has to open the
+            lightbox to learn what they are looking at.
+          */}
+          {project.summary && (
+            <p className="mt-4 text-[14px] leading-[1.45] text-muted">
+              {project.summary}
+            </p>
+          )}
+
           {year && (
             <div className="label mt-5 text-muted">{year}</div>
           )}
         </button>
 
-        {project.links && project.links.length > 0 && (
-          <ul className="pt-6 space-y-2">
-            {project.links.map((link, idx) => (
-              <li key={link._key ?? idx}>
-                <a
-                  href={link.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="label text-brand hover:text-accent-ink"
-                >
-                  {`${link.label} →`.toLowerCase()}
-                </a>
-              </li>
-            ))}
-          </ul>
-        )}
       </div>
 
       <div

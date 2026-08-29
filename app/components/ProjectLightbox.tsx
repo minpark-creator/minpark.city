@@ -52,11 +52,25 @@ export default function ProjectLightbox({
       else if (e.key === "ArrowRight") next();
     }
     document.addEventListener("keydown", onKey);
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
+
+    /*
+      Lock the page behind the overlay. The scroll happens on <html>, not on
+      <body>, so hiding body's overflow alone left the page scrollbar visible
+      down the right-hand side of the black overlay. Hiding it on <html> also
+      reclaims the space the bar occupied, which would shift the page under
+      the overlay — so pad by exactly that width for as long as we are open.
+    */
+    const root = document.documentElement;
+    const barWidth = window.innerWidth - root.clientWidth;
+    const prevOverflow = root.style.overflow;
+    const prevPadding = root.style.paddingRight;
+    root.style.overflow = "hidden";
+    if (barWidth > 0) root.style.paddingRight = `${barWidth}px`;
+
     return () => {
       document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = prevOverflow;
+      root.style.overflow = prevOverflow;
+      root.style.paddingRight = prevPadding;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [total]);
@@ -289,7 +303,7 @@ function InfoSlide({ project }: { project: Project }) {
     // moving the title from project to project. Pinning the height parks the
     // top edge in the same place every time and lets the text scroll inside.
     <div
-      className="text-white overflow-y-auto overscroll-contain"
+      className="text-white overflow-y-auto overscroll-contain no-scrollbar"
       style={{
         width: "min(720px, calc(100vw - 3rem))",
         height: "calc(100vh - 8rem)",
@@ -327,6 +341,29 @@ function InfoSlide({ project }: { project: Project }) {
               <p key={idx}>{p}</p>
             ))}
           </div>
+        )}
+
+        {/*
+          Where the project actually lives, if it lives anywhere else. The
+          Featured list on the home page no longer carries these — it stops at
+          the one-line summary — so this is the only place the link is offered
+          between the home page and the Publications bibliography.
+        */}
+        {project.links && project.links.length > 0 && (
+          <ul className="mt-10 space-y-2 pb-4">
+            {project.links.map((link, idx) => (
+              <li key={link._key ?? idx}>
+                <a
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="label text-white/60 hover:text-white transition-colors"
+                >
+                  {`${link.label} →`.toLowerCase()}
+                </a>
+              </li>
+            ))}
+          </ul>
         )}
       </div>
     </div>

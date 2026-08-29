@@ -62,11 +62,11 @@ export const projectSchema = defineType({
     }),
     defineField({
       name: "summary",
-      title: "Summary (unused)",
+      title: "Summary",
       type: "text",
       rows: 3,
       description:
-        "Not shown anywhere on the site. The home page lists role / affiliation / year, and the lightbox shows Body. Kept so existing text isn't lost.",
+        "One sentence saying what the project is. Shown under the title in Featured Projects on the home page, so keep it to a line or two \u2014 the full account belongs in Body.",
     }),
     defineField({
       name: "body",

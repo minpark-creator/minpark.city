@@ -50,10 +50,21 @@
   --color-paper: var(--paper);
   --color-rule: var(--rule);
 
-  --font-sans: "Helvetica Now Text", "Helvetica Neue", Helvetica,
-    "Pretendard Variable", Pretendard, Arial, sans-serif;
-  --font-display: "Helvetica Now Display", "Helvetica Neue", Helvetica,
-    "Pretendard Variable", Pretendard, Arial, sans-serif;
+  /*
+    Helvetica Now is named but never served — there is no @font-face for it, so
+    it only appears on a machine that already has it, which is nearly nobody.
+    What actually renders is the second entry: Helvetica Neue on macOS.
+    Windows has none of the first three and used to land on Pretendard, whose
+    Latin is Inter-like and reads nothing like Helvetica. Arial now comes
+    first among the substitutes — it is metrically near-identical to Helvetica
+    and ships on every Windows install. Pretendard stays in the list after it
+    to carry Hangul, which it still does: fallback is per character, and Arial
+    has no Hangul glyphs to offer.
+  */
+  --font-sans: "Helvetica Now Text", "Helvetica Neue", Helvetica, Arial,
+    "Pretendard Variable", Pretendard, sans-serif;
+  --font-display: "Helvetica Now Display", "Helvetica Neue", Helvetica, Arial,
+    "Pretendard Variable", Pretendard, sans-serif;
   --font-serif: var(--font-sans);
   --font-nav: var(--font-sans);
   /* Titles run on two serifs against the Helvetica interface: Baskerville
@@ -298,6 +309,24 @@ a:hover {
   transition: opacity 0.5s ease-out;
 }
 
+/*
+  The fade is a nicety, not a gate. Without JS the observer never fires and
+  `.reveal-in` is never added, so every revealed block would stay at opacity 0
+  — a blank page, and a blank print-out. This puts the finished state back for
+  anyone the script does not reach.
+*/
+.no-js .reveal {
+  opacity: 1;
+  transition: none;
+}
+
+@media print {
+  .reveal {
+    opacity: 1 !important;
+    transition: none !important;
+  }
+}
+
 .reveal-in {
   opacity: 1;
 }
@@ -336,4 +365,21 @@ body {
     padding: 0;
     cursor: pointer;
   }
+}
+
+/*
+  Hides the scrollbar without disabling the scroll. The lightbox's text slide
+  scrolls inside a fixed-height box, and on a mouse (rather than a trackpad)
+  macOS leaves the bar permanently on screen — a bright rail down the middle
+  of an otherwise black overlay. Keyboard and wheel scrolling are untouched.
+*/
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
 }

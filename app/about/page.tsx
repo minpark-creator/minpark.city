@@ -5,7 +5,7 @@ import { getAboutPage, getPageIntros } from "../../sanity/queries";
 
 export const revalidate = 60;
 
-export const metadata = { title: "About · minpark" };
+export const metadata = { title: "About" };
 
 export default async function AboutPage() {
   const [about, intros] = await Promise.all([getAboutPage(), getPageIntros()]);

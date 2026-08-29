@@ -22,25 +22,41 @@ const subheadSerif = EB_Garamond({
   display: "swap",
 });
 
+// The one line that has to say who this is: it runs in Google results and on
+// every shared link. It matches the home statement on purpose — the site
+// should not introduce itself one way outside and another way inside.
+const DESCRIPTION =
+  "Research on housing, land governance and climate adaptation across London and Seoul.";
+
 export const metadata: Metadata = {
   metadataBase: new URL("https://minpark.city"),
-  title: "minpark.city",
-  description:
-    "Min Park, urban policy researcher working across research, masterplans, and the magazines cities deserve.",
+  // `template` lets inner pages set just their own name and still read as
+  // part of the site in a tab or a search result.
+  title: {
+    default: "Min Park — Urban Policy Researcher",
+    template: "%s · minpark",
+  },
+  description: DESCRIPTION,
   openGraph: {
-    title: "minpark.city",
-    description:
-      "Min Park, urban policy researcher working across research, masterplans, and the magazines cities deserve.",
+    title: "Min Park — Urban Policy Researcher",
+    description: DESCRIPTION,
     url: "https://minpark.city",
     siteName: "minpark.city",
-    images: [{ url: "/og.png", width: 1200, height: 630, alt: "minpark.city" }],
+    images: [
+      {
+        url: "/og.png",
+        width: 1200,
+        height: 630,
+        alt: "Min Park — Urban Policy Researcher",
+      },
+    ],
     type: "website",
+    locale: "en_GB",
   },
   twitter: {
     card: "summary_large_image",
-    title: "minpark.city",
-    description:
-      "Min Park, urban policy researcher working across research, masterplans, and the magazines cities deserve.",
+    title: "Min Park — Urban Policy Researcher",
+    description: DESCRIPTION,
     images: ["/og.png"],
   },
 };
@@ -58,7 +74,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`h-full antialiased ${titleSerif.variable} ${subheadSerif.variable}`}
+      className={`h-full antialiased no-js ${titleSerif.variable} ${subheadSerif.variable}`}
     >
       <head>
         {/*
@@ -71,6 +87,18 @@ export default function RootLayout({
         <link
           rel="stylesheet"
           href="/fonts/pretendard/pretendardvariable-dynamic-subset.css"
+        />
+        {/*
+          Drops the `no-js` class before first paint. Anything scripted — the
+          scroll reveals above all — styles itself as finished under `.no-js`,
+          so a visitor whose JS never arrives reads the page rather than a
+          blank one. Inline and synchronous on purpose: a deferred script
+          would let the un-faded state flash first.
+        */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `document.documentElement.classList.remove('no-js')`,
+          }}
         />
       </head>
       <body className="min-h-full flex flex-col">{children}</body>

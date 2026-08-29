@@ -383,11 +383,35 @@ function hydrateProjects(raws: RawProject[]): Project[] {
   }));
 }
 
+/**
+ * Preview switch for the re-encoded Observations clips.
+ *
+ * Set NEXT_PUBLIC_LOCAL_FILMS=1 and the site reads the MP4s and posters in
+ * public/observations/ instead of the QuickTime originals on the Sanity CDN,
+ * so the new encodes can be judged in place before anything is uploaded. Off
+ * by default, and the whole block is inert without the flag — production is
+ * unaffected either way. Delete this once the assets are in Sanity.
+ */
+const useLocalFilms = process.env.NEXT_PUBLIC_LOCAL_FILMS === "1";
+
+const localFilmSlug = (title: string) =>
+  [...title.toLowerCase()]
+    .map((c) => (/[a-z0-9]/.test(c) ? c : "-"))
+    .join("")
+    .replace(/^-+|-+$/g, "");
+
 function hydrateFilms(raws: RawFilm[]): Film[] {
-  return raws.map((f) => ({
-    ...f,
-    poster: toPoster(f.poster) ?? undefined,
-  }));
+  return raws.map((f) => {
+    const film: Film = { ...f, poster: toPoster(f.poster) ?? undefined };
+    if (!useLocalFilms) return film;
+
+    const slug = localFilmSlug(f.title);
+    return {
+      ...film,
+      videoFileUrl: `/observations/video/${slug}.mp4`,
+      poster: { url: `/observations/poster/${slug}.jpg` },
+    };
+  });
 }
 
 export async function getProjects(): Promise<Project[]> {

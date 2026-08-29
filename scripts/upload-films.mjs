@@ -31,6 +31,7 @@ if (!projectId || !dataset || !token) {
 
 const workDir = process.argv[2];
 const dryRun = process.argv.includes("--dry");
+const force = process.argv.includes("--force");
 if (!workDir) {
   console.error("Usage: node scripts/upload-films.mjs <workdir> [--dry]");
   process.exit(1);
@@ -73,7 +74,12 @@ const slugify = (s) =>
   [...s.toLowerCase()].map((c) => (/[a-z0-9]/.test(c) ? c : "-")).join("").replace(/^-+|-+$/g, "");
 
 const films = await query(
-  `*[_type=="film"]{_id,title,"currentAsset":videoFile.asset->_id}`
+  `*[_type=="film"]{
+     _id, title,
+     "currentAsset": videoFile.asset->_id,
+     "currentMime": videoFile.asset->mimeType,
+     "hasPoster": defined(poster)
+   }`
 );
 
 const outDir = path.join(workDir, "final");
@@ -83,10 +89,22 @@ const encoded = new Set(
 );
 
 let done = 0;
+let skipped = 0;
+const failed = [];
 for (const film of films) {
   const slug = slugify(film.title);
   if (!encoded.has(slug)) {
     console.log(`SKIP  ${film.title} — no encode named ${slug}.mp4`);
+    continue;
+  }
+
+  // A run that dies partway leaves the rest untouched, so re-running should
+  // pick up where it stopped rather than uploading everything a second time
+  // and littering the dataset with duplicate assets. Anything already on an
+  // MP4 with a poster is done; --force does it again anyway.
+  if (!force && film.currentMime === "video/mp4" && film.hasPoster) {
+    console.log(`DONE  ${film.title} — already MP4 with a poster, skipping`);
+    skipped += 1;
     continue;
   }
 
@@ -98,19 +116,33 @@ for (const film of films) {
     continue;
   }
 
-  const videoId = await uploadAsset("files", mp4, "video/mp4");
-  const set = {
-    videoFile: { _type: "file", asset: { _type: "reference", _ref: videoId } },
-  };
+  try {
+    const videoId = await uploadAsset("files", mp4, "video/mp4");
+    const set = {
+      videoFile: { _type: "file", asset: { _type: "reference", _ref: videoId } },
+    };
 
-  if (existsSync(jpg)) {
-    const posterId = await uploadAsset("images", jpg, "image/jpeg");
-    set.poster = { _type: "image", asset: { _type: "reference", _ref: posterId } };
+    if (existsSync(jpg)) {
+      const posterId = await uploadAsset("images", jpg, "image/jpeg");
+      set.poster = { _type: "image", asset: { _type: "reference", _ref: posterId } };
+    }
+
+    await mutate([{ patch: { id: film._id, set } }]);
+    done += 1;
+    console.log(`OK    ${film.title}  ->  ${videoId}${set.poster ? " + poster" : ""}`);
+  } catch (err) {
+    // Keep going: one clip failing is not a reason to leave the other eleven
+    // on the originals. The summary reports what still needs another pass.
+    failed.push(film.title);
+    console.error(`FAIL  ${film.title} — ${err.message}`);
   }
-
-  await mutate([{ patch: { id: film._id, set } }]);
-  done += 1;
-  console.log(`OK    ${film.title}  ->  ${videoId}${set.poster ? " + poster" : ""}`);
 }
 
-console.log(`\n${dryRun ? "dry run" : `${done} film(s) updated`}`);
+console.log(
+  `\n${dryRun ? "dry run" : `${done} film(s) updated`}${skipped ? `, ${skipped} already done` : ""}`
+);
+if (failed.length) {
+  console.error(`\n${failed.length} still to do: ${failed.join(", ")}`);
+  console.error("Run the same command again to retry just those.");
+  process.exitCode = 1;
+}

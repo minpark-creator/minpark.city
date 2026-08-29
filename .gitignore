@@ -46,8 +46,3 @@ next-env.d.ts
 
 # copied from pdfjs-dist by scripts/copy-pdf-worker.mjs on install
 /public/vendor/
-
-# local-only Observations preview files (see NEXT_PUBLIC_LOCAL_FILMS)
-/public/observations
-/public/observations-compare.html
-/public/og-preview.html

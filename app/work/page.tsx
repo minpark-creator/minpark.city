@@ -4,7 +4,7 @@ import { getPageIntros, getProjects } from "../../sanity/queries";
 
 export const revalidate = 60;
 
-export const metadata = { title: "Projects · minpark" };
+export const metadata = { title: "Projects" };
 
 export default async function WorkPage() {
   const [projects, intros] = await Promise.all([

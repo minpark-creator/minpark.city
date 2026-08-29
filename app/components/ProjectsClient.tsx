@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import type { Project } from "../../sanity/queries";
 import ProjectEntry from "./ProjectEntry";
 import ProjectLightbox from "./ProjectLightbox";
 import Reveal from "./Reveal";
+import { useProjectUrl } from "../lib/useProjectUrl";
 
 type Props = {
   selected: Project[];
@@ -17,6 +18,9 @@ type Open = {
 
 export default function ProjectsClient({ selected }: Props) {
   const [open, setOpen] = useState<Open>(null);
+
+  const close = useCallback(() => setOpen(null), []);
+  useProjectUrl(open?.project.slug, close);
 
   const openInfo = (project: Project) =>
     setOpen({ project, imageStart: null });
@@ -51,7 +55,7 @@ export default function ProjectsClient({ selected }: Props) {
         <ProjectLightbox
           project={open.project}
           imageStart={open.imageStart}
-          onClose={() => setOpen(null)}
+          onClose={close}
         />
       )}
     </>

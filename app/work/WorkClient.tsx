@@ -1,10 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import type { Project } from "../../sanity/queries";
 import GalleryCard from "../components/GalleryCard";
 import ProjectLightbox from "../components/ProjectLightbox";
 import { TRACKS } from "../lib/tracks";
+import { useProjectUrl } from "../lib/useProjectUrl";
 
 type Props = { projects: Project[] };
 type Open = {
@@ -14,6 +15,11 @@ type Open = {
 
 export default function WorkClient({ projects }: Props) {
   const [open, setOpen] = useState<Open>(null);
+
+  const close = useCallback(() => setOpen(null), []);
+  // While a project is open the address bar reads /work/<slug>, so the view
+  // can be linked, shared and reloaded.
+  useProjectUrl(open?.project.slug, close);
   const [hoverId, setHoverId] = useState<string | null>(null);
   const [primedId, setPrimedId] = useState<string | null>(null);
   // One filter at a time, "All" to start, exactly as the reference behaves.
@@ -114,7 +120,7 @@ export default function WorkClient({ projects }: Props) {
         <ProjectLightbox
           project={open.project}
           imageStart={open.imageStart}
-          onClose={() => setOpen(null)}
+          onClose={close}
         />
       )}
     </>

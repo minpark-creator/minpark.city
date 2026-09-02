@@ -217,7 +217,7 @@ export const fallbackSettings: SiteSettings = {
   cvUrl: null,
   contactEmail: "contact.minpark@gmail.com",
   socialLinks: [
-    { _key: "s1", label: "linkedin", url: "https://www.linkedin.com/in/minpark-urban-strategy" },
+    { _key: "s1", label: "linkedin", url: "https://www.linkedin.com/in/minparkcity/" },
     { _key: "s2", label: "instagram", url: "https://www.instagram.com/iamminggoo/" },
   ],
 };
@@ -243,14 +243,14 @@ export const fallbackAbout: AboutPage = {
   bio: [],
   portrait: null,
   bioText:
-    "Min Park is an urban policy researcher working at the intersection of policy, research, and design. Her work translates slow, complicated urban questions such as green belts, peripheral corridors and regeneration sites into frameworks that hold up over decades.\n\nRecent work includes Green Belts 2.0 with C40 Cities, masterplans in the UK and the Middle East at Buro Happold, and academic research at UCL on privately owned public spaces. She is also design lead and co-founder of MPLAN Mag, an independent magazine on planning and strategy.\n\nShe holds an MSc City Planning from UCL and a BArch from Yonsei University. Based in London.",
+    "Min Park is an urban policy researcher. She studies how planning systems, land governance and the built environment shape who can access, use and benefit from the city.\n\nTrained first as an architect and then as a city planner, she works between spatial analysis and policy research. Her research combines comparative policy analysis, GIS, interviews, archival research and quantitative frameworks to examine how institutional decisions become spatial conditions.\n\nRecent work includes an international case study of green belt governance, research on publicness in privately owned public spaces in London and Seoul, and policy research on UK planning reform for Korean public institutions.\n\nHer work has been presented to and commissioned by organisations including C40 Cities, the Urban Frontiers Foundation, the Ministry of Land, Infrastructure and Transport (MOLIT), Korea Land & Housing Corporation (LH) and the Korea Research Institute for Human Settlements (KRIHS).\n\nShe is co-founder and art director of MPLAN Magazine, an independent planning publication founded out of the Bartlett and now in its second issue.\n\nShe holds a Master of City Planning from University College London and a Bachelor of Architecture from Yonsei University.\n\nBased in London, with roots in Seoul.",
   contactIntro:
     "Write to me about projects you can't quite frame yet. About cities that need a longer horizon than the next election cycle. About the planning question you've been carrying around but haven't found a place to put down.\n\nI'm always open to new commissions, partnerships, lectures, and conversations, and especially to the briefs that are still being written. The fastest way through is email.",
   email: "contact.minpark@gmail.com",
   location: "",
   links: [
     { label: "Instagram", url: "https://www.instagram.com/iamminggoo/" },
-    { label: "LinkedIn", url: "https://www.linkedin.com/in/minpark-urban-strategy" },
+    { label: "LinkedIn", url: "https://www.linkedin.com/in/minparkcity/" },
     { label: "Threads", url: "https://www.threads.com/@iamminggoo" },
   ],
   sections: [
@@ -269,7 +269,7 @@ export const fallbackAbout: AboutPage = {
       items: [
         { year: "2026", text: "C40 Cities: Green Belts 2.0 Policy Report" },
         { year: "2026", text: "The Riyadh Ring Masterplan" },
-        { year: "2026", text: "MPlan Mag" },
+        { year: "2026", text: "MPLAN Mag" },
         { year: "2025", text: "Holcim Foundation Fellowship Workshop" },
         { year: "2025", text: "Europe-Korea Conference" },
       ],
@@ -339,8 +339,8 @@ export const fallbackPublications: Publication[] = [
     kind: "Article",
     year: "2026",
     date: "2026-03-01",
-    venue: "MPlan Mag",
-    authors: "Co-founder and editorial lead \u00b7 commissioned and edited the issue",
+    venue: "MPLAN Mag",
+    authors: "Co-founder and art director \u00b7 commissioned and edited the issue",
     abstract:
       "An independent urban planning publication founded out of the Bartlett, covering planning theory, policy debate, and urban futures. Issue 01 launched at Omved Gardens to an audience of 100+; Issue 02 is in production.",
     links: [{ label: "the magazine", url: "https://mplanmag.com/" }],
@@ -412,7 +412,7 @@ const raw: Omit<Project, "_id" | "images">[] = [
     isSelected: true,
   },
   {
-    title: "The MPlan Mag Magazine",
+    title: "MPLAN Mag",
     slug: "mplanmag",
     year: "2026",
     date: "2026-01-05",
@@ -422,7 +422,7 @@ const raw: Omit<Project, "_id" | "images">[] = [
     summary:
       "An independent magazine on planning, urban research, and spatial strategy.",
     body:
-      "MPlan Mag is a self-initiated magazine gathering essays, interviews, and visual research on the practice of urban planning and strategy. It collects voices from across the discipline and publishes them in a format closer to a reader than a report.",
+      "MPLAN Mag is a self-initiated magazine gathering essays, interviews, and visual research on the practice of urban planning and strategy. It collects voices from across the discipline and publishes them in a format closer to a reader than a report.",
     track: "editorial",
     isSelected: true,
   },

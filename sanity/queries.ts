@@ -34,6 +34,8 @@ export type Project = {
   location?: string;
   role?: string;
   summary?: string;
+  /** What was done on the project: shown as a tag line under the summary. */
+  methods?: string[];
   body?: string;
   isSelected?: boolean;
   /** "research" | "practice" | "design" — groups the home page list. */
@@ -274,7 +276,7 @@ const POSTER_PROJECTION = /* groq */ `{
 const PROJECTS_QUERY = /* groq */ `
   *[_type == "project"] | order(order asc, date desc) {
     _id, title, "slug": slug.current, year, date,
-    client, partners, location, role, summary, body, isSelected, track,
+    client, partners, location, role, summary, methods, body, isSelected, track,
     featured,
     links[]{ _key, label, url },
     "images": images[]${IMAGE_PROJECTION}

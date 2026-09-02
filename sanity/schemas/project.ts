@@ -61,6 +61,18 @@ export const projectSchema = defineType({
       description: "e.g. Lead researcher, Urban strategist.",
     }),
     defineField({
+      name: "methods",
+      title: "Methods",
+      type: "array",
+      of: [{ type: "string" }],
+      // The tag layout: type a method, press Enter, and it becomes a pill you
+      // can drag or delete \u2014 the same shape it takes on the page, rather
+      // than a stack of numbered text boxes.
+      options: { layout: "tags" },
+      description:
+        "The methods this project actually used \u2014 e.g. \"stakeholder interviews\", \"governance mapping\", \"site survey\". Shown as tags under the summary in Featured Projects, so they read as a record of the work rather than a claim about the person. All lower case, no counts (the scale of a study belongs in the writing). Three to five is plenty.",
+    }),
+    defineField({
       name: "summary",
       title: "Summary",
       type: "text",

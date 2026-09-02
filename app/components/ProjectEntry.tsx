@@ -152,12 +152,26 @@ export default function ProjectEntry({
               {project.summary}
             </p>
           )}
-
-          {year && (
-            <div className="label mt-5 text-muted">{year}</div>
-          )}
         </button>
 
+        {/*
+          What was actually done, in the shape of the Projects filter chips.
+          A list rather than a sentence, so it reads as a record attached to
+          this project instead of a claim about the person. It sits outside
+          the button on purpose: a list is not phrasing content, and nothing
+          here is meant to be clicked.
+        */}
+        {project.methods && project.methods.length > 0 && (
+          <ul className="mt-5 flex flex-wrap gap-1.5">
+            {project.methods.map((method, i) => (
+              <li key={method + i}>
+                <span className="chip chip-static">{method}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+
+        {year && <div className="label mt-5 text-muted">{year}</div>}
       </div>
 
       <div

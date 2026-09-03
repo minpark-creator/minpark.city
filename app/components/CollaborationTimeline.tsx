@@ -65,8 +65,10 @@ export default function CollaborationTimeline({
       )}
 
       {/* Each row draws its own length of rail and its own node, both anchored
-          to the same left edge, so they cannot drift apart. */}
-      <ol className="mt-10 sm:mt-14 pl-16 sm:pl-28">
+          to the same left edge, so they cannot drift apart. The list is capped
+          so a very wide window cannot inflate the date column and strand the
+          description halfway across the page. */}
+      <ol className="mt-10 sm:mt-14 pl-16 sm:pl-28 max-w-[1120px]">
         {rows.map((row, i) => (
           <li
             key={row._key ?? i}

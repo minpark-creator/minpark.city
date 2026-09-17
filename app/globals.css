@@ -130,23 +130,27 @@ a:hover {
     font-weight: 400;
     letter-spacing: 0.01em;
     line-height: 1.1;
-    /* Each typed line has to stay on one line, so on a narrow screen the type
-       shrinks until the longest one fits. --hero-chars is that line's length,
-       set by the page; 0.62em is a little wider than the average capital. */
-    --hero-max: 34px;
-    font-size: min(
-      var(--hero-max),
-      calc((100vw - 48px) / (var(--hero-chars, 24) * 0.62))
-    );
+    /* On a phone the statement keeps its size and the long lines wrap, the way
+       it has always read there. From tablet up, where the type is large enough
+       that a rewrap would be obvious, it shrinks instead until the longest
+       typed line fits: --hero-chars is that line's length, set by the page,
+       and 0.62em is a little wider than the average capital. */
+    font-size: 34px;
   }
   @media (min-width: 640px) {
     .hero-statement {
-      --hero-max: 52px;
+      font-size: min(
+        52px,
+        calc((100vw - 48px) / (var(--hero-chars, 24) * 0.62))
+      );
     }
   }
   @media (min-width: 1024px) {
     .hero-statement {
-      --hero-max: 62px;
+      font-size: min(
+        62px,
+        calc((100vw - 48px) / (var(--hero-chars, 24) * 0.62))
+      );
     }
   }
 

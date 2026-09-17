@@ -10,7 +10,8 @@ export const siteSettingsSchema = defineType({
       title: "Intro Paragraph",
       type: "text",
       rows: 4,
-      description: "Shown under the heading, centered.",
+      description:
+        "The home page statement. Press Enter wherever you want a line to break; the site keeps your lines exactly as typed.",
     }),
     defineField({
       name: "heroImages",

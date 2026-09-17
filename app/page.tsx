@@ -32,7 +32,11 @@ export default async function Home() {
       leadLines.push(line);
     }
   }
-  const lead = leadLines.join(" ").replace(/\s+/g, " ").trim();
+  // Each line typed in the Studio is a line on the page: the break falls
+  // exactly where it was entered, not where the column happens to run out.
+  const lead = leadLines
+    .map((l) => l.replace(/\s+/g, " ").trim())
+    .filter((l) => l.length > 0);
 
   return (
     <>
@@ -46,8 +50,14 @@ export default async function Home() {
         */}
         <HeroTrail images={settings.heroImages ?? []}>
           <section className="px-4 sm:px-5 pt-[132px] sm:pt-[168px] pb-12 sm:pb-16">
-            <h1 className="hero-statement uppercase mx-auto text-center max-w-[24ch] text-[34px] sm:text-[52px] lg:text-[62px]">
-              {lead || "min park is an urban policy researcher."}
+            <h1 className="hero-statement uppercase mx-auto text-center text-[34px] sm:text-[52px] lg:text-[62px]">
+              {lead.length > 0
+                ? lead.map((line, i) => (
+                    <span key={i} className="block">
+                      {line}
+                    </span>
+                  ))
+                : "min park is an urban policy researcher."}
             </h1>
 
             {bulletLines.length > 0 && (

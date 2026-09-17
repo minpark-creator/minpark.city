@@ -50,7 +50,14 @@ export default async function Home() {
         */}
         <HeroTrail images={settings.heroImages ?? []}>
           <section className="px-4 sm:px-5 pt-[132px] sm:pt-[168px] pb-12 sm:pb-16">
-            <h1 className="hero-statement uppercase mx-auto text-center text-[34px] sm:text-[52px] lg:text-[62px]">
+            <h1
+              className="hero-statement uppercase mx-auto text-center"
+              style={
+                {
+                  "--hero-chars": Math.max(1, ...lead.map((l) => l.length)),
+                } as React.CSSProperties
+              }
+            >
               {lead.length > 0
                 ? lead.map((line, i) => (
                     <span key={i} className="block">

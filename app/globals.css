@@ -130,6 +130,24 @@ a:hover {
     font-weight: 400;
     letter-spacing: 0.01em;
     line-height: 1.1;
+    /* Each typed line has to stay on one line, so on a narrow screen the type
+       shrinks until the longest one fits. --hero-chars is that line's length,
+       set by the page; 0.62em is a little wider than the average capital. */
+    --hero-max: 34px;
+    font-size: min(
+      var(--hero-max),
+      calc((100vw - 48px) / (var(--hero-chars, 24) * 0.62))
+    );
+  }
+  @media (min-width: 640px) {
+    .hero-statement {
+      --hero-max: 52px;
+    }
+  }
+  @media (min-width: 1024px) {
+    .hero-statement {
+      --hero-max: 62px;
+    }
   }
 
   /* Item titles: project entries, publications, cards, films. One step down

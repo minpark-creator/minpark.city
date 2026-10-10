@@ -372,6 +372,7 @@ const TRACK_SEED: Record<string, string> = {
   "launch at omved gardens": "editorial",
 
   "plant a chair": "built",
+  "play-scape pavilion": "built",
   "play-scape pavillion": "built",
 };
 

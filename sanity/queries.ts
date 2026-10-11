@@ -168,6 +168,8 @@ export type Publication = {
   venue?: string;
   authors?: string;
   abstract?: string;
+  /** Talks, lectures and briefings the piece was presented at, one per line. */
+  presentedAt?: string[];
   /** Direct URL of the PDF uploaded in Studio, or null when none is set. */
   pdfUrl?: string | null;
   links?: { label: string; url: string; _key?: string }[];
@@ -335,7 +337,7 @@ const PAGE_INTROS_QUERY = /* groq */ `
 
 const PUBLICATIONS_QUERY = /* groq */ `
   *[_type == "publication"] | order(order asc, date desc) {
-    _id, title, kind, year, date, venue, authors, abstract,
+    _id, title, kind, year, date, venue, authors, abstract, presentedAt,
     "pdfUrl": pdf.asset->url,
     links[]{ _key, label, url }
   }`;
@@ -642,13 +644,43 @@ export async function getPageIntros(): Promise<PageIntros> {
   }
 }
 
+/**
+ * Where each piece has been presented, matched by title, until the same list
+ * is typed into Studio. Anything set in Studio wins.
+ */
+const PRESENTED_SEED: Record<string, string[]> = {
+  "green belts 2.0: working harder for climate, cities and communities": [
+    "Invited lecture, Korea Research Institute for Human Settlements (KRIHS), 2026",
+    "Briefing to the Ministry of Land, Infrastructure and Transport (MOLIT) and Korea Land and Housing Corporation (LH), London, 2025",
+  ],
+  "defining and measuring socio-ecological publicness in the privatised city": [
+    "Oral presentation, Europe-Korea Conference (EKC) 2025, Vienna",
+  ],
+  "can you build a city like a startup?": [
+    "MPLAN Mag launch at Omved Gardens, London, 2026",
+  ],
+  "a comparative analysis of the camden highline with the regent's canal towpath and new york highline": [
+    "Just Space workshop",
+  ],
+};
+
+function withPresentations(pubs: Publication[]): Publication[] {
+  return pubs.map((pub) => ({
+    ...pub,
+    presentedAt: pub.presentedAt?.length
+      ? pub.presentedAt
+      : PRESENTED_SEED[pub.title.trim().toLowerCase()],
+  }));
+}
+
 export async function getPublications(): Promise<Publication[]> {
-  if (!client) return fallbackPublications;
+  const seeded = withPresentations(fallbackPublications);
+  if (!client) return seeded;
   try {
     const p = await client.fetch<Publication[]>(PUBLICATIONS_QUERY);
-    return p.length ? p : fallbackPublications;
+    return p.length ? withPresentations(p) : seeded;
   } catch {
-    return fallbackPublications;
+    return seeded;
   }
 }
 

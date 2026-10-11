@@ -70,6 +70,14 @@ export const publicationSchema = defineType({
       description: "Two or three sentences. What it asked, and what it found.",
     }),
     defineField({
+      name: "presentedAt",
+      title: "Presented at",
+      type: "array",
+      of: [{ type: "string" }],
+      description:
+        "Talks, lectures and briefings built on this piece, one per line. e.g. Invited lecture, KRIHS, 2026.",
+    }),
+    defineField({
       name: "pdf",
       title: "PDF",
       type: "file",

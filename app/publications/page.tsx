@@ -69,6 +69,17 @@ export default async function PublicationsPage() {
                       </p>
                     )}
 
+                    {pub.presentedAt && pub.presentedAt.length > 0 && (
+                      <div className="mt-6">
+                        <p className="label text-accent-ink">Presented at</p>
+                        <ul className="mt-2 text-[14px] sm:text-[15px] leading-[1.6] text-muted max-w-[68ch]">
+                          {pub.presentedAt.map((line) => (
+                            <li key={line}>{line}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
                     {links.length > 0 && (
                       <ul className="pt-6 flex flex-wrap gap-x-8 gap-y-2">
                         {links.map((link, idx) => (
